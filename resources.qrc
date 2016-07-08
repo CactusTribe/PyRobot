@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/resources/img">
+        <file>resources/img/Error.png</file>
+        <file>resources/img/Tick.png</file>
+        <file>resources/img/rasp_connected.png</file>
+        <file>resources/img/rasp_disconect.png</file>
+        <file>resources/img/sync.png</file>
+        <file>resources/img/sync2.png</file>
+    </qresource>
+</RCC>
