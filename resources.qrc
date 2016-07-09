@@ -4,7 +4,11 @@
         <file>resources/img/Tick.png</file>
         <file>resources/img/rasp_connected.png</file>
         <file>resources/img/rasp_disconect.png</file>
+        <file>resources/img/rasp.png</file>
         <file>resources/img/sync.png</file>
         <file>resources/img/sync2.png</file>
+        <file>resources/img/Settings.png</file>
+        <file>resources/img/Right.png</file>
+        <file>resources/img/network.png</file>
     </qresource>
 </RCC>
