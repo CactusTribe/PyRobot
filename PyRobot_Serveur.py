@@ -56,6 +56,8 @@ class PyRobot_Serveur:
 	def execute_cmd(self, cmd):
 		tokens = cmd.split(" ")
 
+		self.tcp_send(cmd)
+
 		if tokens[0] == "red":
 			subprocess.Popen(["python3", "LED_RGB.py", "255", "0", "0"])
 
@@ -87,8 +89,7 @@ class PyRobot_Serveur:
 				subprocess.Popen(["python3", "FrontLight.py", "4", "100", tokens[1]])
 
 		elif tokens[0] == "mcpr":
-			if len(tokens) > 1:
-				print("read")
+			pass
 					
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-import sys
+import sys, threading
 
 # Import windows
 from Dialog_NewConnection import Dialog_NewConnection
@@ -21,13 +21,16 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 		#Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
-		self.pushButton_send_monitor.clicked.connect(self.sendMsg)
-		self.lineEdit_commandline.returnPressed.connect(self.sendMsg)
+		self.pushButton_send_monitor.clicked.connect(self.execute_cmd)
+		self.lineEdit_commandline.returnPressed.connect(self.execute_cmd)
 
 		# Setup
 		self.updateStatus()
 		self.pushButton_send_monitor.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
+
+		# Threads
+		self.listeningServeur = None 
 
 	def newConnection(self):
 		new_connection = Dialog_NewConnection()
@@ -35,6 +38,14 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		if new_connection.exec_():
 			self.PyRobot_Client = new_connection.PyRobot_Client
 			self.updateStatus()
+
+	def tcp_listening(self):
+		while self.PyRobot_Client.connected == True:
+			msg_recu = self.PyRobot_Client.tcp_read()
+			if msg_recu != None: 
+				#print(msg_recu)
+				self.plainTextEdit_monitor.moveCursor(QTextCursor.End)
+				self.plainTextEdit_monitor.insertPlainText(msg_recu+"\n")
 
 	def updateStatus(self):
 		if self.PyRobot_Client != None:
@@ -45,15 +56,51 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
 				self.plainTextEdit_monitor.moveCursor(QTextCursor.End)
-				self.plainTextEdit_monitor.insertPlainText("> Connected to PyRobot at {}:{}\n".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
+				self.plainTextEdit_monitor.insertPlainText("Connected to PyRobot at {}:{}\n".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
 				self.pushButton_send_monitor.setEnabled(True)
 				self.lineEdit_commandline.setEnabled(True)
 
-	def sendMsg(self):
+				self.listeningServeur = threading.Thread(target=self.tcp_listening)
+				self.listeningServeur.start()
+
+	def execute_cmd(self):
+		cmd = self.lineEdit_commandline.text()
+		tokens = cmd.split(" ")
+
 		self.plainTextEdit_monitor.moveCursor(QTextCursor.End)
-		self.plainTextEdit_monitor.insertPlainText("# "+self.lineEdit_commandline.text()+"\n")
-		self.PyRobot_Client.tcp_send(self.lineEdit_commandline.text())
+		self.plainTextEdit_monitor.insertPlainText("> "+cmd+"\n")
 		self.lineEdit_commandline.clear()
+
+		if tokens[0] == "led":
+			if len(tokens) > 1:
+				if tokens[1] == "red":
+					self.PyRobot_Client.tcp_send("red")
+				elif tokens[1] == "green":
+					self.PyRobot_Client.tcp_send("green")
+				elif tokens[1] == "blue":
+					self.PyRobot_Client.tcp_send("blue")
+
+		elif tokens[0] == "rgb":
+			self.PyRobot_Client.tcp_send(cmd)
+
+		elif tokens[0] == "lg":
+			self.PyRobot_Client.tcp_send(cmd)
+
+		elif tokens[0] == "flash":
+			self.PyRobot_Client.tcp_send(cmd)
+			
+		elif tokens[0] == "clear":
+			self.plainTextEdit_monitor.clear()
+		else:
+			self.plainTextEdit_monitor.insertPlainText("Command not found.\n")
+
+
+	def sendMsg(self):
+		self.PyRobot_Client.tcp_send(self.lineEdit_commandline.text())
+		
+
+	def closeEvent(self, event):
+		self.PyRobot_Client.close()
 		
 
 if __name__ == "__main__":

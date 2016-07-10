@@ -19,7 +19,11 @@ class PyRobot_Client:
 			self.close()
 
 	def tcp_read(self):
-		return self.socket.recv(1024).decode("utf-8")	
+		try:
+			recu = self.socket.recv(1024).decode("utf-8")
+			return recu
+		except:
+			return None
 
 	def tcp_send(self, msg):
 		self.socket.send(msg.encode("utf-8"))

@@ -38,5 +38,3 @@ if __name__ == "__main__":
 		time.sleep(1)
 	else:
 		print("Usage: FrontLight <pin> <luminosity(%)> <timer(*option)(sec.)>")
-
-	GPIO.cleanup()

@@ -93,7 +93,6 @@ class MCP3008:
             if elapsed >= timer:
                 break
 
-
 if __name__ == "__main__":
 
     GPIO.setmode( GPIO.BCM )
