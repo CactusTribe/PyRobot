@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-import sys, threading
+import sys, threading, time
 
 # Import windows
 from Dialog_NewConnection import Dialog_NewConnection
@@ -13,6 +13,7 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 class PyRobot(QMainWindow, Ui_MainWindow):
 
 	PyRobot_Client = None
+	lock = threading.RLock()
 
 	def __init__(self):
 		QMainWindow.__init__(self)
@@ -29,6 +30,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_send_monitor.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
 
+		self.printToMonitor("> Welcome to PyRobot !")
 		# Threads
 		self.listeningServeur = None 
 
@@ -43,9 +45,15 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		while self.PyRobot_Client.connected == True:
 			msg_recu = self.PyRobot_Client.tcp_read()
 			if msg_recu != None: 
-				#print(msg_recu)
-				self.plainTextEdit_monitor.moveCursor(QTextCursor.End)
-				self.plainTextEdit_monitor.insertPlainText(msg_recu+"\n")
+				tokens = msg_recu.split(" ")
+
+				if tokens[0] == "sns":
+					if len(tokens) > 2:
+						self.printToMonitor("CH{} : {} ( {}% )".format(tokens[1], tokens[2], int(int(tokens[2])*100/1024) ))
+
+						#self.plainTextEdit_monitor.appendPlainText("CH {} : {}".format(tokens[1], tokens[2]))
+						#self.plainTextEdit_monitor.verticalScrollBar().setValue(self.plainTextEdit_monitor.verticalScrollBar().maximum())
+
 
 	def updateStatus(self):
 		if self.PyRobot_Client != None:
@@ -55,8 +63,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.lineEdit_commandline.setEnabled(False)
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
-				self.plainTextEdit_monitor.moveCursor(QTextCursor.End)
-				self.plainTextEdit_monitor.insertPlainText("Connected to PyRobot at {}:{}\n".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
+				self.printToMonitor("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
+				#self.plainTextEdit_monitor.appendPlainText("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
 				self.pushButton_send_monitor.setEnabled(True)
 				self.lineEdit_commandline.setEnabled(True)
 
@@ -67,9 +75,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		cmd = self.lineEdit_commandline.text()
 		tokens = cmd.split(" ")
 
-		self.plainTextEdit_monitor.moveCursor(QTextCursor.End)
-		self.plainTextEdit_monitor.insertPlainText("> "+cmd+"\n")
 		self.lineEdit_commandline.clear()
+		self.printToMonitor("> "+cmd)
 
 		if tokens[0] == "led":
 			if len(tokens) > 1:
@@ -88,19 +95,35 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 		elif tokens[0] == "flash":
 			self.PyRobot_Client.tcp_send(cmd)
+
+		elif tokens[0] == "sns":
+			if len(tokens) > 1:
+				self.PyRobot_Client.tcp_send(cmd)
+			else:
+				pass
+				#self.PyRobot_Client.tcp_send(cmd)
 			
 		elif tokens[0] == "clear":
 			self.plainTextEdit_monitor.clear()
 		else:
-			self.plainTextEdit_monitor.insertPlainText("Command not found.\n")
+			self.printToMonitor("Command not found.")
+			#self.plainTextEdit_monitor.appendPlainText("Command not found.")
 
+		#self.plainTextEdit_monitor.verticalScrollBar().setValue(self.plainTextEdit_monitor.verticalScrollBar().maximum())
 
 	def sendMsg(self):
 		self.PyRobot_Client.tcp_send(self.lineEdit_commandline.text())
 		
+	def printToMonitor(self, msg):
+		with self.lock:
+			self.plainTextEdit_monitor.moveCursor(QTextCursor.End);
+			self.plainTextEdit_monitor.insertPlainText(msg+"\n");
+			#self.plainTextEdit_monitor.moveCursor(QTextCursor.End);
+			self.plainTextEdit_monitor.verticalScrollBar().setValue(self.plainTextEdit_monitor.verticalScrollBar().maximum())
 
 	def closeEvent(self, event):
-		self.PyRobot_Client.close()
+		if self.PyRobot_Client != None:
+			self.PyRobot_Client.close()
 		
 
 if __name__ == "__main__":

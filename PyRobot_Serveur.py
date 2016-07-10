@@ -1,4 +1,4 @@
-import socket, sys, subprocess
+import socket, sys, subprocess, time
 import RPi.GPIO as GPIO
 
 from FrontLight import FrontLight
@@ -8,6 +8,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
 
 class PyRobot_Serveur:
+
+	GPIO.cleanup()
 
 	# Modules (Capteurs , éclairage, etc)
 	FrontLight = FrontLight(4, 0) # pin, luminosity(%)
@@ -34,7 +36,6 @@ class PyRobot_Serveur:
 			finally:
 				print("Connection closed.")
 				self.client_socket.close()
-				GPIO.cleanup()
 
 	def tcp_read(self):
 		msg_recu = ""
@@ -56,7 +57,7 @@ class PyRobot_Serveur:
 	def execute_cmd(self, cmd):
 		tokens = cmd.split(" ")
 
-		self.tcp_send(cmd)
+		#self.tcp_send(cmd)
 
 		if tokens[0] == "red":
 			subprocess.Popen(["python3", "LED_RGB.py", "255", "0", "0"])
@@ -88,8 +89,23 @@ class PyRobot_Serveur:
 			if len(tokens) > 1:
 				subprocess.Popen(["python3", "FrontLight.py", "4", "100", tokens[1]])
 
-		elif tokens[0] == "mcpr":
-			pass
+		elif tokens[0] == "sns":
+			if len(tokens) > 1:
+				try:
+					start = time.time()
+					elapsed = 0
+					timer = 12
+
+					while True:
+						value = self.MCP3008.getValue(int(tokens[1]))
+						self.tcp_send("sns "+tokens[1]+" "+str(value))
+						time.sleep(0.5) 
+
+						elapsed = time.time() - start
+						if elapsed >= timer:
+							break
+				except:
+					print("Error getValue")
 					
 
 if __name__ == "__main__":
