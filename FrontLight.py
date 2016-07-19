@@ -3,9 +3,10 @@ import sys, time
 
 class FrontLight:
 
-	def __init__(self, pin, luminosity):
+	def __init__(self, pin):
 		self.no_pin = pin
-		self.luminosity = luminosity
+		self.luminosity = 0
+		self.poweron = False
 
 		GPIO.setup(self.no_pin, GPIO.OUT)
 		# creation d'un objet PWM. canal=4 frequence=50Hz
@@ -18,10 +19,17 @@ class FrontLight:
 		self.Light.ChangeDutyCycle(self.luminosity)
 
 	def on(self):
-		self.Light.ChangeDutyCycle(100)
+		self.poweron = True
+		self.luminosity = 100 
+		self.Light.ChangeDutyCycle(self.luminosity)
 
 	def off(self):
-		self.Light.ChangeDutyCycle(0)
+		self.poweron = False
+		self.luminosity = 0
+		self.Light.ChangeDutyCycle(self.luminosity)
+
+	def isOn(self):
+		return self.poweron
 
 
 if __name__ == "__main__":
@@ -29,12 +37,18 @@ if __name__ == "__main__":
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setwarnings(False)
 
-	if len(sys.argv) > 3:
-		FrontLight = FrontLight(int(sys.argv[1]), int(sys.argv[2]))
-		time.sleep(int(sys.argv[3]))
+	if len(sys.argv) > 2:
+		FrontLight = FrontLight(int(sys.argv[1]))
+		
+		FrontLight.on()
+		time.sleep(int(sys.argv[2]))
+		FrontLight.off()
 
-	elif len(sys.argv) == 3:
-		FrontLight = FrontLight(int(sys.argv[1]), int(sys.argv[2]))
+	elif len(sys.argv) == 2:
+		FrontLight = FrontLight(int(sys.argv[1]))
+
+		FrontLight.on()
 		time.sleep(1)
+		FrontLight.off()
 	else:
-		print("Usage: FrontLight <pin> <luminosity(%)> <timer(*option)(sec.)>")
+		print("Usage: FrontLight <pin> <timer(*option)(sec.)>")

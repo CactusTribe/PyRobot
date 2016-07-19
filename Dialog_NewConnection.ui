@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>410</width>
+    <width>500</width>
     <height>140</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>410</width>
+    <width>500</width>
     <height>140</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>410</width>
+    <width>500</width>
     <height>140</height>
    </size>
   </property>
@@ -70,7 +70,7 @@
         </font>
        </property>
        <property name="text">
-        <string>192.168.1.14</string>
+        <string>joaquim-lefranc.butandsystems.com</string>
        </property>
       </widget>
      </item>
