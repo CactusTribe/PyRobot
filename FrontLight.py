@@ -28,6 +28,11 @@ class FrontLight:
 		self.luminosity = 0
 		self.Light.ChangeDutyCycle(self.luminosity)
 
+	def flash(self, timer):
+		self.on()
+		time.sleep(int(timer))
+		self.off()
+
 	def isOn(self):
 		return self.poweron
 
@@ -39,7 +44,7 @@ if __name__ == "__main__":
 
 	if len(sys.argv) > 2:
 		FrontLight = FrontLight(int(sys.argv[1]))
-		
+
 		FrontLight.on()
 		time.sleep(int(sys.argv[2]))
 		FrontLight.off()

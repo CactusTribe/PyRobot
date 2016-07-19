@@ -102,14 +102,13 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				if tokens[1] == "status":
 					self.PyRobot_Client.tcp_send(cmd)
 					msg_recu = self.PyRobot_Client.tcp_read()
+					
 					if msg_recu != None:
 						print(msg_recu)
 						args = msg_recu.split(" ")
 						if args[2] == "True":
-							print("FrontLights : ON ({} %)".format(args[3]))
 							self.printToMonitor("FrontLights : ON ({} %)".format(args[3]))
 						else:
-							print("FrontLights : OFF".format(args[3]))
 							self.printToMonitor("FrontLights : OFF".format(args[3]))
 
 				else:
@@ -122,9 +121,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.plainTextEdit_monitor.clear()
 		else:
 			self.printToMonitor("Command not found.")
-			#self.plainTextEdit_monitor.appendPlainText("Command not found.")
-
-		#self.plainTextEdit_monitor.verticalScrollBar().setValue(self.plainTextEdit_monitor.verticalScrollBar().maximum())
 
 	def sendMsg(self):
 		self.PyRobot_Client.tcp_send(self.lineEdit_commandline.text())

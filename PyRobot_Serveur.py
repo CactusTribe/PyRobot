@@ -1,8 +1,9 @@
-import socket, sys, subprocess, time
+import socket, sys, subprocess, time, threading
 import RPi.GPIO as GPIO
 
 from FrontLight import FrontLight
 from MCP3008 import MCP3008
+from LED_RGB import LED_RGB
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
@@ -14,6 +15,7 @@ class PyRobot_Serveur:
 	# Modules (Capteurs , éclairage, etc)
 	FrontLight = FrontLight(4)        	# PIN
 	MCP3008 = MCP3008(12, 16, 20, 21) 	# CLK, MOSI, MISO, CS
+	StatusLED = LED_RGB(22, 27, 17)
 
 	# Constructor
 	def __init__(self, port):
@@ -86,7 +88,8 @@ class PyRobot_Serveur:
 				self.FrontLight.setLuminosity(int(args[2]))
 
 			elif args[1] == "flash":
-				subprocess.Popen(["python3", "FrontLight.py", "4", args[2]])
+				t = threading.Thread(target = self.FrontLight.flash, args = [args[2]] )
+				t.start()
 				
 			elif args[1] == "status":
 				self.tcp_send("fl status {} {}".format(self.FrontLight.isOn(), self.FrontLight.luminosity))
@@ -100,16 +103,20 @@ class PyRobot_Serveur:
 		try:
 
 			if args[1] == "red":
-				subprocess.Popen(["python3", "LED_RGB.py", "255", "0", "0"])
+				self.StatusLED.setColor_RGB(255, 0, 0)
+				self.StatusLED.blink(0.5)
 
 			elif args[1] == "green":
-				subprocess.Popen(["python3", "LED_RGB.py", "0", "255", "0"])
+				self.StatusLED.setColor_RGB(0, 255, 0)
+				self.StatusLED.blink(0.5)
 
 			elif args[1] == "blue":
-				subprocess.Popen(["python3", "LED_RGB.py", "0", "0", "255"])
-
+				self.StatusLED.setColor_RGB(0, 0, 255)
+				self.StatusLED.blink(0.5)
+				
 			elif args[1] == "rgb":
-				subprocess.Popen(["python3", "LED_RGB.py", args[2], args[3], args[4]])
+				self.StatusLED.setColor_RGB(int(args[2]), int(args[3]), int(args[4]))
+				self.StatusLED.blink(0.5)
 
 		except: pass
 
