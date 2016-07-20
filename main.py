@@ -102,7 +102,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				if tokens[1] == "status":
 					self.PyRobot_Client.tcp_send(cmd)
 					msg_recu = self.PyRobot_Client.tcp_read()
-					
+
 					if msg_recu != None:
 						print(msg_recu)
 						args = msg_recu.split(" ")
@@ -115,6 +115,9 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 					self.PyRobot_Client.tcp_send(cmd)
 
 		elif tokens[0] == "sns":
+			self.PyRobot_Client.tcp_send(cmd)
+
+		elif tokens[0] == "eng":
 			self.PyRobot_Client.tcp_send(cmd)
 			
 		elif tokens[0] == "clear":

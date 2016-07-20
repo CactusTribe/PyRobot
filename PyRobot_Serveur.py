@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 from FrontLight import FrontLight
 from MCP3008 import MCP3008
 from LED_RGB import LED_RGB
+from Motor_DC import Motor_DC
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
@@ -14,8 +15,11 @@ class PyRobot_Serveur:
 
 	# Modules (Capteurs , éclairage, etc)
 	FrontLight = FrontLight(4)        	# PIN
-	MCP3008 = MCP3008(12, 16, 20, 21) 	# CLK, MOSI, MISO, CS
+	MCP3008 = MCP3008(12, 16, 20, 21) 	# PIN : CLK, MOSI, MISO, CS
 	StatusLED = LED_RGB(22, 27, 17)
+
+	Motor_L = Motor_DC(13, 19, 26) 			# PIN : SPEED, FW, BW
+	Motor_R = Motor_DC(23, 24, 25)			# PIN : SPEED, FW, BW
 
 	# Constructor
 	def __init__(self, port):
@@ -71,6 +75,9 @@ class PyRobot_Serveur:
 
 		elif cmd == "sns":
 			self.Sensors_Module(args)
+
+		elif cmd == "eng":
+			self.Engine_Module(args)
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS
@@ -147,6 +154,72 @@ class PyRobot_Serveur:
 
 				self.tcp_send("sns {} {} {} {} {} {} {} {}".format(values[0], values[1], values[2], values[3],
 					values[4], values[5], values[6], values[7]))
+
+		except: pass
+
+	# --------------------------------------------
+	# MODULE ENGINE
+	# --------------------------------------------
+	def Engine_Module(self, args):
+		try:
+			if args[1] == "fw":
+				timer = int(args[2])
+
+				self.Motor_L.setDirection("fw")
+				self.Motor_R.setDirection("fw")
+
+				self.Motor_L.setSpeed(100)
+				self.Motor_R.setSpeed(100)
+
+				t1 = time.time()
+
+				while (time.time() - t1) <= timer:
+
+					if (int(self.MCP3008.getValue(2)*100/1024)) > 55:
+						self.StatusLED.setColor_RGB(100, 0, 255)
+						self.StatusLED.blink(0.1)
+						break
+
+					time.sleep(0.02)
+
+				self.Motor_L.setSpeed(0)
+				self.Motor_R.setSpeed(0)
+
+			elif args[1] == "bw":
+				timer = int(args[2])
+
+				self.Motor_L.setDirection("bw")
+				self.Motor_R.setDirection("bw")
+
+				self.Motor_L.setSpeed(100)
+				self.Motor_R.setSpeed(100)
+				time.sleep(timer)
+				self.Motor_L.setSpeed(0)
+				self.Motor_R.setSpeed(0)
+
+			elif args[1] == "l":
+				timer = int(args[2])
+
+				self.Motor_L.setDirection("bw")
+				self.Motor_R.setDirection("fw")
+
+				self.Motor_L.setSpeed(100)
+				self.Motor_R.setSpeed(100)
+				time.sleep(timer)
+				self.Motor_L.setSpeed(0)
+				self.Motor_R.setSpeed(0)
+
+			elif args[1] == "r":
+				timer = int(args[2])
+
+				self.Motor_L.setDirection("fw")
+				self.Motor_R.setDirection("bw")
+
+				self.Motor_L.setSpeed(100)
+				self.Motor_R.setSpeed(100)
+				time.sleep(timer)
+				self.Motor_L.setSpeed(0)
+				self.Motor_R.setSpeed(0)
 
 		except: pass
 
