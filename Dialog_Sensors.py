@@ -7,7 +7,7 @@ import resources_rc, threading, time
 capture = True
 
 class Dialog_Sensors(QDialog):
-	
+
 	def __init__(self, client):
 		QDialog.__init__(self)
 		uic.loadUi('Dialog_Sensors.ui', self)
@@ -29,13 +29,8 @@ class Dialog_Sensors(QDialog):
 			self.label_ch8.setText(str(values[7])+" %")
 
 	def capture(self):
-		refresh_time = 5 #(seconds)
-		t1 = time.time()
-		t2 = t1
-
-		#QApplication.processEvents()
 		while capture == True:
-			#QApplication.processEvents()
+			QApplication.processEvents()
 
 			try:
 				self.PyRobot_Client.tcp_send("sns")
@@ -44,6 +39,7 @@ class Dialog_Sensors(QDialog):
 
 				if msg_recu != None: 
 					tokens = msg_recu.split(" ")
+
 					values = [int(int(tokens[1])*100/1024), 
 										int(int(tokens[2])*100/1024), 
 										int(int(tokens[3])*100/1024),
@@ -54,12 +50,12 @@ class Dialog_Sensors(QDialog):
 										int(int(tokens[8])*100/1024)]
 
 					self.setValues(values)
+					self.update()
+					time.sleep(0.1)
 
 			except Exception as e:
 				print(e)
-			time.sleep(0.1)
-			self.update()
-
+			
 
 	def start_capture(self):
 		global capture

@@ -19,6 +19,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		QMainWindow.__init__(self)
 		Ui_MainWindow.__init__(self)
 		self.setupUi(self)
+		self.setFocus()
+		self.key_pressed = False
 
 		#Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
@@ -36,6 +38,32 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		# Threads
 		self.listeningServeur = None 
 
+	def keyPressEvent(self, event):
+		if self.PyRobot_Client != None and self.key_pressed == False:
+			self.key_pressed = True
+
+			if event.key() == Qt.Key_Up:
+				self.PyRobot_Client.tcp_send("eng forward")
+			elif event.key() == Qt.Key_Down:
+				self.PyRobot_Client.tcp_send("eng backward")
+			elif event.key() == Qt.Key_Left:
+				self.PyRobot_Client.tcp_send("eng left")
+			elif event.key() == Qt.Key_Right:
+				self.PyRobot_Client.tcp_send("eng right")
+
+	def keyReleaseEvent(self, event):
+		if self.PyRobot_Client != None:
+			self.key_pressed = False
+
+			if event.key() == Qt.Key_Up:
+				self.PyRobot_Client.tcp_send("eng stop")
+			elif event.key() == Qt.Key_Down:
+				self.PyRobot_Client.tcp_send("eng stop")
+			elif event.key() == Qt.Key_Left:
+				self.PyRobot_Client.tcp_send("eng stop")
+			elif event.key() == Qt.Key_Right:
+				self.PyRobot_Client.tcp_send("eng stop")
+
 	def newConnection(self):
 		new_connection = Dialog_NewConnection()
 
@@ -46,6 +74,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 	def openWindowSensors(self):
 		sensors = Dialog_Sensors(self.PyRobot_Client)
 		sensors.exec_()
+		
+
+	def capturing_Sensors(self):
+		print("CAPTURE OPEN")
 
 
 	def tcp_listening(self):
@@ -124,6 +156,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.plainTextEdit_monitor.clear()
 		else:
 			self.printToMonitor("Command not found.")
+			
+		self.setFocus()
 
 	def sendMsg(self):
 		self.PyRobot_Client.tcp_send(self.lineEdit_commandline.text())
@@ -137,7 +171,9 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 	def showModulesList(self):
 		self.printToMonitor("\n === Installed Modules === \n" \
 												+" + FrontLights - fl \n" \
-												+" + Sensors - sns \n")
+												+" + Sensors - sns \n" \
+												+" + Status LED - sled \n" \
+												+" + Engine - eng \n")
 
 	def closeEvent(self, event):
 		if self.PyRobot_Client != None:

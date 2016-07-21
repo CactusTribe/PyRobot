@@ -8,6 +8,7 @@ class Motor_DC:
 		self.no_pin_fw = pin_fw
 		self.no_pin_bw = pin_bw
 		self.speed = 0
+		self.direction = "fw"
 
 		GPIO.setup(self.no_pin_speed, GPIO.OUT)
 		GPIO.setup(self.no_pin_fw, GPIO.OUT)
@@ -23,12 +24,19 @@ class Motor_DC:
 
 	def setDirection(self, direction):
 		if direction == "fw":
+			self.direction = "fw"
 			GPIO.output(self.no_pin_fw, True)
 			GPIO.output(self.no_pin_bw, False)
 		elif direction == "bw":
+			self.direction = "bw"
 			GPIO.output(self.no_pin_fw, False)
 			GPIO.output(self.no_pin_bw, True)
 
+	def getSpeed(self):
+		return self.speed
+
+	def getDirection(self):
+		return self.direction
 
 if __name__ == "__main__":
 

@@ -9,6 +9,8 @@ from Motor_DC import Motor_DC
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
 
+closed = True
+
 class PyRobot_Serveur:
 
 	GPIO.cleanup()
@@ -28,6 +30,8 @@ class PyRobot_Serveur:
 
 	# Starting server
 	def start(self):
+		global closed
+
 		self.serveur_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.serveur_socket.bind((self.hote, self.port))
 		self.serveur_socket.listen(5)
@@ -37,17 +41,43 @@ class PyRobot_Serveur:
 
 			try:
 				self.client_socket, self.infos_connexion = self.serveur_socket.accept()
+				closed = False
+				ThreadEvent = threading.Thread(target = self.eventLoop, args = [] )
+				ThreadEvent.start()
+
 				self.tcp_read()
+
 			except BrokenPipeError:
 				self.close()
 			finally:
 				print("Connection closed.")
 				self.client_socket.close()
+				closed = True
 
 	# Close server
 	def close(self):
+		global closed
 		self.serveur_socket.close()
+		closed = True
 		GPIO.cleanup()
+
+	def eventLoop(self):
+		global closed
+
+		while closed != True:
+			if ((int(self.MCP3008.getValue(2)*100/1024)) > 55 and
+				self.Motor_L.getSpeed() > 0 and 
+				self.Motor_R.getSpeed() > 0 and 
+				self.Motor_L.getDirection() == "fw" and
+				self.Motor_R.getDirection() == "fw"):
+
+				self.StatusLED.setColor_RGB(100, 0, 255)
+				self.StatusLED.blink(0.1)
+
+				self.Motor_L.setSpeed(0)
+				self.Motor_R.setSpeed(0)
+
+			time.sleep(0.02)
 
 	# Read loop
 	def tcp_read(self):
@@ -163,7 +193,7 @@ class PyRobot_Serveur:
 	def Engine_Module(self, args):
 		try:
 			if args[1] == "fw":
-				timer = int(args[2])
+				timer = float(args[2])
 
 				self.Motor_L.setDirection("fw")
 				self.Motor_R.setDirection("fw")
@@ -186,7 +216,7 @@ class PyRobot_Serveur:
 				self.Motor_R.setSpeed(0)
 
 			elif args[1] == "bw":
-				timer = int(args[2])
+				timer = float(args[2])
 
 				self.Motor_L.setDirection("bw")
 				self.Motor_R.setDirection("bw")
@@ -198,7 +228,7 @@ class PyRobot_Serveur:
 				self.Motor_R.setSpeed(0)
 
 			elif args[1] == "l":
-				timer = int(args[2])
+				timer = float(args[2])
 
 				self.Motor_L.setDirection("bw")
 				self.Motor_R.setDirection("fw")
@@ -210,7 +240,7 @@ class PyRobot_Serveur:
 				self.Motor_R.setSpeed(0)
 
 			elif args[1] == "r":
-				timer = int(args[2])
+				timer = float(args[2])
 
 				self.Motor_L.setDirection("fw")
 				self.Motor_R.setDirection("bw")
@@ -218,6 +248,35 @@ class PyRobot_Serveur:
 				self.Motor_L.setSpeed(100)
 				self.Motor_R.setSpeed(100)
 				time.sleep(timer)
+				self.Motor_L.setSpeed(0)
+				self.Motor_R.setSpeed(0)
+
+			elif args[1] == "forward":
+				if (int(self.MCP3008.getValue(2)*100/1024)) < 55:
+					self.Motor_L.setDirection("fw")
+					self.Motor_R.setDirection("fw")
+					self.Motor_L.setSpeed(100)
+					self.Motor_R.setSpeed(100)
+
+			elif args[1] == "backward":
+				self.Motor_L.setDirection("bw")
+				self.Motor_R.setDirection("bw")
+				self.Motor_L.setSpeed(100)
+				self.Motor_R.setSpeed(100)
+
+			elif args[1] == "left":
+				self.Motor_L.setDirection("bw")
+				self.Motor_R.setDirection("fw")
+				self.Motor_L.setSpeed(100)
+				self.Motor_R.setSpeed(100)
+
+			elif args[1] == "right":
+				self.Motor_L.setDirection("fw")
+				self.Motor_R.setDirection("bw")
+				self.Motor_L.setSpeed(100)
+				self.Motor_R.setSpeed(100)
+
+			elif args[1] == "stop":
 				self.Motor_L.setSpeed(0)
 				self.Motor_R.setSpeed(0)
 
