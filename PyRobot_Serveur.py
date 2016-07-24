@@ -52,6 +52,7 @@ class PyRobot_Serveur:
 			finally:
 				print("Connection closed.")
 				self.client_socket.close()
+				self.FrontLight.off()
 				closed = True
 
 	# Close server
@@ -84,7 +85,7 @@ class PyRobot_Serveur:
 		while True:
 			msg_recu = self.client_socket.recv(1024).decode("utf-8")			
 			if msg_recu != "":
-				print(msg_recu)
+				#print(msg_recu)
 				self.execute_cmd(msg_recu)
 			else: break
 				

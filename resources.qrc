@@ -12,5 +12,8 @@
         <file>resources/img/network.png</file>
         <file>resources/img/picker.png</file>
         <file>resources/img/sens.png</file>
+        <file>resources/img/keyboard.png</file>
+        <file>resources/img/Moon-icon.png</file>
+        <file>resources/img/Sun-icon.png</file>
     </qresource>
 </RCC>

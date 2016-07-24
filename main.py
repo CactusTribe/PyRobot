@@ -20,11 +20,15 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		Ui_MainWindow.__init__(self)
 		self.setupUi(self)
 		self.setFocus()
+
 		self.key_pressed = False
+		self.ligthsON = False
 
 		#Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
 		self.pushButton_sensors.clicked.connect(self.openWindowSensors)
+		self.pushButton_enabled_keyboard.clicked.connect(self.setFocus)
+		self.pushButton_lights.clicked.connect(self.changeLightState)
 		self.pushButton_send_monitor.clicked.connect(self.execute_cmd)
 		self.lineEdit_commandline.returnPressed.connect(self.execute_cmd)
 
@@ -32,11 +36,13 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.updateStatus()
 		self.pushButton_send_monitor.setEnabled(False)
 		self.pushButton_sensors.setEnabled(False)
+		self.pushButton_enabled_keyboard.setEnabled(False)
+		self.pushButton_lights.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
 		self.printToMonitor("> Welcome to PyRobot !")
 
 		# Threads
-		self.listeningServeur = None 
+
 
 	def keyPressEvent(self, event):
 		if self.PyRobot_Client != None and self.key_pressed == False:
@@ -74,46 +80,44 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 	def openWindowSensors(self):
 		sensors = Dialog_Sensors(self.PyRobot_Client)
 		sensors.exec_()
-		
 
-	def capturing_Sensors(self):
-		print("CAPTURE OPEN")
+	def changeLightState(self):
+		if self.ligthsON == False:
+			self.ligthsON = True
 
+			sun = QPixmap(":/resources/img/resources/img/Sun-icon.png");
+			buttonIcon = QIcon(sun)
+			self.pushButton_lights.setIcon(buttonIcon)
 
-	def tcp_listening(self):
-		while self.PyRobot_Client.connected == True:
-			msg_recu = self.PyRobot_Client.tcp_read()
-			if msg_recu != None: 
-				tokens = msg_recu.split(" ")
+			self.PyRobot_Client.tcp_send("fl on")
+		else:
+			self.ligthsON = False
 
-				if tokens[0] == "sns":
-					if len(tokens) > 2:
-						self.printToMonitor("CH{} : {} ( {}% )".format(tokens[1], tokens[2], int(int(tokens[2])*100/1024) ))
-						#self.plainTextEdit_monitor.appendPlainText("CH {} : {}".format(tokens[1], tokens[2]))
-						#self.plainTextEdit_monitor.verticalScrollBar().setValue(self.plainTextEdit_monitor.verticalScrollBar().maximum())
-				if tokens[0] == "fl":
-					if tokens[2] == "True":
-						self.printToMonitor("FrontLights : ON (Luminosity : {}%)".format(tokens[3]))
-					else:
-						self.printToMonitor("FrontLights : OFF (Luminosity : {}%)".format(tokens[3]))
+			moon = QPixmap(":/resources/img/resources/img/Moon-icon.png");
+			buttonIcon = QIcon(moon)
+			self.pushButton_lights.setIcon(buttonIcon)
 
+			self.PyRobot_Client.tcp_send("fl off")
+
+	
 	def updateStatus(self):
 		if self.PyRobot_Client != None:
 			if self.PyRobot_Client.connected == False:
 				self.label_ip.setText("No connection")
 				self.pushButton_send_monitor.setEnabled(False)
 				self.pushButton_sensors.setEnabled(False)
+				self.pushButton_enabled_keyboard.setEnabled(False)
+				self.pushButton_lights.setEnabled(False)
 				self.lineEdit_commandline.setEnabled(False)
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
 				self.printToMonitor("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
-				#self.plainTextEdit_monitor.appendPlainText("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
+	
 				self.pushButton_send_monitor.setEnabled(True)
 				self.pushButton_sensors.setEnabled(True)
+				self.pushButton_enabled_keyboard.setEnabled(True)
+				self.pushButton_lights.setEnabled(True)
 				self.lineEdit_commandline.setEnabled(True)
-
-				self.listeningServeur = threading.Thread(target=self.tcp_listening)
-				#self.listeningServeur.start()
 
 	def execute_cmd(self):
 		cmd = self.lineEdit_commandline.text()
@@ -156,8 +160,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.plainTextEdit_monitor.clear()
 		else:
 			self.printToMonitor("Command not found.")
-			
-		self.setFocus()
+
 
 	def sendMsg(self):
 		self.PyRobot_Client.tcp_send(self.lineEdit_commandline.text())
