@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import resources_rc, threading, time
 
+from Tools import Tools
+
 capture = True
 
 class Sensors_Capture(QThread):
@@ -12,6 +14,8 @@ class Sensors_Capture(QThread):
 	def __init__(self, parent, client):
 		super(Sensors_Capture, self).__init__(parent)
 		self.PyRobot_Client = client
+
+		self.kelvinFiltre = 0.0
 
 	def stop(self):
 		global capture
@@ -28,10 +32,18 @@ class Sensors_Capture(QThread):
 				if msg_recu != None: 
 					tokens = msg_recu.split(" ")
 
+					# TEMP
+					kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 )
+
+					coefFiltre = 16.0
+					self.kelvinFiltre = 0.0
+					self.kelvinFiltre = (((self.kelvinFiltre * (coefFiltre - 1)) + kelvin) / coefFiltre)
+
+
 					values = [int(int(tokens[1])*100/1024), 
 										int(int(tokens[2])*100/1024), 
 										int(int(tokens[3])*100/1024),
-										int(int(tokens[4])*100/1024),
+										kelvin,
 										int(int(tokens[5])*100/1024),
 										int(int(tokens[6])*100/1024),
 										int(int(tokens[7])*100/1024),
@@ -72,7 +84,7 @@ class Dialog_Sensors(QDialog):
 			self.label_ch1.setText(str(values[0])+" %")
 			self.label_ch2.setText(str(values[1])+" %")
 			self.label_ch3.setText(str(values[2])+" %")
-			self.label_ch4.setText(str(values[3])+" %")
+			self.label_ch4.setText(str(int(values[3]) - 273))
 			self.label_ch5.setText(str(values[4])+" %")
 			self.label_ch6.setText(str(values[5])+" %")
 			self.label_ch7.setText(str(values[6])+" %")
@@ -81,7 +93,7 @@ class Dialog_Sensors(QDialog):
 			self.progressBar_ch1.setValue(values[0])
 			self.progressBar_ch2.setValue(values[1])
 			self.progressBar_ch3.setValue(values[2])
-			self.progressBar_ch4.setValue(values[3])
+			self.progressBar_ch4.setValue(int(values[3]))
 			self.progressBar_ch5.setValue(values[4])
 			self.progressBar_ch6.setValue(values[5])
 			self.progressBar_ch7.setValue(values[6])
