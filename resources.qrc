@@ -15,5 +15,12 @@
         <file>resources/img/keyboard.png</file>
         <file>resources/img/Moon-icon.png</file>
         <file>resources/img/Sun-icon.png</file>
+        <file>resources/img/Sun2-icon.png</file>
+        <file>resources/img/Overcast.png</file>
+        <file>resources/img/Triangle-ruler-icon.png</file>
+        <file>resources/img/Thermometer-icon.png</file>
+        <file>resources/img/thermo-icon.png</file>
+        <file>resources/img/Ruler-icon.png</file>
+        <file>resources/img/Thermometer_Snowflake.png</file>
     </qresource>
 </RCC>

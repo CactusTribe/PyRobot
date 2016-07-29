@@ -78,8 +78,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.updateStatus()
 
 	def openWindowSensors(self):
-		sensors = Dialog_Sensors(self.PyRobot_Client)
-		sensors.exec_()
+		sensors = Dialog_Sensors(self, self.PyRobot_Client)
+		sensors.show()
+		sensors.Sensors_Capture.start()
+		#sensors.exec_()
 
 	def changeLightState(self):
 		if self.ligthsON == False:
