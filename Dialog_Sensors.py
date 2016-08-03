@@ -36,10 +36,12 @@ class Sensors_Capture(QThread):
 					if msg_recu != None: 
 						tokens = msg_recu.split(" ")
 
-						# TEMP
-						kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
 						# DISTANCE
 						distance = 3080 / (int(tokens[3]) - 17)
+						
+						# TEMP
+						kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
+						
 
 						values = [values[0] + int(int(tokens[1])*100/1024), 
 											values[1] + int(int(tokens[2])*100/1024),

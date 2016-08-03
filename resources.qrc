@@ -22,5 +22,7 @@
         <file>resources/img/thermo-icon.png</file>
         <file>resources/img/Ruler-icon.png</file>
         <file>resources/img/Thermometer_Snowflake.png</file>
+        <file>resources/img/camera-icon.png</file>
+        <file>resources/img/Devices-camera-icon.png</file>
     </qresource>
 </RCC>

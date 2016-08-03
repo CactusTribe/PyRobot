@@ -7,6 +7,7 @@ import sys, threading, time
 # Import windows
 from Dialog_NewConnection import Dialog_NewConnection
 from Dialog_Sensors import Dialog_Sensors
+from Dialog_Video import Dialog_Video
 
 qtCreatorFile = "pyRobot.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
@@ -27,6 +28,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		#Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
 		self.pushButton_sensors.clicked.connect(self.openWindowSensors)
+		self.pushButton_video.clicked.connect(self.openWindowVideo)
+
 		self.pushButton_enabled_keyboard.clicked.connect(self.setFocus)
 		self.pushButton_lights.clicked.connect(self.changeLightState)
 		self.pushButton_send_monitor.clicked.connect(self.execute_cmd)
@@ -38,6 +41,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_sensors.setEnabled(False)
 		self.pushButton_enabled_keyboard.setEnabled(False)
 		self.pushButton_lights.setEnabled(False)
+		self.pushButton_video.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
 		self.printToMonitor("> Welcome to PyRobot !")
 
@@ -83,6 +87,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		sensors.Sensors_Capture.start()
 		#sensors.exec_()
 
+	def openWindowVideo(self):
+		video = Dialog_Video(self.PyRobot_Client)
+		video.exec_()
+
 	def changeLightState(self):
 		if self.ligthsON == False:
 			self.ligthsON = True
@@ -110,6 +118,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_sensors.setEnabled(False)
 				self.pushButton_enabled_keyboard.setEnabled(False)
 				self.pushButton_lights.setEnabled(False)
+				self.pushButton_video.setEnabled(False)
 				self.lineEdit_commandline.setEnabled(False)
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
@@ -119,6 +128,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_sensors.setEnabled(True)
 				self.pushButton_enabled_keyboard.setEnabled(True)
 				self.pushButton_lights.setEnabled(True)
+				self.pushButton_video.setEnabled(True)
 				self.lineEdit_commandline.setEnabled(True)
 
 	def execute_cmd(self):
