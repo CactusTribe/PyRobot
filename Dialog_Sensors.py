@@ -24,8 +24,8 @@ class Sensors_Capture(QThread):
 		while capture != False:
 			try:
 
-				nb_loop = 10
-				values = [0, 0, 0, 0, 0, 0, 0, 0]
+				nb_loop = 6
+				echantillons = [[], [], [], [], [], [], [], []]
 
 				for e in range(nb_loop):
 
@@ -38,26 +38,28 @@ class Sensors_Capture(QThread):
 
 						# DISTANCE
 						distance = 3080 / (int(tokens[3]) - 17)
-						
+
 						# TEMP
 						kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
 						
-
-						values = [values[0] + int(int(tokens[1])*100/1024), 
-											values[1] + int(int(tokens[2])*100/1024),
-											values[2] + distance,
-											values[3] + kelvin,
-											values[4] + int(int(tokens[5])*100/1024),
-											values[5] + int(int(tokens[6])*100/1024),
-											values[6] + int(int(tokens[7])*100/1024),
-											values[7] + int(int(tokens[8])*100/1024)]
+						echantillons[0] += [int(int(tokens[1])*100/1024)]
+						echantillons[1] += [int(int(tokens[2])*100/1024)]
+						echantillons[2] += [distance]
+						echantillons[3] += [kelvin]
+						echantillons[4] += [int(int(tokens[5])*100/1024)]
+						echantillons[5] += [int(int(tokens[6])*100/1024)]
+						echantillons[6] += [int(int(tokens[7])*100/1024)]
+						echantillons[7] += [int(int(tokens[8])*100/1024)]
 
 					time.sleep(0.02)
 
-				
-				values = [elt/nb_loop for elt in values]
+				for e in echantillons:
+					e.remove(max(e))
+					e.remove(min(e))
+
+				values = [(sum(elt)/len(elt)) for elt in echantillons]
 				self.message_received.emit(values)
-				time.sleep(0.02)
+				#time.sleep(0.05)
 				
 
 			except Exception as e:
