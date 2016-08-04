@@ -24,5 +24,20 @@
         <file>resources/img/Thermometer_Snowflake.png</file>
         <file>resources/img/camera-icon.png</file>
         <file>resources/img/Devices-camera-icon.png</file>
+        <file>resources/img/Carbon-monoxide.png</file>
+        <file>resources/img/Ethanol.png</file>
+        <file>resources/img/flame.png</file>
+        <file>resources/img/gas_mask.png</file>
+        <file>resources/img/gas.png</file>
+        <file>resources/img/humidity.png</file>
+        <file>resources/img/humidity2.png</file>
+        <file>resources/img/Hydrogen.png</file>
+        <file>resources/img/Isobutane.png</file>
+        <file>resources/img/Methane.png</file>
+        <file>resources/img/natural_gas.png</file>
+        <file>resources/img/petroleum_gas.png</file>
+        <file>resources/img/Propane.png</file>
+        <file>resources/img/smoke.png</file>
+        <file>resources/img/Sound.png</file>
     </qresource>
 </RCC>

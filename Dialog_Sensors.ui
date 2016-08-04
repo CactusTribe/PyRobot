@@ -85,7 +85,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -215,7 +215,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -345,7 +345,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -353,7 +353,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Distance IR</string>
+     <string>Distance L</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -478,7 +478,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -486,7 +486,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Temperature</string>
+     <string>Distance R</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -510,7 +510,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0 °C</string>
+     <string>0 cm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -532,10 +532,10 @@
      </sizepolicy>
     </property>
     <property name="minimum">
-     <number>-50</number>
+     <number>0</number>
     </property>
     <property name="maximum">
-     <number>150</number>
+     <number>30</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -569,7 +569,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Thermometer_Snowflake.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Ruler-icon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -597,6 +597,12 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="toolTipDuration">
+    <number>-1</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -614,7 +620,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -622,7 +628,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Inclinaison</string>
+     <string>Sound</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -646,7 +652,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 dB</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -699,7 +705,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Triangle-ruler-icon.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Sound.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -727,6 +733,9 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTipDuration">
+    <number>-1</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -744,7 +753,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -752,7 +761,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Inclinaison</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -797,6 +806,9 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
+    <property name="maximum">
+     <number>1</number>
+    </property>
     <property name="value">
      <number>0</number>
     </property>
@@ -825,11 +837,17 @@
       <height>51</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="toolTipDuration">
+     <number>-1</number>
+    </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Triangle-ruler-icon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -874,7 +892,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -882,7 +900,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Humidity</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -906,7 +924,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 %</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -959,7 +977,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/humidity.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1004,7 +1022,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1012,7 +1030,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Temperature</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1036,7 +1054,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 °C</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1056,6 +1074,12 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="minimum">
+     <number>-50</number>
+    </property>
+    <property name="maximum">
+     <number>150</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1089,7 +1113,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Thermometer_Snowflake.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1117,6 +1141,26 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-6) Petroleum Gas&lt;/span&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Petroleum Gas&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Isobutane&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Propane&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Butane&lt;/span&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1134,7 +1178,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1142,7 +1186,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Petroleum Gas</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1166,7 +1210,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1219,7 +1263,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/petroleum_gas.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1247,6 +1291,26 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-2) Fammable and combustile gasses&lt;/span&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Smoke&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Petroleum Gas&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Natural Gas&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Butane, Propane, Hydrogen&lt;/span&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1264,7 +1328,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1272,7 +1336,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Flammable Gas</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1296,7 +1360,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1349,7 +1413,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/flame.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1377,6 +1441,25 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-135) Air Quality&lt;/span&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Benzene&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Alcohol&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Smoke&lt;/span&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1394,7 +1477,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1402,7 +1485,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Air Quality</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1426,7 +1509,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1479,7 +1562,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/gas_mask.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1507,6 +1590,25 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-5) Natural Gas&lt;/span&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Methane&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Natural Gas&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Petroleum Gas&lt;/span&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1524,7 +1626,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1532,7 +1634,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Natural Gas</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1556,7 +1658,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1609,7 +1711,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/natural_gas.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1637,6 +1739,25 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-3) Ethanol&lt;/span&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Alcohol&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Ethanol&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot; font-size:12pt;&quot;&gt;- Smoke&lt;/span&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1654,7 +1775,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1662,7 +1783,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Ethanol</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1686,7 +1807,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1739,7 +1860,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Ethanol.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1767,6 +1888,21 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-4) Methane&lt;/span&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1784,7 +1920,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1792,7 +1928,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Methane</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1816,7 +1952,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1869,7 +2005,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Methane.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1897,6 +2033,21 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-8) Hydrogen&lt;/span&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1914,7 +2065,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1922,7 +2073,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Hydrogen</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1946,7 +2097,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1999,7 +2150,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Hydrogen.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -2027,6 +2178,21 @@
      <height>110</height>
     </size>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;
+&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;(MQ-7) Carbon Monoxide&lt;/span&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+   </property>
+   <property name="toolTipDuration">
+    <number>4000</number>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -2044,7 +2210,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>11</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -2052,7 +2218,7 @@
      </font>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Carbon Monox.</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -2076,7 +2242,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 ppm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -2129,7 +2295,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/keyboard.png</pixmap>
+     <pixmap resource="resources.qrc">:/resources/img/resources/img/Carbon-monoxide.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>

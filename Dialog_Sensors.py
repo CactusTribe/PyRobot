@@ -36,17 +36,23 @@ class Sensors_Capture(QThread):
 					if msg_recu != None: 
 						tokens = msg_recu.split(" ")
 
+						# LUMINOSITY LEFT
+						luminosity_L = int(int(tokens[1])*100/1024)
+						# LUMINOSITY RIGHT
+						luminosity_R = int(int(tokens[2])*100/1024)
 						# DISTANCE
 						distance = 3080 / (int(tokens[3]) - 17)
-
+						# INCLINAISON
+						inclinaison = int(int(tokens[8])*100/1024)
 						# TEMP
 						kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
+						# HUMIDITY
 						
-						echantillons[0] += [int(int(tokens[1])*100/1024)]
-						echantillons[1] += [int(int(tokens[2])*100/1024)]
+						echantillons[0] += [luminosity_L]
+						echantillons[1] += [luminosity_R]
 						echantillons[2] += [distance]
-						echantillons[3] += [kelvin]
-						echantillons[4] += [int(int(tokens[5])*100/1024)]
+						echantillons[3] += [inclinaison]
+						echantillons[4] += [kelvin]
 						echantillons[5] += [int(int(tokens[6])*100/1024)]
 						echantillons[6] += [int(int(tokens[7])*100/1024)]
 						echantillons[7] += [int(int(tokens[8])*100/1024)]
@@ -100,6 +106,8 @@ class Dialog_Sensors(QDialog):
 				self.icon_ch1.setPixmap(QPixmap(":/resources/img/resources/img/Overcast.png"))
 			else:
 				self.icon_ch1.setPixmap(QPixmap(":/resources/img/resources/img/Moon-icon.png"))
+			self.label_ch1.setText(str(int(values[0]))+" %")
+			self.progressBar_ch1.setValue(values[0])
 
 			# LUMINOSITY RIGHT
 			if values[1] > 75:
@@ -110,34 +118,88 @@ class Dialog_Sensors(QDialog):
 				self.icon_ch2.setPixmap(QPixmap(":/resources/img/resources/img/Overcast.png"))
 			else:
 				self.icon_ch2.setPixmap(QPixmap(":/resources/img/resources/img/Moon-icon.png"))
-
-			self.label_ch1.setText(str(int(values[0]))+" %")
 			self.label_ch2.setText(str(int(values[1]))+" %")
-
-			if values[2] > 35 or values[2] < 0:
-				self.label_ch3.setText("∞")
-			else:
-				self.label_ch3.setText("{0:.1f} cm".format(values[2]))
-
-			self.label_ch4.setText("{} °C".format(int(values[3]) - 273))
-			self.label_ch5.setText(str(values[4])+" %")
-			self.label_ch6.setText(str(values[5])+" %")
-			self.label_ch7.setText(str(values[6])+" %")
-			self.label_ch8.setText(str(values[7])+" %")
-
-			self.progressBar_ch1.setValue(values[0])
 			self.progressBar_ch2.setValue(values[1])
 
-			if values[2] > 30 or values[2] < 0:
+			# DISTANCE L 
+			if values[2] > 35 or values[2] <= 0:
+				self.label_ch3.setText("∞")
 				self.progressBar_ch3.setValue(0)
 			else:
+				self.label_ch3.setText("{0:.1f} cm".format(values[2]))
 				self.progressBar_ch3.setValue(30 - values[2])
 
-			self.progressBar_ch4.setValue(int(values[3]))
+			# DISTANCE R
+			if values[6] > 35 or values[6] <= 0:
+				self.label_ch4.setText("∞")
+				self.progressBar_ch4.setValue(0)
+			else:
+				self.label_ch4.setText("{0:.1f} cm".format(values[6]))
+				self.progressBar_ch4.setValue(30 - values[6])
+
+			# INCLINAISON
+			if values[7] > 50:
+				self.label_ch7.setText("100 %")
+				self.progressBar_ch7.setValue(1)
+				self.label_ch7.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			else:
+				self.label_ch7.setText("0 %")
+				self.progressBar_ch7.setValue(0)
+				self.label_ch7.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
+			# TEMPERATURE
+			self.label_ch5.setText("{} °C".format(int(values[4]) - 273))
 			self.progressBar_ch5.setValue(values[4])
-			self.progressBar_ch6.setValue(values[5])
-			self.progressBar_ch7.setValue(values[6])
-			self.progressBar_ch8.setValue(values[7])
+			
+
+			# HUMIDITY 
+			self.label_ch6.setText("0 %")
+			self.progressBar_ch6.setValue(0)
+
+			self.label_ch8.setText("0 dB")
+			self.progressBar_ch8.setValue(0)
+
+			#=================================
+			
+			# AIR QUALITY MQ-135
+			self.label_ch9.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch9.setText("0 ppm")
+			self.progressBar_ch9.setValue(0)
+
+			# FLAMMABLE GAS MQ-2
+			self.label_ch10.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch10.setText("0 ppm")
+			self.progressBar_ch10.setValue(0)
+
+			# NATURAL GAS MQ-5
+			self.label_ch11.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch11.setText("0 ppm")
+			self.progressBar_ch11.setValue(0)
+
+			# PETROLEUM GAS MQ-6
+			self.label_ch12.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch12.setText("0 ppm")
+			self.progressBar_ch12.setValue(0)
+
+			# HYDROGEN MQ-8
+			self.label_ch13.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch13.setText("0 ppm")
+			self.progressBar_ch13.setValue(0)
+
+			# CARBON MONOXIDE MQ-7
+			self.label_ch14.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch14.setText("0 ppm")
+			self.progressBar_ch14.setValue(0)
+
+			# METHANE MQ-4
+			self.label_ch15.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch15.setText("0 ppm")
+			self.progressBar_ch15.setValue(0)
+
+			# ETHANOL MQ-3
+			self.label_ch16.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			self.label_ch16.setText("0 ppm")
+			self.progressBar_ch16.setValue(0)
 
 			#self.update()
 			QApplication.processEvents()
