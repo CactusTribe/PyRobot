@@ -129,13 +129,31 @@ class Dialog_Sensors(QDialog):
 				self.label_ch3.setText("{0:.1f} cm".format(values[2]))
 				self.progressBar_ch3.setValue(30 - values[2])
 
+				if values[2] < 7:
+					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+				elif values[2] > 7:
+					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+				elif values[2] > 15:
+					self.label_ch3.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
 			# DISTANCE R
 			if values[6] > 35 or values[6] <= 0:
 				self.label_ch4.setText("∞")
+				self.label_ch4.setStyleSheet("QLabel { font-size:16px; }")
 				self.progressBar_ch4.setValue(0)
 			else:
+				self.label_ch4.setStyleSheet("QLabel { font-size:12px; }")
 				self.label_ch4.setText("{0:.1f} cm".format(values[6]))
 				self.progressBar_ch4.setValue(30 - values[6])
+
+				if values[6] < 7:
+					self.label_ch4.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+				elif values[6] > 7:
+					self.label_ch4.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+				elif values[6] > 15:
+					self.label_ch4.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
+
 
 			# INCLINAISON
 			if values[7] > 50:
