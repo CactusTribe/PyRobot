@@ -23,17 +23,20 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.setFocus()
 
 		self.key_pressed = False
-		self.ligthsON = False
+		self.lightOn = False
+		self.lightMode = 0
 
-		#Boutons de gestion des entrées
+		# Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
 		self.pushButton_sensors.clicked.connect(self.openWindowSensors)
 		self.pushButton_video.clicked.connect(self.openWindowVideo)
-
 		self.pushButton_enabled_keyboard.clicked.connect(self.setFocus)
 		self.pushButton_lights.clicked.connect(self.changeLightState)
 		self.pushButton_send_monitor.clicked.connect(self.execute_cmd)
+
+		# Diverses actions
 		self.lineEdit_commandline.returnPressed.connect(self.execute_cmd)
+		self.verticalSlider_lightsMode.valueChanged.connect(self.changeLightMode)
 
 		# Setup
 		self.updateStatus()
@@ -43,6 +46,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_lights.setEnabled(False)
 		self.pushButton_video.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
+		self.verticalSlider_lightsMode.setEnabled(False)
 		self.printToMonitor("> Welcome to PyRobot !")
 
 		# Threads
@@ -88,25 +92,48 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		#sensors.exec_()
 
 	def openWindowVideo(self):
-		video = Dialog_Video(self.PyRobot_Client)
-		video.exec_()
+		video = Dialog_Video(self, self.PyRobot_Client)
+		video.show()
+
+	def changeLightMode(self):
+		if self.verticalSlider_lightsMode.value() == 0:
+			self.lightMode = 0
+
+			if self.lightOn == True:
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
+				self.pushButton_lights.setIcon(buttonIcon)
+				print("Light IR")
+
+		else:
+			self.lightMode = 1
+
+			if self.lightOn == True:
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
+				self.pushButton_lights.setIcon(buttonIcon)
+				print("Light WHITE")
+
 
 	def changeLightState(self):
-		if self.ligthsON == False:
-			self.ligthsON = True
+		if self.lightOn == False:
+			self.lightOn = True
 
-			sun = QPixmap(":/resources/img/resources/img/Sun-icon.png");
-			buttonIcon = QIcon(sun)
+			if self.lightMode == 0:
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
+				self.pushButton_lights.setIcon(buttonIcon)
+				print("Light IR")
+
+			elif self.lightMode == 1:
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
+				self.pushButton_lights.setIcon(buttonIcon)
+				print("Light WHITE")
+				self.PyRobot_Client.tcp_send("fl on")
+
+		elif self.lightOn == True:
+			self.lightOn = False
+
+			buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-off.png"))
 			self.pushButton_lights.setIcon(buttonIcon)
-
-			self.PyRobot_Client.tcp_send("fl on")
-		else:
-			self.ligthsON = False
-
-			moon = QPixmap(":/resources/img/resources/img/Moon-icon.png");
-			buttonIcon = QIcon(moon)
-			self.pushButton_lights.setIcon(buttonIcon)
-
+			print("Light OFF")
 			self.PyRobot_Client.tcp_send("fl off")
 
 	
@@ -120,6 +147,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_lights.setEnabled(False)
 				self.pushButton_video.setEnabled(False)
 				self.lineEdit_commandline.setEnabled(False)
+				self.verticalSlider_lightsMode.setEnabled(False)
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
 				self.printToMonitor("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
@@ -130,6 +158,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_lights.setEnabled(True)
 				self.pushButton_video.setEnabled(True)
 				self.lineEdit_commandline.setEnabled(True)
+				self.verticalSlider_lightsMode.setEnabled(True)
 
 	def execute_cmd(self):
 		cmd = self.lineEdit_commandline.text()

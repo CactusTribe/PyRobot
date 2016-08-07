@@ -39,5 +39,11 @@
         <file>resources/img/Propane.png</file>
         <file>resources/img/smoke.png</file>
         <file>resources/img/Sound.png</file>
+        <file>resources/img/fluorescent-light-off.png</file>
+        <file>resources/img/fluorescent-light.png</file>
+        <file>resources/img/light.png</file>
+        <file>resources/img/light-ir.png</file>
+        <file>resources/img/light-off.png</file>
+        <file>resources/img/photo.png</file>
     </qresource>
 </RCC>

@@ -81,7 +81,7 @@ class Dialog_Sensors(QDialog):
 		QDialog.__init__(self, parent)
 		uic.loadUi('Dialog_Sensors.ui', self)
 
-		self.buttonBox.accepted.connect(self.stop_capture)
+		#self.buttonBox.accepted.connect(self.stop_capture)
 
 		self.PyRobot_Client = client
 
@@ -226,4 +226,7 @@ class Dialog_Sensors(QDialog):
 		self.Sensors_Capture.stop()
 		self.Sensors_Capture.wait()
 		print("Capture stopped")
+
+	def closeEvent(self, event):
+		self.stop_capture()
 		
