@@ -45,5 +45,7 @@
         <file>resources/img/light-ir.png</file>
         <file>resources/img/light-off.png</file>
         <file>resources/img/photo.png</file>
+        <file>resources/img/Play-icon.png</file>
+        <file>resources/img/Pause-icon.png</file>
     </qresource>
 </RCC>
