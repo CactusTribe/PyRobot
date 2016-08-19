@@ -136,7 +136,15 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			print("Light OFF")
 			self.PyRobot_Client.tcp_send("fl off")
 
-	
+	def changeWifiQuality(self, percentage):
+		if percentage < 33:
+			self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_low.png"))
+		elif percentage < 66:
+			self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_medium.png"))
+		else:
+			self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_high.png"))
+
+
 	def updateStatus(self):
 		if self.PyRobot_Client != None:
 			if self.PyRobot_Client.connected == False:
@@ -148,6 +156,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_video.setEnabled(False)
 				self.lineEdit_commandline.setEnabled(False)
 				self.verticalSlider_lightsMode.setEnabled(False)
+				self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
+
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
 				self.printToMonitor("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
@@ -160,8 +170,14 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.lineEdit_commandline.setEnabled(True)
 				self.verticalSlider_lightsMode.setEnabled(True)
 
-	def execute_cmd(self):
-		cmd = self.lineEdit_commandline.text()
+				self.execute_cmd("wifi")
+
+				
+
+	def execute_cmd(self, cmd=None):
+		if cmd == None:
+			cmd = self.lineEdit_commandline.text()
+
 		tokens = cmd.split(" ")
 
 		self.lineEdit_commandline.clear()
@@ -196,6 +212,17 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 		elif tokens[0] == "eng":
 			self.PyRobot_Client.tcp_send(cmd)
+
+		elif tokens[0] == "wifi":
+			self.PyRobot_Client.tcp_send(cmd)
+			msg_recu = self.PyRobot_Client.tcp_read()
+
+			if msg_recu != None:
+				print(msg_recu)
+				args = msg_recu.split(" ")
+				self.printToMonitor("Wifi signal : {} %".format(args[1]))
+				self.changeWifiQuality(int(args[1]))
+
 			
 		elif tokens[0] == "clear":
 			self.plainTextEdit_monitor.clear()

@@ -47,5 +47,9 @@
         <file>resources/img/photo.png</file>
         <file>resources/img/Play-icon.png</file>
         <file>resources/img/Pause-icon.png</file>
+        <file>resources/img/wifi_high.png</file>
+        <file>resources/img/wifi_medium.png</file>
+        <file>resources/img/wifi_low.png</file>
+        <file>resources/img/wifi_off.png</file>
     </qresource>
 </RCC>

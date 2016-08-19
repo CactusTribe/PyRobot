@@ -1,4 +1,4 @@
-import socket, sys, subprocess, time, threading
+import socket, sys, subprocess, time, threading, re
 import RPi.GPIO as GPIO
 
 from FrontLight import FrontLight
@@ -24,21 +24,10 @@ class PyRobot_Serveur:
 	Motor_L = Motor_DC(13, 19, 26) 			# PIN : SPEED, FW, BW
 	Motor_R = Motor_DC(23, 24, 25)			# PIN : SPEED, FW, BW
 
-	# GAS SENSORS
-	MQ_2 = MQ_XX(0, 5, 9.83) # PIN, RESISTANCE, CLEAN_AIR_FACTOR
-
-
 	# Constructor
 	def __init__(self, port):
 		self.hote = ''
 		self.port = port
-
-		self.setup()
-
-	def setup(self):
-		# CALIBRATION SENSORS ------------------------
-		self.MQ_2.MQCalibration()
-
 
 	# Starting server
 	def start(self):
@@ -121,6 +110,19 @@ class PyRobot_Serveur:
 
 		elif cmd == "eng":
 			self.Engine_Module(args)
+
+		elif cmd == "wifi":
+			#stdoutdata = subprocess.getoutput("python3 WifiQuality.py")
+			stdoutdata = subprocess.getoutput("iwconfig")
+			
+			res = re.search(r"(Quality=)([0-9]{0,3})/([0-9]{0,3})", stdoutdata.split()[33])
+			if res != None:
+				current = int(res.group(2))
+				maximum = int(res.group(3))
+				percent = int( (current/maximum)*100 )
+				#print(percent)
+
+			self.tcp_send("wifi {}".format(percent))
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS
