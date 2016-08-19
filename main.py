@@ -11,6 +11,40 @@ from Dialog_Video import Dialog_Video
 
 qtCreatorFile = "pyRobot.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
+
+
+class EventLoop(QThread):
+
+	updateStatusWifi = pyqtSignal(int)
+	updateStatusBattery = pyqtSignal(int, bool)
+
+	def __init__(self, parent, client):
+		super(EventLoop, self).__init__(parent)
+		self.PyRobot_Client = client
+		self.stopped = False
+
+	def stop(self):
+		self.stopped = True
+
+	def run(self):
+		while self.stopped == False:
+			try:
+
+				self.PyRobot_Client.tcp_send("wifi")
+				msg_recu = self.PyRobot_Client.tcp_read()
+
+				if msg_recu != None: 
+					tokens = msg_recu.split(" ")
+					if tokens[0] == "wifi":
+						self.updateStatusWifi.emit(int(tokens[1]))
+
+				self.updateStatusBattery.emit(100, False)
+				time.sleep(0.2)
+				
+			except Exception as e:
+				print(e)
+
+
  
 class PyRobot(QMainWindow, Ui_MainWindow):
 
@@ -51,6 +85,9 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 		# Threads
 
+
+	def closeEvent(self, event):
+		self.EventLoop.stop()
 
 	def keyPressEvent(self, event):
 		if self.PyRobot_Client != None and self.key_pressed == False:
@@ -136,6 +173,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			print("Light OFF")
 			self.PyRobot_Client.tcp_send("fl off")
 
+	@pyqtSlot(int)
 	def changeWifiQuality(self, percentage):
 		if percentage < 33:
 			self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_low.png"))
@@ -144,6 +182,45 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		else:
 			self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_high.png"))
 
+		QApplication.processEvents()
+
+	@pyqtSlot(int, bool)
+	def changeBatteryLevel(self, percentage, charging):
+		if percentage <= 10:
+			if not charging:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-10.png"))
+			else:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-charging-10.png"))
+
+		elif percentage <= 20:
+			if not charging:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-20.png"))
+			else:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-charging-20.png"))
+
+		elif percentage <= 40:
+			if not charging:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-40.png"))
+			else:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-charging-40.png"))
+
+		elif percentage <= 60:
+			if not charging:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-60.png"))
+			else:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-charging-60.png"))
+		elif percentage <= 80:
+			if not charging:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-80.png"))
+			else:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-charging-80.png"))
+		else:
+			if not charging:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-100.png"))
+			else:
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-charging-100.png"))
+
+		QApplication.processEvents()
 
 	def updateStatus(self):
 		if self.PyRobot_Client != None:
@@ -156,7 +233,11 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_video.setEnabled(False)
 				self.lineEdit_commandline.setEnabled(False)
 				self.verticalSlider_lightsMode.setEnabled(False)
+
+				self.EventLoop.stop()
+
 				self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))
 
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
@@ -170,7 +251,13 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.lineEdit_commandline.setEnabled(True)
 				self.verticalSlider_lightsMode.setEnabled(True)
 
-				self.execute_cmd("wifi")
+				self.EventLoop = EventLoop(self, self.PyRobot_Client)
+				self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
+				self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
+				self.EventLoop.start()
+
+				#self.execute_cmd("wifi")
+				#self.changeBatteryLevel(100, False)
 
 				
 

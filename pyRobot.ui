@@ -238,18 +238,18 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="icon_rasp">
+       <widget class="QLabel" name="icon_battery">
         <property name="maximumSize">
          <size>
-          <width>30</width>
-          <height>35</height>
+          <width>38</width>
+          <height>38</height>
          </size>
         </property>
         <property name="text">
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="resources.qrc">:/resources/img/resources/img/rasp.png</pixmap>
+         <pixmap resource="resources.qrc">:/resources/img/resources/img/Battery/battery-missing.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>

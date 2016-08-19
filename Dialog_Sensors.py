@@ -24,46 +24,48 @@ class Sensors_Capture(QThread):
 		while capture != False:
 			try:
 
-				nb_loop = 6
+				nb_loop = 0
 				echantillons = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
 
-				for e in range(nb_loop):
-
+				#for e in range(nb_loop):
+				while nb_loop < 6:
 					self.PyRobot_Client.tcp_send("sns")
 					msg_recu = self.PyRobot_Client.tcp_read()
-					#print(msg_recu)
 
 					if msg_recu != None: 
 						tokens = msg_recu.split(" ")
+						if tokens[0] == "sns":
 
-						# LUMINOSITY LEFT
-						luminosity_L = int(int(tokens[1])*100/1024)
-						# LUMINOSITY RIGHT
-						luminosity_R = int(int(tokens[2])*100/1024)
-						# DISTANCE
-						distance = 3080 / (int(tokens[3]) - 17)
-						# INCLINAISON
-						inclinaison = int(int(tokens[8])*100/1024)
-						# TEMP
-						kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
-						# HUMIDITY
-						
-						echantillons[0] += [luminosity_L]
-						echantillons[1] += [luminosity_R]
-						echantillons[2] += [distance]
-						echantillons[3] += [inclinaison]
-						echantillons[4] += [kelvin]
-						echantillons[5] += [int(int(tokens[6])*100/1024)]
-						echantillons[6] += [int(int(tokens[7])*100/1024)]
-						echantillons[7] += [int(int(tokens[8])*100/1024)]
-						echantillons[8] += [int(tokens[9])]
-						echantillons[9] += [int(tokens[10])]
-						echantillons[10] += [int(tokens[11])]
-						echantillons[11] += [int(tokens[12])]
-						echantillons[12] += [int(tokens[13])]
-						echantillons[13] += [int(tokens[14])]
-						echantillons[14] += [int(tokens[15])]
-						echantillons[15] += [int(tokens[16])]
+							# LUMINOSITY LEFT
+							luminosity_L = int(int(tokens[1])*100/1024)
+							# LUMINOSITY RIGHT
+							luminosity_R = int(int(tokens[2])*100/1024)
+							# DISTANCE
+							distance = 3080 / (int(tokens[3]) - 17)
+							# INCLINAISON
+							inclinaison = int(int(tokens[8])*100/1024)
+							# TEMP
+							kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
+							# HUMIDITY
+							
+							echantillons[0] += [luminosity_L]
+							echantillons[1] += [luminosity_R]
+							echantillons[2] += [distance]
+							echantillons[3] += [inclinaison]
+							echantillons[4] += [kelvin]
+							echantillons[5] += [int(int(tokens[6])*100/1024)]
+							echantillons[6] += [int(int(tokens[7])*100/1024)]
+							echantillons[7] += [int(int(tokens[8])*100/1024)]
+							echantillons[8] += [int(tokens[9])]
+							echantillons[9] += [int(tokens[10])]
+							echantillons[10] += [int(tokens[11])]
+							echantillons[11] += [int(tokens[12])]
+							echantillons[12] += [int(tokens[13])]
+							echantillons[13] += [int(tokens[14])]
+							echantillons[14] += [int(tokens[15])]
+							echantillons[15] += [int(tokens[16])]
+
+							nb_loop += 1
 
 					time.sleep(0.02)
 

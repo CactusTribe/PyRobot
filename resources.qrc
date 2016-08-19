@@ -51,5 +51,18 @@
         <file>resources/img/wifi_medium.png</file>
         <file>resources/img/wifi_low.png</file>
         <file>resources/img/wifi_off.png</file>
+        <file>resources/img/Battery/battery-10.png</file>
+        <file>resources/img/Battery/battery-20.png</file>
+        <file>resources/img/Battery/battery-40.png</file>
+        <file>resources/img/Battery/battery-60.png</file>
+        <file>resources/img/Battery/battery-80.png</file>
+        <file>resources/img/Battery/battery-100.png</file>
+        <file>resources/img/Battery/battery-charging-10.png</file>
+        <file>resources/img/Battery/battery-charging-20.png</file>
+        <file>resources/img/Battery/battery-charging-40.png</file>
+        <file>resources/img/Battery/battery-charging-60.png</file>
+        <file>resources/img/Battery/battery-charging-80.png</file>
+        <file>resources/img/Battery/battery-charging-100.png</file>
+        <file>resources/img/Battery/battery-missing.png</file>
     </qresource>
 </RCC>
