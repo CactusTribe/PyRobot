@@ -86,9 +86,9 @@
    <widget class="QLabel" name="label_ch1">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -216,9 +216,9 @@
    <widget class="QLabel" name="label_ch2">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -346,9 +346,9 @@
    <widget class="QLabel" name="label_ch3">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -479,9 +479,9 @@
    <widget class="QLabel" name="label_ch4">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -621,9 +621,9 @@
    <widget class="QLabel" name="label_ch8">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -754,9 +754,9 @@
    <widget class="QLabel" name="label_ch7">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -769,7 +769,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0 %</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -893,9 +893,9 @@
    <widget class="QLabel" name="label_ch6">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -1023,9 +1023,9 @@
    <widget class="QLabel" name="label_ch5">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
@@ -1179,15 +1179,15 @@
    <widget class="QLabel" name="label_ch12">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1214,6 +1214,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1329,15 +1332,15 @@
    <widget class="QLabel" name="label_ch10">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1364,6 +1367,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1478,15 +1484,15 @@
    <widget class="QLabel" name="label_ch9">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1513,6 +1519,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1627,15 +1636,15 @@
    <widget class="QLabel" name="label_ch11">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1662,6 +1671,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1776,15 +1788,15 @@
    <widget class="QLabel" name="label_ch16">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1811,6 +1823,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1921,15 +1936,15 @@
    <widget class="QLabel" name="label_ch15">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -1956,6 +1971,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -2066,15 +2084,15 @@
    <widget class="QLabel" name="label_ch13">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -2101,6 +2119,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -2211,15 +2232,15 @@
    <widget class="QLabel" name="label_ch14">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>80</y>
-      <width>51</width>
+      <width>71</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -2246,6 +2267,9 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="maximum">
+     <number>10000</number>
     </property>
     <property name="value">
      <number>0</number>

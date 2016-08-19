@@ -25,7 +25,7 @@ class Sensors_Capture(QThread):
 			try:
 
 				nb_loop = 6
-				echantillons = [[], [], [], [], [], [], [], []]
+				echantillons = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
 
 				for e in range(nb_loop):
 
@@ -56,6 +56,14 @@ class Sensors_Capture(QThread):
 						echantillons[5] += [int(int(tokens[6])*100/1024)]
 						echantillons[6] += [int(int(tokens[7])*100/1024)]
 						echantillons[7] += [int(int(tokens[8])*100/1024)]
+						echantillons[8] += [int(tokens[9])]
+						echantillons[9] += [int(tokens[10])]
+						echantillons[10] += [int(tokens[11])]
+						echantillons[11] += [int(tokens[12])]
+						echantillons[12] += [int(tokens[13])]
+						echantillons[13] += [int(tokens[14])]
+						echantillons[14] += [int(tokens[15])]
+						echantillons[15] += [int(tokens[16])]
 
 					time.sleep(0.02)
 
@@ -95,7 +103,7 @@ class Dialog_Sensors(QDialog):
 
 	@pyqtSlot(list)
 	def setValues(self, values):
-		if len(values) == 8:
+		if len(values) == 16:
 
 			# LUMINOSITY LEFT
 			if values[0] > 75:
@@ -181,43 +189,43 @@ class Dialog_Sensors(QDialog):
 			
 			# AIR QUALITY MQ-135
 			self.label_ch9.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch9.setText("0 ppm")
-			self.progressBar_ch9.setValue(0)
+			self.label_ch9.setText("{} ppm".format(int(values[8])))
+			self.progressBar_ch9.setValue(values[8])
 
 			# FLAMMABLE GAS MQ-2
 			self.label_ch10.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch10.setText("0 ppm")
-			self.progressBar_ch10.setValue(0)
+			self.label_ch10.setText("{} ppm".format(int(values[9])))
+			self.progressBar_ch10.setValue(values[9])
 
 			# NATURAL GAS MQ-5
 			self.label_ch11.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch11.setText("0 ppm")
-			self.progressBar_ch11.setValue(0)
+			self.label_ch11.setText("{} ppm".format(int(values[10])))
+			self.progressBar_ch11.setValue(values[10])
 
 			# PETROLEUM GAS MQ-6
 			self.label_ch12.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch12.setText("0 ppm")
-			self.progressBar_ch12.setValue(0)
+			self.label_ch12.setText("{} ppm".format(int(values[11])))
+			self.progressBar_ch12.setValue(values[11])
 
 			# HYDROGEN MQ-8
 			self.label_ch13.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch13.setText("0 ppm")
-			self.progressBar_ch13.setValue(0)
+			self.label_ch13.setText("{} ppm".format(int(values[12])))
+			self.progressBar_ch13.setValue(values[12])
 
 			# CARBON MONOXIDE MQ-7
 			self.label_ch14.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch14.setText("0 ppm")
-			self.progressBar_ch14.setValue(0)
+			self.label_ch14.setText("{} ppm".format(int(values[13])))
+			self.progressBar_ch14.setValue(values[13])
 
 			# METHANE MQ-4
 			self.label_ch15.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch15.setText("0 ppm")
-			self.progressBar_ch15.setValue(0)
+			self.label_ch15.setText("{} ppm".format(int(values[14])))
+			self.progressBar_ch15.setValue(values[14])
 
 			# ETHANOL MQ-3
 			self.label_ch16.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch16.setText("0 ppm")
-			self.progressBar_ch16.setValue(0)
+			self.label_ch16.setText("{} ppm".format(int(values[15])))
+			self.progressBar_ch16.setValue(values[15])
 
 			#self.update()
 			QApplication.processEvents()

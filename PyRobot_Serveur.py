@@ -5,6 +5,7 @@ from FrontLight import FrontLight
 from MCP3008 import MCP3008
 from LED_RGB import LED_RGB
 from Motor_DC import Motor_DC
+from MQ_XX import MQ_XX
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
@@ -23,10 +24,21 @@ class PyRobot_Serveur:
 	Motor_L = Motor_DC(13, 19, 26) 			# PIN : SPEED, FW, BW
 	Motor_R = Motor_DC(23, 24, 25)			# PIN : SPEED, FW, BW
 
+	# GAS SENSORS
+	MQ_2 = MQ_XX(0, 5, 9.83) # PIN, RESISTANCE, CLEAN_AIR_FACTOR
+
+
 	# Constructor
 	def __init__(self, port):
 		self.hote = ''
 		self.port = port
+
+		self.setup()
+
+	def setup(self):
+		# CALIBRATION SENSORS ------------------------
+		self.MQ_2.MQCalibration()
+
 
 	# Starting server
 	def start(self):
@@ -183,8 +195,8 @@ class PyRobot_Serveur:
 				for e in range(8):
 					values += [self.MCP3008.getValue(e)]
 
-				self.tcp_send("sns {} {} {} {} {} {} {} {}".format(values[0], values[1], values[2], values[3],
-					values[4], values[5], values[6], values[7]))
+				self.tcp_send("sns {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(values[0], values[1], values[2], values[3],
+					values[4], values[5], values[6], values[7], 256, 256, 256, 256, 256, 256, 256, 256))
 
 		except: pass
 
