@@ -84,6 +84,9 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.printToMonitor("> Welcome to PyRobot !")
 
 		# Threads
+		self.EventLoop = EventLoop(self, self.PyRobot_Client)
+		self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
+		self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
 
 
 	def closeEvent(self, event):
@@ -235,7 +238,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.verticalSlider_lightsMode.setEnabled(False)
 
 				self.EventLoop.stop()
-
 				self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
 				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))
 
@@ -256,10 +258,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
 				self.EventLoop.start()
 
-				#self.execute_cmd("wifi")
-				#self.changeBatteryLevel(100, False)
-
-				
 
 	def execute_cmd(self, cmd=None):
 		if cmd == None:
