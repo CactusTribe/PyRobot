@@ -24,21 +24,25 @@ class EventLoop(QThread):
 		self.stopped = False
 
 	def stop(self):
+		self.PyRobot_Client = None
 		self.stopped = True
+		print("LoopEvent stopped")
 
 	def run(self):
+		print("LoopEvent started")
+
 		while self.stopped == False:
 			try:
 
 				self.PyRobot_Client.tcp_send("wifi")
 				msg_recu = self.PyRobot_Client.tcp_read()
 
-				if msg_recu != None: 
+				if msg_recu != None:
 					tokens = msg_recu.split(" ")
 					if tokens[0] == "wifi":
 						self.updateStatusWifi.emit(int(tokens[1]))
 
-				self.updateStatusBattery.emit(100, False)
+				#self.updateStatusBattery.emit(100, False)
 				time.sleep(0.2)
 				
 			except Exception as e:
@@ -49,6 +53,7 @@ class EventLoop(QThread):
 class PyRobot(QMainWindow, Ui_MainWindow):
 
 	PyRobot_Client = None
+	EventLoop = None
 
 	def __init__(self):
 		QMainWindow.__init__(self)
@@ -62,6 +67,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 		# Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
+		self.pushButton_disconnect.clicked.connect(self.disconnect)
 		self.pushButton_sensors.clicked.connect(self.openWindowSensors)
 		self.pushButton_video.clicked.connect(self.openWindowVideo)
 		self.pushButton_enabled_keyboard.clicked.connect(self.setFocus)
@@ -73,7 +79,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.verticalSlider_lightsMode.valueChanged.connect(self.changeLightMode)
 
 		# Setup
-		self.updateStatus()
+		#self.updateStatus()
+		self.pushButton_disconnect.setEnabled(False)
 		self.pushButton_send_monitor.setEnabled(False)
 		self.pushButton_sensors.setEnabled(False)
 		self.pushButton_enabled_keyboard.setEnabled(False)
@@ -84,13 +91,52 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.printToMonitor("> Welcome to PyRobot !")
 
 		# Threads
-		self.EventLoop = EventLoop(self, self.PyRobot_Client)
-		self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
-		self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
 
+	def updateStatus(self):
+		if self.PyRobot_Client != None:
+			if self.PyRobot_Client.connected == False:
+
+				if self.EventLoop.stopped == False: 
+					self.EventLoop.stop()
+					self.EventLoop = None
+
+				self.PyRobot_Client.close()
+				self.PyRobot_Client = None
+
+				self.label_ip.setText("No connection")
+				self.pushButton_disconnect.setEnabled(False)
+				self.pushButton_send_monitor.setEnabled(False)
+				self.pushButton_sensors.setEnabled(False)
+				self.pushButton_enabled_keyboard.setEnabled(False)
+				self.pushButton_lights.setEnabled(False)
+				self.pushButton_video.setEnabled(False)
+				self.lineEdit_commandline.setEnabled(False)
+				self.verticalSlider_lightsMode.setEnabled(False)
+
+
+				self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
+				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))
+
+			else:
+				self.label_ip.setText(self.PyRobot_Client.hote)
+				self.printToMonitor("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
+	
+				self.pushButton_disconnect.setEnabled(True)
+				self.pushButton_send_monitor.setEnabled(True)
+				self.pushButton_sensors.setEnabled(True)
+				self.pushButton_enabled_keyboard.setEnabled(True)
+				self.pushButton_lights.setEnabled(True)
+				self.pushButton_video.setEnabled(True)
+				self.lineEdit_commandline.setEnabled(True)
+				self.verticalSlider_lightsMode.setEnabled(True)
+
+				self.EventLoop = EventLoop(self, self.PyRobot_Client)
+				self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
+				self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
+				self.EventLoop.start()
 
 	def closeEvent(self, event):
-		self.EventLoop.stop()
+		self.disconnect()
 
 	def keyPressEvent(self, event):
 		if self.PyRobot_Client != None and self.key_pressed == False:
@@ -117,6 +163,11 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.PyRobot_Client.tcp_send("eng stop")
 			elif event.key() == Qt.Key_Right:
 				self.PyRobot_Client.tcp_send("eng stop")
+
+
+	def disconnect(self):
+		self.PyRobot_Client.connected = False
+		self.updateStatus()
 
 	def newConnection(self):
 		new_connection = Dialog_NewConnection()
@@ -225,43 +276,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 		QApplication.processEvents()
 
-	def updateStatus(self):
-		if self.PyRobot_Client != None:
-			if self.PyRobot_Client.connected == False:
-				self.label_ip.setText("No connection")
-				self.pushButton_send_monitor.setEnabled(False)
-				self.pushButton_sensors.setEnabled(False)
-				self.pushButton_enabled_keyboard.setEnabled(False)
-				self.pushButton_lights.setEnabled(False)
-				self.pushButton_video.setEnabled(False)
-				self.lineEdit_commandline.setEnabled(False)
-				self.verticalSlider_lightsMode.setEnabled(False)
-
-				self.EventLoop.stop()
-				self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
-				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))
-
-			else:
-				self.label_ip.setText(self.PyRobot_Client.hote)
-				self.printToMonitor("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
-	
-				self.pushButton_send_monitor.setEnabled(True)
-				self.pushButton_sensors.setEnabled(True)
-				self.pushButton_enabled_keyboard.setEnabled(True)
-				self.pushButton_lights.setEnabled(True)
-				self.pushButton_video.setEnabled(True)
-				self.lineEdit_commandline.setEnabled(True)
-				self.verticalSlider_lightsMode.setEnabled(True)
-
-				self.EventLoop = EventLoop(self, self.PyRobot_Client)
-				self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
-				self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
-				self.EventLoop.start()
-
-
-	def execute_cmd(self, cmd=None):
-		if cmd == None:
-			cmd = self.lineEdit_commandline.text()
+	def execute_cmd(self):
+		cmd = self.lineEdit_commandline.text()
 
 		tokens = cmd.split(" ")
 
