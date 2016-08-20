@@ -8,6 +8,7 @@ import sys, threading, time
 from Dialog_NewConnection import Dialog_NewConnection
 from Dialog_Sensors import Dialog_Sensors
 from Dialog_Video import Dialog_Video
+from Dialog_Help import Dialog_Help
 
 qtCreatorFile = "pyRobot.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
@@ -68,6 +69,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		# Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
 		self.pushButton_disconnect.clicked.connect(self.disconnect)
+		self.pushButton_help.clicked.connect(self.openHelp)
 		self.pushButton_sensors.clicked.connect(self.openWindowSensors)
 		self.pushButton_video.clicked.connect(self.openWindowVideo)
 		self.pushButton_enabled_keyboard.clicked.connect(self.setFocus)
@@ -116,6 +118,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 				self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
 				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))
+				self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonRSS-01.png")))
+
 
 			else:
 				self.label_ip.setText(self.PyRobot_Client.hote)
@@ -129,6 +133,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_video.setEnabled(True)
 				self.lineEdit_commandline.setEnabled(True)
 				self.verticalSlider_lightsMode.setEnabled(True)
+
+				self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonOk-01.png")))
 
 				self.EventLoop = EventLoop(self, self.PyRobot_Client)
 				self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
@@ -168,6 +174,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 	def disconnect(self):
 		self.PyRobot_Client.connected = False
 		self.updateStatus()
+		self.printToMonitor("> Connection closed.")
 
 	def newConnection(self):
 		new_connection = Dialog_NewConnection()
@@ -175,6 +182,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		if new_connection.exec_():
 			self.PyRobot_Client = new_connection.PyRobot_Client
 			self.updateStatus()
+
+	def openHelp(self):
+		dialog_help = Dialog_Help(self)
+		dialog_help.show()
 
 	def openWindowSensors(self):
 		sensors = Dialog_Sensors(self, self.PyRobot_Client)
