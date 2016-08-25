@@ -45,14 +45,14 @@ class Sensors_Capture(QThread):
 							# INCLINAISON
 							inclinaison = int(int(tokens[8])*100/1024)
 							# TEMP
-							kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
+							#kelvin = Tools.temp_kelvin( ( 3.3 * float( tokens[4] ) ) / 1024 ) - 2
 							# HUMIDITY
 							
 							echantillons[0] += [luminosity_L]
 							echantillons[1] += [luminosity_R]
 							echantillons[2] += [distance]
 							echantillons[3] += [inclinaison]
-							echantillons[4] += [kelvin]
+							echantillons[4] += [int(int(tokens[5])*100/1024)]
 							echantillons[5] += [int(int(tokens[6])*100/1024)]
 							echantillons[6] += [int(int(tokens[7])*100/1024)]
 							echantillons[7] += [int(int(tokens[8])*100/1024)]
@@ -134,39 +134,41 @@ class Dialog_Sensors(QDialog):
 			# DISTANCE L 
 			if values[2] > 35 or values[2] <= 0:
 				self.label_ch3.setText("∞")
+				self.label_ch3.setStyleSheet("QLabel { font-size:16px; color: rgb(0, 0, 0); }")
 				self.progressBar_ch3.setValue(0)
 			else:
+				self.label_ch3.setStyleSheet("QLabel { font-size:12px; }")
 				self.label_ch3.setText("{0:.1f} cm".format(values[2]))
 				self.progressBar_ch3.setValue(30 - values[2])
 
 				if values[2] < 7:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
-				elif values[2] > 7:
+				elif values[2] < 15:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
-				elif values[2] > 15:
+				else:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
 
 			# DISTANCE R
-			if values[6] > 35 or values[6] <= 0:
+			if values[3] > 35 or values[3] <= 0:
 				self.label_ch4.setText("∞")
-				self.label_ch4.setStyleSheet("QLabel { font-size:16px; }")
+				self.label_ch4.setStyleSheet("QLabel { font-size:16px; color: rgb(0, 0, 0); }")
 				self.progressBar_ch4.setValue(0)
 			else:
 				self.label_ch4.setStyleSheet("QLabel { font-size:12px; }")
-				self.label_ch4.setText("{0:.1f} cm".format(values[6]))
-				self.progressBar_ch4.setValue(30 - values[6])
+				self.label_ch4.setText("{0:.1f} cm".format(values[3]))
+				self.progressBar_ch4.setValue(30 - values[3])
 
-				if values[6] < 7:
+				if values[3] < 7:
 					self.label_ch4.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
-				elif values[6] > 7:
+				elif values[3] < 15:
 					self.label_ch4.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
-				elif values[6] > 15:
+				else:
 					self.label_ch4.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
 
 
 
 			# INCLINAISON
-			if values[7] > 50:
+			if values[4] > 50:
 				self.label_ch7.setText("100 %")
 				self.progressBar_ch7.setValue(1)
 				self.label_ch7.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
@@ -176,8 +178,8 @@ class Dialog_Sensors(QDialog):
 				self.label_ch7.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
 
 			# TEMPERATURE
-			self.label_ch5.setText("{} °C".format(int(values[4]) - 273))
-			self.progressBar_ch5.setValue(values[4])
+			self.label_ch5.setText("{} °C".format(int(values[5]) - 273))
+			self.progressBar_ch5.setValue(values[5])
 			
 
 			# HUMIDITY 

@@ -51,6 +51,8 @@
         <file>resources/img/wifi_medium.png</file>
         <file>resources/img/wifi_low.png</file>
         <file>resources/img/wifi_off.png</file>
+        <file>resources/img/python.png</file>
+        <file>resources/img/qt_logo.png</file>
         <file>resources/img/ButtonDelete-01.png</file>
         <file>resources/img/ButtonDownload-01.png</file>
         <file>resources/img/ButtonOk-01.png</file>
@@ -69,5 +71,11 @@
         <file>resources/img/Battery/battery-charging-80.png</file>
         <file>resources/img/Battery/battery-charging-100.png</file>
         <file>resources/img/Battery/battery-missing.png</file>
+        <file>resources/img/Keys/bas.png</file>
+        <file>resources/img/Keys/haut.png</file>
+        <file>resources/img/Keys/droite.png</file>
+        <file>resources/img/Keys/gauche.png</file>
+        <file>resources/img/Keys/c.png</file>
+        <file>resources/img/Keys/v.png</file>
     </qresource>
 </RCC>

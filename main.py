@@ -43,12 +43,11 @@ class EventLoop(QThread):
 					if tokens[0] == "wifi":
 						self.updateStatusWifi.emit(int(tokens[1]))
 
-				#self.updateStatusBattery.emit(100, False)
-				time.sleep(0.2)
+					self.updateStatusBattery.emit(80, False)
+				time.sleep(1)
 				
 			except Exception as e:
 				print(e)
-
 
  
 class PyRobot(QMainWindow, Ui_MainWindow):
