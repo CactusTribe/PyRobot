@@ -222,12 +222,15 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
 				print("Light IR")
+				#self.PyRobot_Client.tcp_send("fl w off")
+				#self.PyRobot_Client.tcp_send("fl ir on")
 
 			elif self.lightMode == 1:
 				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
 				print("Light WHITE")
-				self.PyRobot_Client.tcp_send("fl on")
+				#self.PyRobot_Client.tcp_send("fl ir off")
+				self.PyRobot_Client.tcp_send("fl w on")
 
 		elif self.lightOn == True:
 			self.lightOn = False
@@ -235,7 +238,12 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-off.png"))
 			self.pushButton_lights.setIcon(buttonIcon)
 			print("Light OFF")
-			self.PyRobot_Client.tcp_send("fl off")
+
+			if self.lightMode == 0:
+				pass
+				#self.PyRobot_Client.tcp_send("fl ir off")
+			if self.lightMode == 1:		
+				self.PyRobot_Client.tcp_send("fl w off")
 
 	@pyqtSlot(int)
 	def changeWifiQuality(self, percentage):
@@ -329,12 +337,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			msg_recu = self.PyRobot_Client.tcp_read()
 
 			if msg_recu != None:
-				print(msg_recu)
 				args = msg_recu.split(" ")
 				self.printToMonitor("Wifi signal : {} %".format(args[1]))
 				self.changeWifiQuality(int(args[1]))
 
-			
 		elif tokens[0] == "clear":
 			self.plainTextEdit_monitor.clear()
 		else:

@@ -8,6 +8,10 @@ DEBUG = 1
 
 class MCP3008:
     def __init__(self, clockpin, mosipin, misopin, cspin):
+        
+        GPIO.setmode( GPIO.BCM )
+        GPIO.setwarnings(False) 
+
         # Broches connectées sur l'interface SPI du MCP3008 depuis le Cobbler
         # (changer selon vos besoins)
         self.SPICLK = clockpin
@@ -83,7 +87,7 @@ class MCP3008:
 
         while True:
             # pour une valeur de tension entre 0 et VRef (3.3v)
-            value = MCP3008.getValue(sensor_ch)
+            value = self.getValue(sensor_ch)
 
             sys.stdout.write("\r CH #"+str(sensor_ch)+" Valeur: {0:.2f} ({1:.2f} Volt)".format( value, (3.3*value)/1024 ) )
             sys.stdout.flush()
@@ -93,16 +97,38 @@ class MCP3008:
             if elapsed >= timer:
                 break
 
+    def readAll(self):
+        print("Reading MCP3008 values, press Ctrl-C to quit...")
+        print("| {0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} |".format(*range(8)))
+        print("-" * 57)
+
+        while True:
+            # pour une valeur de tension entre 0 et VRef (3.3v)
+            # Read values
+            values = [0]*8
+            for i in range(8):
+                values[i] = self.getValue(i)
+
+            # Print values
+            sys.stdout.write("\r| {0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} |".format(*values))
+            sys.stdout.flush()
+            time.sleep(0.5) 
+
 if __name__ == "__main__":
 
     GPIO.setmode( GPIO.BCM )
     GPIO.setwarnings(False) 
 
     # CLK, MOSI, MISO, CS
-    MCP3008 = MCP3008(12, 16, 20, 21)
+    MCP3008_1 = MCP3008(12, 16, 20, 21)
+    MCP3008_2 = MCP3008(6, 13, 19, 26)
+
     # Potentiomètre 10KOhms raccordés sur le canal ADC #0
     sensor_ch = 0
-    MCP3008.read(sensor_ch, 10)
+    #MCP3008.read(sensor_ch, 10)
+
+    MCP3008_1.readAll()
+    #MCP3008_2.readAll()
     print("")
 
     GPIO.cleanup()

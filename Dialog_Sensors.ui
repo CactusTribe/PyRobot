@@ -636,7 +636,7 @@
      </font>
     </property>
     <property name="text">
-     <string>0 dB</string>
+     <string>0 %</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1216,7 +1216,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1369,7 +1369,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1521,7 +1521,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1673,7 +1673,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1825,7 +1825,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -1973,7 +1973,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -2121,7 +2121,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -2269,7 +2269,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>10000</number>
+     <number>1024</number>
     </property>
     <property name="value">
      <number>0</number>

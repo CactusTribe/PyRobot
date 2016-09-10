@@ -1,7 +1,7 @@
 import socket, sys, subprocess, time, threading, math
 import RPi.GPIO as GPIO
 
-from MCP3008 import MCP3008
+from MCP3008_SPI import MCP3008
 
 class MQ_XX:
 	def __init__(self, mcp3008, channel, resistance, clean_air_factor):
@@ -18,8 +18,8 @@ class MQ_XX:
 		self.CALIBARAION_SAMPLE_TIMES = 10			# define how many samples you are going to take in the calibration phase
 		self.CALIBRATION_SAMPLE_INTERVAL = 300	# define the time interal(in milisecond) between each samples in the
 																						# cablibration phase
-		self.READ_SAMPLE_TIMES = 5							# define how many samples you are going to take in normal operation
-		self.READ_SAMPLE_INTERVAL = 50 					# define the time interal(in milisecond) between each samples in 
+		self.READ_SAMPLE_TIMES = 1							# define how many samples you are going to take in normal operation
+		self.READ_SAMPLE_INTERVAL = 0 					# define the time interal(in milisecond) between each samples in 
 																						# normal operation    
 
 	def MQCalibration(self):
@@ -54,8 +54,9 @@ class MQ_XX:
 		#print(raw_value_Volts)
 
 		if raw_value > 0:
-			#value_resistance = ( ( float(self.RL_VALUE) * (1023 - raw_value) / raw_value ) )
-			value_resistance = ( float(self.RL_VALUE) / (1023 / raw_value - 1) )
+			value_resistance = ( ( float(self.RL_VALUE) * (1023 - raw_value) / raw_value ) )
+			#value_resistance = ( float(self.RL_VALUE) / (1023 / raw_value - 1) )
+			#print("{0:.1f} kOhms".format(value_resistance))
 			return value_resistance
 		else:
 			return 0
@@ -69,7 +70,6 @@ class MQ_XX:
 		         gas. The sample times and the time interval between samples could be configured
 		         by changing the definition of the macros.
 		************************************************************************************"""
-		i = 0
 		rs = 0
 
 		for e in range(self.READ_SAMPLE_TIMES):
@@ -90,7 +90,9 @@ class MQ_XX:
 		         logarithmic coordinate, power of 10 is used to convert the result to non-logarithmic 
 		         value.
 		************************************************************************************"""
-		return pow( 10 , ( ( ( math.log(rs_ro_ratio) - pcurve[1] ) / pcurve[2] ) + pcurve[0] ) )
+		return pow(10, ( ( ( math.log(rs_ro_ratio, 10) - pcurve[1] ) / pcurve[2] ) + pcurve[0] ))
+		#return pow(10, (math.log(rs_ro_ratio, 10)))
+
 
 class MQ_2(MQ_XX):
 	def __init__(self, mcp3008, channel, resistance, clean_air_factor):
@@ -118,8 +120,7 @@ class MQ_2(MQ_XX):
 		         calculates the ppm (parts per million) of the target gas.
 		************************************************************************************"""
 		rs_ro_ratio = self.MQRead() / self.RO
-		print("RS = {0:.1f} kOhms".format(self.MQRead()))
-		print("RS / RO = {}".format(rs_ro_ratio))
+		#print("RS = {0:.1f} kOhms | RS / RO = {0:.1f}".format(self.MQRead(), rs_ro_ratio))
 
 		if gas_id == "GAS_LPG":
 			return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
@@ -136,14 +137,18 @@ if __name__ == "__main__":
 	GPIO.setwarnings(False)	
 	GPIO.cleanup()
 
-	MCP3008 = MCP3008(12, 16, 20, 21) 	# PIN : CLK, MOSI, MISO, CS
-	MQ_2 = MQ_2(MCP3008, 0, 1, 9.83)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+	MCP3008 = MCP3008(0)   	# PIN : CLK, MOSI, MISO, CS
+	MQ_2 = MQ_2(MCP3008, 1, 8, 9.83)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 
 	print("Calibrating...")
 	MQ_2.MQCalibration()
 	print("Calibration done.")
 	print("Ro = {0:.1f} kOhms".format(MQ_2.RO))
-	print("LPG = {0:.3f} ppm".format(MQ_2.MQGetGasPercentage( "GAS_LPG" )))
+
+	while True:
+		print("[LPG - CO - SMOKE] = [{} - {} - {}] ppm".format(int(MQ_2.MQGetGasPercentage( "GAS_LPG" )), int(MQ_2.MQGetGasPercentage( "GAS_CO" )), int(MQ_2.MQGetGasPercentage( "GAS_SMOKE" ))))
+		#print("SMOKE = {} ppm ".format(int(MQ_2.MQGetGasPercentage( "GAS_SMOKE" ))))
+		time.sleep(0.5)
 
 	GPIO.cleanup()
 
