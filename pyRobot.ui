@@ -141,6 +141,9 @@
           <height>35</height>
          </size>
         </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
         <property name="maximum">
          <number>1</number>
         </property>
@@ -149,6 +152,9 @@
         </property>
         <property name="orientation">
          <enum>Qt::Vertical</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
         </property>
         <property name="tickPosition">
          <enum>QSlider::TicksBelow</enum>
@@ -164,18 +170,6 @@
          <number>1</number>
         </property>
         <item>
-         <widget class="QLabel" name="label_3">
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>W</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QLabel" name="label_2">
           <property name="font">
            <font>
@@ -184,6 +178,18 @@
           </property>
           <property name="text">
            <string>IR</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>W</string>
           </property>
          </widget>
         </item>

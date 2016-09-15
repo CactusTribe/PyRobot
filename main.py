@@ -201,17 +201,21 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.lightMode = 0
 
 			if self.lightOn == True:
-				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
-				print("Light IR")
+				print("Light WHITE")
+				self.PyRobot_Client.tcp_send("fl ir off")
+				self.PyRobot_Client.tcp_send("fl w on")
 
 		else:
 			self.lightMode = 1
 
 			if self.lightOn == True:
-				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
-				print("Light WHITE")
+				print("Light IR")
+				self.PyRobot_Client.tcp_send("fl w off")
+				self.PyRobot_Client.tcp_send("fl ir on")
 
 
 	def changeLightState(self):
@@ -219,18 +223,18 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.lightOn = True
 
 			if self.lightMode == 0:
-				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
-				self.pushButton_lights.setIcon(buttonIcon)
-				print("Light IR")
-				#self.PyRobot_Client.tcp_send("fl w off")
-				#self.PyRobot_Client.tcp_send("fl ir on")
-
-			elif self.lightMode == 1:
 				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
 				print("Light WHITE")
-				#self.PyRobot_Client.tcp_send("fl ir off")
+				self.PyRobot_Client.tcp_send("fl ir off")
 				self.PyRobot_Client.tcp_send("fl w on")
+			
+			elif self.lightMode == 1:
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
+				self.pushButton_lights.setIcon(buttonIcon)
+				print("Light IR")
+				self.PyRobot_Client.tcp_send("fl w off")
+				self.PyRobot_Client.tcp_send("fl ir on")
 
 		elif self.lightOn == True:
 			self.lightOn = False
@@ -240,10 +244,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			print("Light OFF")
 
 			if self.lightMode == 0:
-				pass
-				#self.PyRobot_Client.tcp_send("fl ir off")
-			if self.lightMode == 1:		
 				self.PyRobot_Client.tcp_send("fl w off")
+			if self.lightMode == 1:		
+				self.PyRobot_Client.tcp_send("fl ir off")
+				
 
 	@pyqtSlot(int)
 	def changeWifiQuality(self, percentage):

@@ -17,27 +17,34 @@ class PyRobot_Serveur:
 		self.humidity = 0
 
 		# Modules (Capteurs , éclairage, etc)
-		#self.FrontLight_W = FrontLight(18)        		# PIN : WHITE
-		#self.FrontLight_IR = FrontLight(4)						# PIN : IR
+		self.FrontLight_W = FrontLight(17)        		# PIN : WHITE
+		self.FrontLight_IR = FrontLight(4)						# PIN : IR
 		#self.StatusLED = LED_RGB(23, 24, 25)				# PIN : R, G, B
 
 		#MCP3008_1 = MCP3008(12, 16, 20, 21) 	# PIN : CLK, MOSI, MISO, CS
 		#MCP3008_2 = MCP3008(6, 13, 19, 26)   	# PIN : CLK, MOSI, MISO, CS
 
 		self.MCP3008_1 = MCP3008(0)
-		#MCP3008_2 = MCP3008(1)
+		self.MCP3008_2 = MCP3008(1)
 
 		#self.Motor_L = Motor_DC(17, 27, 22) 				# PIN : SPEED, FW, BW
 		#self.Motor_R = Motor_DC(10, 9, 11)			  	# PIN : SPEED, FW, BW
 
-		#MQ_2 = MQ_2(MCP3008_2, 1, 10, 9.83)  	# MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+		self.MQ_2 = MQ_2(self.MCP3008_2, 0, 5, 9.83)  	# MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+		self.MQ_3 = MQ_3(self.MCP3008_2, 1, 5, 60)  	# MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+		self.MQ_4 = MQ_4(self.MCP3008_2, 2, 5, 4.4)  	# MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 
 		self.hote = ''
 		self.port = port
 
 	def setup(self):
 		print("Calibrating...")
-		#self.MQ_2.MQCalibration()
+		print(" -> MQ-2")
+		self.MQ_2.MQCalibration()
+		print(" -> MQ-3")
+		self.MQ_3.MQCalibration()
+		print(" -> MQ-4")
+		self.MQ_4.MQCalibration()
 		print("Calibration done.")
 		#self.humidity, self.temperature = dht.read_retry(dht.DHT22, 5)
 
@@ -165,17 +172,17 @@ class PyRobot_Serveur:
 			elif args[1] == "ir":
 
 				if args[2] == "on":
-					self.FrontLight_W.on()
+					self.FrontLight_IR.on()
 
 				elif args[2] == "off":
-					self.FrontLight_W.off()
+					self.FrontLight_IR.off()
 
 				elif args[2] == "flash":
-					t = threading.Thread(target = self.FrontLight_W.flash, args = [args[2]] )
+					t = threading.Thread(target = self.FrontLight_IR.flash, args = [args[2]] )
 					t.start()
 					
 				elif args[2] == "status":
-					self.tcp_send("fl status {}".format(self.FrontLight_W.isOn()))	
+					self.tcp_send("fl status {}".format(self.FrontLight_IR.isOn()))	
 
 
 		except: pass
@@ -229,11 +236,10 @@ class PyRobot_Serveur:
 				for e in range(8):
 					values += [self.MCP3008_1.getValue(e)]
 				for e in range(8):
-					#values += [self.MCP3008_2.getValue(e)]
-					values += [0]
+					values += [self.MCP3008_2.getValue(e)]
 
 				self.tcp_send("sns {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(values[0], values[1], values[2], values[3],
-					values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], self.temperature, self.humidity))
+					values[4], values[5], values[6], values[7], int(self.MQ_2.MQGetGasPercentage( "GAS_SMOKE" )), int(self.MQ_3.MQGetGasPercentage( "GAS_ALCOHOL" )), int(self.MQ_4.MQGetGasPercentage( "GAS_CH4" )), values[11], values[12], int(self.MQ_2.MQGetGasPercentage( "GAS_CO" )), int(self.MQ_2.MQGetGasPercentage( "GAS_H2" )), values[15], self.temperature, self.humidity))
 
 		except: pass
 

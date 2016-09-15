@@ -205,7 +205,7 @@ class Dialog_Sensors(QDialog):
 			
 			# AIR QUALITY MQ-135
 			self.label_ch9.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch9.setText("{} ppm".format(int(values[15])))
+			self.label_ch9.setText("{}".format(int(values[15])))
 			self.progressBar_ch9.setValue(values[15])
 
 			# FLAMMABLE GAS MQ-2
@@ -215,12 +215,12 @@ class Dialog_Sensors(QDialog):
 
 			# NATURAL GAS MQ-5
 			self.label_ch11.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch11.setText("{} ppm".format(int(values[11])))
+			self.label_ch11.setText("{}".format(int(values[11])))
 			self.progressBar_ch11.setValue(values[11])
 
 			# PETROLEUM GAS MQ-6
 			self.label_ch12.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch12.setText("{} ppm".format(int(values[12])))
+			self.label_ch12.setText("{}".format(int(values[12])))
 			self.progressBar_ch12.setValue(values[12])
 
 			# HYDROGEN MQ-8
@@ -240,7 +240,7 @@ class Dialog_Sensors(QDialog):
 
 			# ETHANOL MQ-3
 			self.label_ch16.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch16.setText("{} ppm".format(int(values[9])))
+			self.label_ch16.setText("{} mg/L".format(int(values[9])))
 			self.progressBar_ch16.setValue(values[9])
 
 			#self.update()
