@@ -4,12 +4,11 @@ import RPi.GPIO as GPIO
 from MCP3008_SPI import MCP3008
 
 class MQ_XX:
-	def __init__(self, mcp3008, channel, resistance, clean_air_factor):
+	def __init__(self, mcp3008, channel, clean_air_factor):
 
 		#### HARDWARE ####
 		self.MCP3008 = mcp3008
 		self.MQ_CHANNEL = channel
-		self.RL_VALUE = resistance #(komhs)
 		self.RO_CLEAN_AIR_FACTOR = clean_air_factor # RO_CLEAR_AIR_FACTOR = (Sensor resistance in clean air) / RO ,
 																								# which is derived from the chart in datasheet
 		self.RO = 10
@@ -72,8 +71,7 @@ class MQ_XX:
 		raw_value = float(self.MCP3008.getValue(self.MQ_CHANNEL))
 
 		if raw_value > 0:
-			#value_resistance = ( ( float(self.RL_VALUE) * (1023.0 - raw_value) / raw_value ) )
-			value_resistance = ( ( float(self.RL_VALUE) * (1023.0 - raw_value) / raw_value ) )
+			value_resistance = (1023.0 - raw_value) / raw_value
 			return value_resistance
 		else:
 			return 0
@@ -88,13 +86,12 @@ class MQ_XX:
 		         logarithmic coordinate, power of 10 is used to convert the result to non-logarithmic 
 		         value.
 		************************************************************************************"""
-		#return pow(10, ( ( ( math.log10(rs_ro_ratio) - pcurve[1] ) / pcurve[2] ) + pcurve[0] ))
 		return (pcurve[0] * pow((rs_ro_ratio), pcurve[1]))
 
 
 class MQ_2(MQ_XX):
-	def __init__(self, mcp3008, channel, resistance, clean_air_factor):
-		MQ_XX.__init__(self, mcp3008, channel, resistance, clean_air_factor)
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
 																			
 		self.LPGCurve = [594.9230257, -2.144134195]													
 		self.H2Curve = [1004.745073, -2.079457045]													
@@ -123,8 +120,8 @@ class MQ_2(MQ_XX):
 			return 0
 
 class MQ_3(MQ_XX):
-	def __init__(self, mcp3008, channel, resistance, clean_air_factor):
-		MQ_XX.__init__(self, mcp3008, channel, resistance, clean_air_factor)
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
 																			
 		self.AlcoholCurve = [0.3994142455, -1.468637559]
 		self.BenzineCurve = [4.880609598, -2.684999487]
@@ -147,8 +144,8 @@ class MQ_3(MQ_XX):
 			return 0
 
 class MQ_4(MQ_XX):
-	def __init__(self, mcp3008, channel, resistance, clean_air_factor):
-		MQ_XX.__init__(self, mcp3008, channel, resistance, clean_air_factor)
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
 																			
 		self.CH4Curve = [1025.64421, -2.704016447]
 		self.LPGCurve = [3854.967186, -3.060184212]
@@ -177,7 +174,7 @@ if __name__ == "__main__":
 
 	mcp = MCP3008(1)
 
-	MQ_2 = MQ_2(mcp, 0, 5, 9.83)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+	MQ_2 = MQ_2(mcp, 0, 9.83)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 	#MQ_3 = MQ_3(mcp, 0, 5, 60)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 	#MQ_4 = MQ_4(mcp, 0, 5, 4.4)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 	#MQ_5 = MQ_5(mcp, 0, 5, 6.5)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR

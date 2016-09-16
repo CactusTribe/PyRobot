@@ -30,9 +30,9 @@ class PyRobot_Serveur:
 		#self.Motor_L = Motor_DC(17, 27, 22) 				# PIN : SPEED, FW, BW
 		#self.Motor_R = Motor_DC(10, 9, 11)			  	# PIN : SPEED, FW, BW
 
-		self.MQ_2 = MQ_2(self.MCP3008_2, 0, 5, 9.83)  	# MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
-		self.MQ_3 = MQ_3(self.MCP3008_2, 1, 5, 60)  	# MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
-		self.MQ_4 = MQ_4(self.MCP3008_2, 2, 5, 4.4)  	# MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+		self.MQ_2 = MQ_2(self.MCP3008_2, 0, 9.83)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
+		#self.MQ_3 = MQ_3(self.MCP3008_2, 1, 60)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
+		#self.MQ_4 = MQ_4(self.MCP3008_2, 2, 4.4)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
 
 		self.hote = ''
 		self.port = port
@@ -42,9 +42,9 @@ class PyRobot_Serveur:
 		print(" -> MQ-2")
 		self.MQ_2.MQCalibration()
 		print(" -> MQ-3")
-		self.MQ_3.MQCalibration()
+		#self.MQ_3.MQCalibration()
 		print(" -> MQ-4")
-		self.MQ_4.MQCalibration()
+		#self.MQ_4.MQCalibration()
 		print("Calibration done.")
 		#self.humidity, self.temperature = dht.read_retry(dht.DHT22, 5)
 
@@ -239,9 +239,11 @@ class PyRobot_Serveur:
 					values += [self.MCP3008_2.getValue(e)]
 
 				self.tcp_send("sns {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(values[0], values[1], values[2], values[3],
-					values[4], values[5], values[6], values[7], int(self.MQ_2.MQGetGasPercentage( "GAS_SMOKE" )), int(self.MQ_3.MQGetGasPercentage( "GAS_ALCOHOL" )), int(self.MQ_4.MQGetGasPercentage( "GAS_CH4" )), values[11], values[12], int(self.MQ_2.MQGetGasPercentage( "GAS_CO" )), int(self.MQ_2.MQGetGasPercentage( "GAS_H2" )), values[15], self.temperature, self.humidity))
+					values[4], values[5], values[6], values[7], int(self.MQ_2.MQGetGasPercentage( "GAS_SMOKE" )), values[9], values[10], values[11], values[12], int(self.MQ_2.MQGetGasPercentage( "GAS_CO" )), int(self.MQ_2.MQGetGasPercentage( "GAS_H2" )), values[15], self.temperature, self.humidity))
+					#values[4], values[5], values[6], values[7], int(self.MQ_2.MQGetGasPercentage( "GAS_SMOKE" )), int(self.MQ_3.MQGetGasPercentage( "GAS_ALCOHOL" )), int(self.MQ_4.MQGetGasPercentage( "GAS_CH4" )), values[11], values[12], int(self.MQ_2.MQGetGasPercentage( "GAS_CO" )), int(self.MQ_2.MQGetGasPercentage( "GAS_H2" )), values[15], self.temperature, self.humidity))
 
-		except: pass
+		except Exception as e: 
+			print(e)
 
 	# --------------------------------------------
 	# MODULE ENGINE
