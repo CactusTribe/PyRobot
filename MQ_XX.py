@@ -106,18 +106,23 @@ class MQ_2(MQ_XX):
 		Remarks: This function passes different curves to the MQGetPercentage function which 
 		         calculates the ppm (parts per million) of the target gas.
 		************************************************************************************"""
-		rs_ro_ratio = self.MQRead() / self.RO
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
 
-		if gas_id == "GAS_LPG":
-			return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
-		elif gas_id == "GAS_H2":
-			return self.MQGetPercentage(rs_ro_ratio, self.H2Curve)
-		elif gas_id == "GAS_CO":
-			return self.MQGetPercentage(rs_ro_ratio, self.COCurve)
-		elif gas_id == "GAS_SMOKE":
-			return self.MQGetPercentage(rs_ro_ratio, self.SmokeCurve)
-		else:
+			if gas_id == "GAS_LPG":
+				return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
+			elif gas_id == "GAS_H2":
+				return self.MQGetPercentage(rs_ro_ratio, self.H2Curve)
+			elif gas_id == "GAS_CO":
+				return self.MQGetPercentage(rs_ro_ratio, self.COCurve)
+			elif gas_id == "GAS_SMOKE":
+				return self.MQGetPercentage(rs_ro_ratio, self.SmokeCurve)
+			else:
+				return 0
+
+		except Exception as e:
 			return 0
+
 
 class MQ_3(MQ_XX):
 	def __init__(self, mcp3008, channel, clean_air_factor):
@@ -134,13 +139,17 @@ class MQ_3(MQ_XX):
 		Remarks: This function passes different curves to the MQGetPercentage function which 
 		         calculates the ppm (parts per million) of the target gas.
 		************************************************************************************"""
-		rs_ro_ratio = self.MQRead() / self.RO
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
 
-		if gas_id == "GAS_ALCOHOL":
-			return self.MQGetPercentage(rs_ro_ratio, self.AlcoholCurve)
-		elif gas_id == "GAS_BENZINE":
-			return self.MQGetPercentage(rs_ro_ratio, self.BenzineCurve)
-		else:
+			if gas_id == "GAS_ALCOHOL":
+				return self.MQGetPercentage(rs_ro_ratio, self.AlcoholCurve)
+			elif gas_id == "GAS_BENZINE":
+				return self.MQGetPercentage(rs_ro_ratio, self.BenzineCurve)
+			else:
+				return 0
+
+		except Exception as e:
 			return 0
 
 class MQ_4(MQ_XX):
@@ -158,13 +167,17 @@ class MQ_4(MQ_XX):
 		Remarks: This function passes different curves to the MQGetPercentage function which 
 		         calculates the ppm (parts per million) of the target gas.
 		************************************************************************************"""
-		rs_ro_ratio = self.MQRead() / self.RO
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
 
-		if gas_id == "GAS_CH4":
-			return self.MQGetPercentage(rs_ro_ratio, self.CH4Curve)
-		elif gas_id == "GAS_LPG":
-			return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
-		else:
+			if gas_id == "GAS_CH4":
+				return self.MQGetPercentage(rs_ro_ratio, self.CH4Curve)
+			elif gas_id == "GAS_LPG":
+				return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
+			else:
+				return 0
+
+		except Exception as e:
 			return 0
 
 
