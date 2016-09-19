@@ -36,9 +36,9 @@ class HC_SR04:
 		return distance
 
 	def capture(self):
-		NB_LOOP = 8
-
+		
 		while True:
+			NB_LOOP = 8
 			echantillons = []
 
 			for i in range(NB_LOOP):

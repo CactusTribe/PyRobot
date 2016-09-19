@@ -63,7 +63,7 @@ if __name__ == "__main__":
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setwarnings(False)
 
-		led = LED_RGB(22, 27, 17)
+		led = LED_RGB(17, 27, 22)
 		led.setColor_RGB(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
 		led.blink(0.5)
 

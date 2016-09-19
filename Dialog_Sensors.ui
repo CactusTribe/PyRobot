@@ -383,7 +383,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>30</number>
+     <number>450</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -519,7 +519,7 @@
      <number>0</number>
     </property>
     <property name="maximum">
-     <number>30</number>
+     <number>450</number>
     </property>
     <property name="value">
      <number>0</number>

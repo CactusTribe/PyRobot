@@ -7,6 +7,7 @@ from MCP3008_SPI import MCP3008
 from LED_RGB import LED_RGB
 from Motor_DC import Motor_DC
 from MQ_XX import *
+from HC_SR04 import HC_SR04
 
 closed = True
 
@@ -15,20 +16,23 @@ class PyRobot_Serveur:
 
 		self.temperature = 0
 		self.humidity = 0
+		self.distance_L = 0
+		self.distance_R = 0
 
 		# Modules (Capteurs , éclairage, etc)
-		self.FrontLight_W = FrontLight(17)        		# PIN : WHITE
-		self.FrontLight_IR = FrontLight(4)						# PIN : IR
-		#self.StatusLED = LED_RGB(23, 24, 25)				# PIN : R, G, B
+		self.FrontLight_W = FrontLight(18)        		# PIN : WHITE
+		self.FrontLight_IR = FrontLight(23)						# PIN : IR
+		self.StatusLED = LED_RGB(17, 27, 22)				  # PIN : R, G, B
 
-		#MCP3008_1 = MCP3008(12, 16, 20, 21) 	# PIN : CLK, MOSI, MISO, CS
-		#MCP3008_2 = MCP3008(6, 13, 19, 26)   	# PIN : CLK, MOSI, MISO, CS
+		self.HC_SR04_L = HC_SR04(19, 26) 							# PIN : TRIGGER, ECHO
+		#self.HC_SR04_R = HC_SR04(6, 13) 							# PIN : TRIGGER, ECHO
+		self.DHT22 = 5																# PIN : GPIO
+
+		self.Motor_L = Motor_DC(21, 20, 16) 				# PIN : SPEED, FW, BW
+		self.Motor_R = Motor_DC(12, 25, 24)			  	# PIN : SPEED, FW, BW
 
 		self.MCP3008_1 = MCP3008(0)
 		self.MCP3008_2 = MCP3008(1)
-
-		#self.Motor_L = Motor_DC(17, 27, 22) 				# PIN : SPEED, FW, BW
-		#self.Motor_R = Motor_DC(10, 9, 11)			  	# PIN : SPEED, FW, BW
 
 		self.MQ_2 = MQ_2(self.MCP3008_2, 0, 9.83)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
 		#self.MQ_3 = MQ_3(self.MCP3008_2, 1, 60)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
@@ -46,7 +50,6 @@ class PyRobot_Serveur:
 		print(" -> MQ-4")
 		#self.MQ_4.MQCalibration()
 		print("Calibration done.")
-		#self.humidity, self.temperature = dht.read_retry(dht.DHT22, 5)
 
 	# Starting server
 	def start(self):
@@ -65,8 +68,16 @@ class PyRobot_Serveur:
 			try:
 				self.client_socket, self.infos_connexion = self.serveur_socket.accept()
 				closed = False
+
+				#Threads
 				ThreadEvent = threading.Thread(target = self.eventLoop, args = [] )
 				ThreadEvent.start()
+
+				DistanceThread = threading.Thread(target = self.Distance_Module, args = [])
+				#DistanceThread.start()
+
+				ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
+				ClimatThread.start()
 
 				self.tcp_read()
 
@@ -149,6 +160,38 @@ class PyRobot_Serveur:
 				#print(percent)
 
 				self.tcp_send("wifi {}".format(percent))
+
+
+	# --------------------------------------------
+	# MODULE DISTANCE
+	# --------------------------------------------
+	def Distance_Module(self):
+		global closed
+
+		while closed != True:
+			NB_LOOP = 8
+			echantillons = []
+
+			for i in range(NB_LOOP):
+				distance = self.HC_SR04_L.getDistance()
+				echantillons += [distance]
+
+			echantillons.remove(max(echantillons))
+			echantillons.remove(min(echantillons))
+
+			self.distance_L = sum(echantillons) / len(echantillons)
+
+			time.sleep(0.2)
+
+	# --------------------------------------------
+	# MODULE CLIMAT
+	# --------------------------------------------
+	def Climat_Module(self):
+		global closed
+
+		while closed != True:
+			self.humidity, self.temperature = dht.read_retry(dht.DHT22, self.DHT22)
+			time.sleep(2)
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS
@@ -235,15 +278,38 @@ class PyRobot_Serveur:
 				values = [] 
 				for e in range(8):
 					values += [self.MCP3008_1.getValue(e)]
-				for e in range(8):
-					values += [self.MCP3008_2.getValue(e)]
 
-				self.tcp_send("sns {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(values[0], values[1], values[2], values[3],
-					values[4], values[5], values[6], values[7], int(self.MQ_2.MQGetGasPercentage( "GAS_SMOKE" )), values[9], values[10], values[11], values[12], int(self.MQ_2.MQGetGasPercentage( "GAS_CO" )), int(self.MQ_2.MQGetGasPercentage( "GAS_H2" )), values[15], self.temperature, self.humidity))
-					#values[4], values[5], values[6], values[7], int(self.MQ_2.MQGetGasPercentage( "GAS_SMOKE" )), int(self.MQ_3.MQGetGasPercentage( "GAS_ALCOHOL" )), int(self.MQ_4.MQGetGasPercentage( "GAS_CH4" )), values[11], values[12], int(self.MQ_2.MQGetGasPercentage( "GAS_CO" )), int(self.MQ_2.MQGetGasPercentage( "GAS_H2" )), values[15], self.temperature, self.humidity))
+				luminosity_L = values[0]
+				luminosity_R = values[1]
+				sound 			 = values[2]
+				inclinaison  = values[3]
+				channel_4    = values[4]
+				channel_5 	 = values[5]
+				channel_6 	 = values[6]
+				channel_7 	 = values[7]
 
-		except Exception as e: 
-			print(e)
+				gas_1 			 = 0
+				gas_2 			 = int(self.MQ_2.MQGetGasPercentage("GAS_SMOKE"))
+				gas_3 			 = 0
+				gas_4 			 = 0
+				gas_5 			 = 0
+				gas_6 			 = 0
+				gas_7 			 = int(self.MQ_2.MQGetGasPercentage("GAS_CO"))
+				gas_8 			 = int(self.MQ_2.MQGetGasPercentage("GAS_H2"))
+
+				distance_L 	 = int(self.distance_L)
+				distance_R 	 = int(self.distance_R)
+
+				temperature  = self.temperature
+				humidity 	 	 = self.humidity
+
+				self.tcp_send("sns {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
+					luminosity_L, luminosity_R, sound, inclinaison, channel_4, channel_5, channel_6, channel_7, 
+					gas_1, gas_2, gas_3, gas_4, gas_5, gas_6, gas_7, gas_8,
+					distance_L, distance_R, temperature, humidity ))
+					
+		except Exception as e:
+			self.tcp_send("sns 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0")
 
 	# --------------------------------------------
 	# MODULE ENGINE
