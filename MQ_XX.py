@@ -15,7 +15,7 @@ class MQ_XX:
 		
 		#### SOFTWARE ###
 		self.CALIBARAION_SAMPLE_TIMES = 10			# define how many samples you are going to take in the calibration phase
-		self.CALIBRATION_SAMPLE_INTERVAL = 100	# define the time interal(in milisecond) between each samples in the
+		self.CALIBRATION_SAMPLE_INTERVAL = 50		# define the time interal(in milisecond) between each samples in the
 																						# cablibration phase
 		self.READ_SAMPLE_TIMES = 1							# define how many samples you are going to take in normal operation
 		self.READ_SAMPLE_INTERVAL = 0 					# define the time interal(in milisecond) between each samples in 
@@ -96,16 +96,9 @@ class MQ_2(MQ_XX):
 		self.LPGCurve = [594.9230257, -2.144134195]													
 		self.H2Curve = [1004.745073, -2.079457045]													
 		self.COCurve = [39016.20807, -3.215094174]													
-		self.SmokeCurve = [3960.712515, -2.312747132]	
+		self.SmokeCurve = [3426.376355, -2.225037973]	
 													
 	def MQGetGasPercentage(self, gas_id):
-		"""*****************************  MQGetGasPercentage **********************************
-		Input:   rs_ro_ratio - Rs divided by Ro
-		         gas_id      - target gas type
-		Output:  ppm of the target gas
-		Remarks: This function passes different curves to the MQGetPercentage function which 
-		         calculates the ppm (parts per million) of the target gas.
-		************************************************************************************"""
 		try:
 			rs_ro_ratio = self.MQRead() / self.RO
 
@@ -132,13 +125,6 @@ class MQ_3(MQ_XX):
 		self.BenzineCurve = [4.880609598, -2.684999487]
 													
 	def MQGetGasPercentage(self, gas_id):
-		"""*****************************  MQGetGasPercentage **********************************
-		Input:   rs_ro_ratio - Rs divided by Ro
-		         gas_id      - target gas type
-		Output:  ppm of the target gas
-		Remarks: This function passes different curves to the MQGetPercentage function which 
-		         calculates the ppm (parts per million) of the target gas.
-		************************************************************************************"""
 		try:
 			rs_ro_ratio = self.MQRead() / self.RO
 
@@ -156,17 +142,10 @@ class MQ_4(MQ_XX):
 	def __init__(self, mcp3008, channel, clean_air_factor):
 		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
 																			
-		self.CH4Curve = [1025.64421, -2.704016447]
+		self.CH4Curve = [27.66065037, -1.614621779]
 		self.LPGCurve = [3854.967186, -3.060184212]
 													
 	def MQGetGasPercentage(self, gas_id):
-		"""*****************************  MQGetGasPercentage **********************************
-		Input:   rs_ro_ratio - Rs divided by Ro
-		         gas_id      - target gas type
-		Output:  ppm of the target gas
-		Remarks: This function passes different curves to the MQGetPercentage function which 
-		         calculates the ppm (parts per million) of the target gas.
-		************************************************************************************"""
 		try:
 			rs_ro_ratio = self.MQRead() / self.RO
 
@@ -180,6 +159,108 @@ class MQ_4(MQ_XX):
 		except Exception as e:
 			return 0
 
+class MQ_5(MQ_XX):
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
+																			
+		self.LPGCurve = [70.19415458, -2.568781431]
+		self.CH4Curve = [177.2177626, -2.566204915]
+													
+	def MQGetGasPercentage(self, gas_id):
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
+
+			if gas_id == "GAS_LPG":
+				return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
+			elif gas_id == "GAS_CH4":
+				return self.MQGetPercentage(rs_ro_ratio, self.CH4Curve)
+			else:
+				return 0
+
+		except Exception as e:
+			return 0
+
+class MQ_6(MQ_XX):
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
+																			
+		self.LPGCurve = [1039.65825, -2.325034258]
+													
+	def MQGetGasPercentage(self, gas_id):
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
+
+			if gas_id == "GAS_LPG":
+				return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
+			else:
+				return 0
+
+		except Exception as e:
+			return 0
+
+class MQ_7(MQ_XX):
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
+																			
+		self.COCurve = [104.6096172, -1.499461777]
+													
+	def MQGetGasPercentage(self, gas_id):
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
+
+			if gas_id == "GAS_CO":
+				return self.MQGetPercentage(rs_ro_ratio, self.COCurve)
+			else:
+				return 0
+
+		except Exception as e:
+			return 0
+
+class MQ_8(MQ_XX):
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
+																			
+		#self.H2Curve = [997.6549361, -0.6873248642]
+		self.H2Curve = [2.682393111, -2.5070615118]
+													
+	def MQGetGasPercentage(self, gas_id):
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
+
+			if gas_id == "GAS_H2":
+				return self.MQGetPercentage(rs_ro_ratio, self.H2Curve)
+			else:
+				return 0
+
+		except Exception as e:
+			return 0
+
+class MQ_135(MQ_XX):
+	def __init__(self, mcp3008, channel, clean_air_factor):
+		MQ_XX.__init__(self, mcp3008, channel, clean_air_factor)
+																			
+		self.CO2Curve = [113.7105289, -3.019713765] 
+		self.NH4Curve = [84.07117895, -4.41107687] #Ammonium
+		self.CH3_2COCurve = [7.010800878, -2.122018939] #Acetone
+		self.CH3Curve = [47.01770503, -3.281901967] #Methyl
+													
+	def MQGetGasPercentage(self, gas_id):
+		try:
+			rs_ro_ratio = self.MQRead() / self.RO
+
+			if gas_id == "GAS_CO2":
+				return self.MQGetPercentage(rs_ro_ratio, self.CO2Curve)
+			elif gas_id == "GAS_NH4":
+				return self.MQGetPercentage(rs_ro_ratio, self.NH4Curve)
+			elif gas_id == "GAS_CH3_2CO":
+				return self.MQGetPercentage(rs_ro_ratio, self.CH3_2COCurve)
+			elif gas_id == "GAS_CH3":
+				return self.MQGetPercentage(rs_ro_ratio, self.CH3Curve)	
+			else:
+				return 0
+
+		except Exception as e:
+			return 0
 
 if __name__ == "__main__":
 	GPIO.setmode(GPIO.BCM)
@@ -187,22 +268,22 @@ if __name__ == "__main__":
 
 	mcp = MCP3008(1)
 
-	MQ_2 = MQ_2(mcp, 0, 9.83)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
-	#MQ_3 = MQ_3(mcp, 0, 5, 60)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+	#MQ_2 = MQ_2(mcp, 0, 9.83)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
+	MQ_3 = MQ_3(mcp, 1, 60)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 	#MQ_4 = MQ_4(mcp, 0, 5, 4.4)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 	#MQ_5 = MQ_5(mcp, 0, 5, 6.5)  # MCP, CHANNEL, RESISTANCE, CLEAN_AIR_FACTOR
 
 	print("Calibrating...")
-	MQ_2.MQCalibration()
-	#MQ_3.MQCalibration()
+	#MQ_2.MQCalibration()
+	MQ_3.MQCalibration()
 	#MQ_4.MQCalibration()
 	#MQ_5.MQCalibration()
 	print("Calibration done.")
 	#print("Ro = {0:.2f} kOhms".format(MQ_3.RO))
 
 	while True:
-		print("LPG : {} ppm | H2 : {} ppm | CO : {} ppm | SMOKE : {} ppm".format(int(MQ_2.MQGetGasPercentage( "GAS_LPG" )), int(MQ_2.MQGetGasPercentage( "GAS_H2" )), int(MQ_2.MQGetGasPercentage( "GAS_CO" )), int(MQ_2.MQGetGasPercentage( "GAS_SMOKE" ))))
-		#print("Alcohol : {} mg/L | Benzine : {} mg/L".format(int(MQ_3.MQGetGasPercentage( "GAS_ALCOHOL" )), int(MQ_3.MQGetGasPercentage( "GAS_BENZINE" ))))
+		#print("LPG : {} ppm | H2 : {} ppm | CO : {} ppm | SMOKE : {} ppm".format(int(MQ_2.MQGetGasPercentage( "GAS_LPG" )), int(MQ_2.MQGetGasPercentage( "GAS_H2" )), int(MQ_2.MQGetGasPercentage( "GAS_CO" )), int(MQ_2.MQGetGasPercentage( "GAS_SMOKE" ))))
+		print("Alcohol : {:.2f} mg/L | Benzine : {} mg/L".format(MQ_3.MQGetGasPercentage( "GAS_ALCOHOL" ), int(MQ_3.MQGetGasPercentage( "GAS_BENZINE" ))))
 		#print("CH4 : {} ppm | LPG : {} ppm".format(int(MQ_4.MQGetGasPercentage( "GAS_CH4" )), int(MQ_4.MQGetGasPercentage( "GAS_LPG" ))))
 		#print("CH4 : {} ppm | LPG : {} ppm".format(int(MQ_4.MQGetGasPercentage( "GAS_CH4" )), int(MQ_4.MQGetGasPercentage( "GAS_LPG" ))))
 

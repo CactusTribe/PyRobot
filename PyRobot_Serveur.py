@@ -25,8 +25,8 @@ class PyRobot_Serveur:
 		self.StatusLED = LED_RGB(17, 27, 22)				  # PIN : R, G, B
 
 		self.HC_SR04_L = HC_SR04(19, 26) 							# PIN : TRIGGER, ECHO
-		#self.HC_SR04_R = HC_SR04(6, 13) 							# PIN : TRIGGER, ECHO
-		self.DHT22 = 5																# PIN : GPIO
+		self.HC_SR04_R = HC_SR04(6, 13) 							# PIN : TRIGGER, ECHO
+		self.DHT22 = 5																# PIN : AOUT
 
 		self.Motor_L = Motor_DC(21, 20, 16) 				# PIN : SPEED, FW, BW
 		self.Motor_R = Motor_DC(12, 25, 24)			  	# PIN : SPEED, FW, BW
@@ -35,8 +35,13 @@ class PyRobot_Serveur:
 		self.MCP3008_2 = MCP3008(1)
 
 		self.MQ_2 = MQ_2(self.MCP3008_2, 0, 9.83)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
-		#self.MQ_3 = MQ_3(self.MCP3008_2, 1, 60)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
-		#self.MQ_4 = MQ_4(self.MCP3008_2, 2, 4.4)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
+		self.MQ_3 = MQ_3(self.MCP3008_2, 1, 60)  		# MCP, CHANNEL, CLEAN_AIR_FACTOR
+		self.MQ_4 = MQ_4(self.MCP3008_2, 2, 1)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
+		self.MQ_5 = MQ_5(self.MCP3008_2, 3, 6.5)  	# MCP, CHANNEL, CLEAN_AIR_FACTOR
+		self.MQ_6 = MQ_6(self.MCP3008_2, 4, 10)  	  # MCP, CHANNEL, CLEAN_AIR_FACTOR
+		self.MQ_7 = MQ_7(self.MCP3008_2, 5, 28)  	  # MCP, CHANNEL, CLEAN_AIR_FACTOR
+		self.MQ_8 = MQ_8(self.MCP3008_2, 6, 1)  	  # MCP, CHANNEL, CLEAN_AIR_FACTOR
+		self.MQ_135 = MQ_135(self.MCP3008_2, 7, 3.6)  	  # MCP, CHANNEL, CLEAN_AIR_FACTOR
 
 		self.hote = ''
 		self.port = port
@@ -46,9 +51,19 @@ class PyRobot_Serveur:
 		print(" -> MQ-2")
 		self.MQ_2.MQCalibration()
 		print(" -> MQ-3")
-		#self.MQ_3.MQCalibration()
+		self.MQ_3.MQCalibration()
 		print(" -> MQ-4")
-		#self.MQ_4.MQCalibration()
+		self.MQ_4.MQCalibration()
+		print(" -> MQ-5")
+		self.MQ_5.MQCalibration()
+		print(" -> MQ-6")
+		self.MQ_6.MQCalibration()
+		print(" -> MQ-7")
+		self.MQ_7.MQCalibration()
+		print(" -> MQ-8")
+		self.MQ_8.MQCalibration()
+		print(" -> MQ-135")
+		self.MQ_135.MQCalibration()
 		print("Calibration done.")
 
 	# Starting server
@@ -74,7 +89,7 @@ class PyRobot_Serveur:
 				ThreadEvent.start()
 
 				DistanceThread = threading.Thread(target = self.Distance_Module, args = [])
-				#DistanceThread.start()
+				DistanceThread.start()
 
 				ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
 				ClimatThread.start()
@@ -169,19 +184,31 @@ class PyRobot_Serveur:
 		global closed
 
 		while closed != True:
-			NB_LOOP = 8
-			echantillons = []
+			self.distance_L = self.HC_SR04_L.getDistance()
+			self.distance_R = self.HC_SR04_R.getDistance()
+			time.sleep(0.02)
+
+		"""
+			NB_LOOP = 4
+			echantillons = [[],[]]
 
 			for i in range(NB_LOOP):
-				distance = self.HC_SR04_L.getDistance()
-				echantillons += [distance]
+				distance_L = self.HC_SR04_L.getDistance()
+				distance_R = self.HC_SR04_R.getDistance()
+				echantillons[0] += [distance_L]
+				echantillons[1] += [distance_R]
+				time.sleep(0.02)
 
-			echantillons.remove(max(echantillons))
-			echantillons.remove(min(echantillons))
+			echantillons[0].remove(max(echantillons[0]))
+			echantillons[0].remove(min(echantillons[0]))
 
-			self.distance_L = sum(echantillons) / len(echantillons)
+			echantillons[1].remove(max(echantillons[1]))
+			echantillons[1].remove(min(echantillons[1]))
 
-			time.sleep(0.2)
+			self.distance_L = sum(echantillons[0]) / len(echantillons[0])
+			self.distance_R = sum(echantillons[1]) / len(echantillons[1])
+
+		"""
 
 	# --------------------------------------------
 	# MODULE CLIMAT
@@ -191,6 +218,10 @@ class PyRobot_Serveur:
 
 		while closed != True:
 			self.humidity, self.temperature = dht.read_retry(dht.DHT22, self.DHT22)
+
+			if self.humidity == None: self.humidity = 0
+			if self.temperature == None: self.temperature = 0
+
 			time.sleep(2)
 
 	# --------------------------------------------
@@ -279,8 +310,8 @@ class PyRobot_Serveur:
 				for e in range(8):
 					values += [self.MCP3008_1.getValue(e)]
 
-				luminosity_L = values[0]
-				luminosity_R = values[1]
+				luminosity_R = values[0]
+				luminosity_L = values[1]
 				sound 			 = values[2]
 				inclinaison  = values[3]
 				channel_4    = values[4]
@@ -288,14 +319,14 @@ class PyRobot_Serveur:
 				channel_6 	 = values[6]
 				channel_7 	 = values[7]
 
-				gas_1 			 = 0
+				gas_1 			 = int(self.MQ_135.MQGetGasPercentage("GAS_CH3_2CO"))
 				gas_2 			 = int(self.MQ_2.MQGetGasPercentage("GAS_SMOKE"))
-				gas_3 			 = 0
-				gas_4 			 = 0
-				gas_5 			 = 0
-				gas_6 			 = 0
-				gas_7 			 = int(self.MQ_2.MQGetGasPercentage("GAS_CO"))
-				gas_8 			 = int(self.MQ_2.MQGetGasPercentage("GAS_H2"))
+				gas_3 			 = str(self.MQ_3.MQGetGasPercentage("GAS_ALCOHOL"))[:5]
+				gas_4 			 = int(self.MQ_4.MQGetGasPercentage("GAS_CH4"))
+				gas_5 			 = int(self.MQ_5.MQGetGasPercentage("GAS_CH4"))
+				gas_6 			 = int(self.MQ_6.MQGetGasPercentage("GAS_LPG"))
+				gas_7 			 = int(self.MQ_7.MQGetGasPercentage("GAS_CO"))
+				gas_8 			 = int(self.MQ_8.MQGetGasPercentage("GAS_H2"))
 
 				distance_L 	 = int(self.distance_L)
 				distance_R 	 = int(self.distance_R)
@@ -309,6 +340,7 @@ class PyRobot_Serveur:
 					distance_L, distance_R, temperature, humidity ))
 					
 		except Exception as e:
+			print(e)
 			self.tcp_send("sns 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0")
 
 	# --------------------------------------------

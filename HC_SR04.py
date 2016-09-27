@@ -11,6 +11,7 @@ class HC_SR04:
 
 		# Set trigger to False (Low)
 		GPIO.output(self.trigger, False)
+		time.sleep(0.5)
 
 	def getDistance(self):
 		# Send 10us pulse to trigger
@@ -18,12 +19,13 @@ class HC_SR04:
 		time.sleep(0.00001)
 		GPIO.output(self.trigger, False)
 		start = time.time()
-
+		
 		while GPIO.input(self.echo)==0:
-		  start = time.time()
+			start = time.time()
 
 		while GPIO.input(self.echo)==1:
-		  stop = time.time()
+			stop = time.time()
+		
 
 		# Calculate pulse length
 		elapsed = stop-start
@@ -38,12 +40,13 @@ class HC_SR04:
 	def capture(self):
 		
 		while True:
-			NB_LOOP = 8
+			NB_LOOP = 10
 			echantillons = []
 
 			for i in range(NB_LOOP):
 				distance = self.getDistance()
 				echantillons += [distance]
+				time.sleep(0.02)
 
 			echantillons.remove(max(echantillons))
 			echantillons.remove(min(echantillons))
@@ -52,14 +55,18 @@ class HC_SR04:
 
 			sys.stdout.write("\rDistance : {} cm       ".format(int(average)))
 			sys.stdout.flush()
-			time.sleep(0.2)
+			
 
 if __name__ == "__main__":
 
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setwarnings(False)
 
-	HC_SR04 = HC_SR04(19, 26)
-	HC_SR04.capture()
+	HC_SR04_1 = HC_SR04(19, 26)
+	HC_SR04_2 = HC_SR04(6, 13)
+
+	HC_SR04_1.capture()
+	#HC_SR04_2.capture()
+	
 
 	GPIO.cleanup()

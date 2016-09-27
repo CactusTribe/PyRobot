@@ -49,7 +49,7 @@ class Sensors_Capture(QThread):
 							# GAZ
 							gas_1 = int(tokens[9])
 							gas_2 = int(tokens[10])
-							gas_3 = int(tokens[11])
+							gas_3 = float(tokens[11])
 							gas_4 = int(tokens[12])
 							gas_5 = int(tokens[13])
 							gas_6 = int(tokens[14])
@@ -92,7 +92,6 @@ class Sensors_Capture(QThread):
 					time.sleep(0.015)
 
 				for i,e in enumerate(echantillons):
-					#if i != 5:
 					e.remove(max(e))
 					e.remove(min(e))
 
@@ -139,14 +138,14 @@ class Dialog_Sensors(QDialog):
 			channel_6 	 = int(values[6])
 			channel_7 	 = int(values[7])
 
-			gas_1 			 = int(values[8])
-			gas_2 			 = int(values[9])
-			gas_3 			 = int(values[10])
-			gas_4 			 = int(values[11])
-			gas_5 			 = int(values[12])
-			gas_6 			 = int(values[13])
-			gas_7 			 = int(values[14])
-			gas_8 			 = int(values[15])
+			gas_1 			 = int(values[8]) if int(values[8]) <= 5000 else 5000
+			gas_2 			 = int(values[9])if int(values[9]) <= 5000 else 5000
+			gas_3 			 = values[10]
+			gas_4 			 = int(values[11]) if int(values[11]) <= 5000 else 5000
+			gas_5 			 = int(values[12]) if int(values[12]) <= 5000 else 5000
+			gas_6 			 = int(values[13]) if int(values[13]) <= 5000 else 5000
+			gas_7 			 = int(values[14]) if int(values[14]) <= 5000 else 5000
+			gas_8 			 = int(values[15]) if int(values[15]) <= 5000 else 5000
 
 			distance_L 	 = int(values[16])
 			distance_R 	 = int(values[17])
@@ -185,7 +184,7 @@ class Dialog_Sensors(QDialog):
 			self.progressBar_ch8.setValue(sound)
 
 			# INCLINAISON -------------------------------------------------------------------
-			if inclinaison > 50:
+			if inclinaison < 50:
 				self.label_ch7.setText("100 %")
 				self.progressBar_ch7.setValue(1)
 				self.label_ch7.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
@@ -202,7 +201,7 @@ class Dialog_Sensors(QDialog):
 			else:
 				self.label_ch3.setStyleSheet("QLabel { font-size:12px; }")
 				self.label_ch3.setText("{} cm".format(distance_L))
-				self.progressBar_ch3.setValue(450 - distance_L)
+				self.progressBar_ch3.setValue(distance_L)
 
 				if distance_L < 7:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
@@ -219,7 +218,7 @@ class Dialog_Sensors(QDialog):
 			else:
 				self.label_ch4.setStyleSheet("QLabel { font-size:12px; }")
 				self.label_ch4.setText("{} cm".format(distance_R))
-				self.progressBar_ch4.setValue(450 - distance_R)
+				self.progressBar_ch4.setValue(distance_R)
 
 				if distance_R < 7:
 					self.label_ch4.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
@@ -240,42 +239,90 @@ class Dialog_Sensors(QDialog):
 			#=================================
 			
 			# AIR QUALITY MQ-135
-			self.label_ch9.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch9.setText("{}".format(gas_1))
-			self.progressBar_ch9.setValue(gas_4)
+			if gas_1 > 1000:
+				self.label_ch9.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_1 > 200:
+				self.label_ch9.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch9.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
+			self.label_ch9.setText("{} ppm".format(gas_1))
+			self.progressBar_ch9.setValue(gas_1)
 
 			# FLAMMABLE GAS MQ-2
-			self.label_ch10.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			if gas_2 > 1000:
+				self.label_ch10.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_2 > 200:
+				self.label_ch10.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch10.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
 			self.label_ch10.setText("{} ppm".format(gas_2))
 			self.progressBar_ch10.setValue(gas_2)
 
 			# ETHANOL MQ-3
-			self.label_ch16.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch16.setText("{} mg/L".format(gas_3))
+			if gas_3 > 2:
+				self.label_ch16.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_3 > 0.8:
+				self.label_ch16.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch16.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
+			self.label_ch16.setText("{:0.2f} mg/L".format(gas_3))
 			self.progressBar_ch16.setValue(gas_3)
 
 			# METHANE MQ-4
-			self.label_ch15.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			if gas_4 > 1000:
+				self.label_ch15.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_4 > 200:
+				self.label_ch15.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch15.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
 			self.label_ch15.setText("{} ppm".format(gas_4))
 			self.progressBar_ch15.setValue(gas_4)
 
 			# NATURAL GAS MQ-5
-			self.label_ch11.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch11.setText("{}".format(gas_5))
+			if gas_5 > 1000:
+				self.label_ch11.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_5 > 200:
+				self.label_ch11.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch11.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
+			self.label_ch11.setText("{} ppm".format(gas_5))
 			self.progressBar_ch11.setValue(gas_5)
 
 			# PETROLEUM GAS MQ-6
-			self.label_ch12.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
-			self.label_ch12.setText("{}".format(gas_6))
+			if gas_6 > 1000:
+				self.label_ch12.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_6 > 200:
+				self.label_ch12.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch12.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
+			self.label_ch12.setText("{} ppm".format(gas_6))
 			self.progressBar_ch12.setValue(gas_6)
 
 			# CARBON MONOXIDE MQ-7
-			self.label_ch14.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			if gas_7 > 1000:
+				self.label_ch14.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_7 > 200:
+				self.label_ch14.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch14.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
 			self.label_ch14.setText("{} ppm".format(gas_7))
 			self.progressBar_ch14.setValue(gas_7)
 
 			# HYDROGEN MQ-8
-			self.label_ch13.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+			if gas_8 > 1000:
+				self.label_ch13.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
+			elif gas_8 > 200:
+				self.label_ch13.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
+			else:
+				self.label_ch13.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
+
 			self.label_ch13.setText("{} ppm".format(gas_8))
 			self.progressBar_ch13.setValue(gas_8)
 
