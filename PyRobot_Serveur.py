@@ -89,7 +89,7 @@ class PyRobot_Serveur:
 				ThreadEvent.start()
 
 				DistanceThread = threading.Thread(target = self.Distance_Module, args = [])
-				DistanceThread.start()
+				#DistanceThread.start()
 
 				ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
 				ClimatThread.start()

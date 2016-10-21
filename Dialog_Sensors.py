@@ -92,7 +92,8 @@ class Sensors_Capture(QThread):
 					time.sleep(0.015)
 
 				for i,e in enumerate(echantillons):
-					e.remove(max(e))
+					if i != 2:
+						e.remove(max(e))
 					e.remove(min(e))
 
 				values = [(sum(elt)/len(elt)) for elt in echantillons]
@@ -131,7 +132,7 @@ class Dialog_Sensors(QDialog):
 
 			luminosity_L = int(values[0])
 			luminosity_R = int(values[1])
-			sound 			 = int(values[2])
+			sound 			 = (int(values[2])-25)*2 if int(values[2]) >= 25 else 0
 			inclinaison  = int(values[3])
 			channel_4    = int(values[4])
 			channel_5 	 = int(values[5])

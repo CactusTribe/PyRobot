@@ -138,7 +138,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.EventLoop = EventLoop(self, self.PyRobot_Client)
 				self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
 				self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
-				self.EventLoop.start()
+				#self.EventLoop.start()
 
 	def closeEvent(self, event):
 		self.disconnect()
