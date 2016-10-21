@@ -116,7 +116,7 @@ class ThreadClient(threading.Thread):
 				start = time.time()
 				stream = io.BytesIO()
 
-				for foo in camera.capture_continuous(stream, 'jpeg'):
+				for foo in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
 					# Write the length of the capture to the stream and flush to
 					# ensure it actually gets sent
 					connection.write(struct.pack('<L', stream.tell()))
@@ -125,17 +125,16 @@ class ThreadClient(threading.Thread):
 					stream.seek(0)
 					connection.write(stream.read())
 					# If we've been capturing for more than 30 seconds, quit
-					if time.time() - start > 20:
-						break
+					#if time.time() - start > 20:
+						#break
 					# Reset the stream for the next capture
 					stream.seek(0)
 					stream.truncate()
 
+					time.sleep(0.05)
+
 				# Write a length of zero to the stream to signal we're done
 				connection.write(struct.pack('<L', 0))
-
-			elif args[1] == "stop":
-				pass
 
 		except Exception as e:
 			print(e) 
