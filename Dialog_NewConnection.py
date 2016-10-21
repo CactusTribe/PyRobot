@@ -9,7 +9,11 @@ from PyRobot_Client import PyRobot_Client
 
 class Dialog_NewConnection(QDialog):
 
-	PyRobot_Client = None
+	Main_Client = None
+	Event_Client = None
+	Sensors_Client = None
+	Engine_Client = None
+	Camera_Client = None
 
 	def __init__(self):
 		QDialog.__init__(self)
@@ -18,19 +22,38 @@ class Dialog_NewConnection(QDialog):
 		self.pushButton_sync.clicked.connect(self.startConnection)
 
 	def startConnection(self):
-		if self.PyRobot_Client != None:
-			self.PyRobot_Client.close()
+		if self.Main_Client != None:
+			self.Main_Client.close()
+			self.Event_Client.close()
+			self.Sensors_Client.close()
+			self.Engine_Client.close()
+			self.Camera_Client.close()
 
-		self.PyRobot_Client = PyRobot_Client(self.lineEdit_ip.text(), 12800)
+		self.Main_Client = PyRobot_Client(self.lineEdit_ip.text(), 12800)
+		self.Event_Client = PyRobot_Client(self.lineEdit_ip.text(), 12800)
+		self.Sensors_Client = PyRobot_Client(self.lineEdit_ip.text(), 12800)
+		self.Engine_Client = PyRobot_Client(self.lineEdit_ip.text(), 12800)
+		self.Camera_Client = PyRobot_Client(self.lineEdit_ip.text(), 12800)
 
 		try:
-			self.PyRobot_Client.start()
-			if self.PyRobot_Client.connected == True:
-				self.label_status.setText("Connected at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
+			self.Main_Client.start()
+			self.Event_Client.start()
+			self.Sensors_Client.start()
+			self.Engine_Client.start()
+			self.Camera_Client.start()
+			
+			if self.Main_Client.connected == True:
+				self.label_status.setText("Connected at {}:{}".format(self.Main_Client.hote, self.Main_Client.port))
 			else:
 				self.label_status.setText("Connection error.")
+				Main_Client = None
+				Event_Client = None
+				Sensors_Client = None
+				Engine_Client = None
+				Camera_Client = None
+
 		except ConnectionRefusedError:
-			self.PyRobot_Client.close()
+			self.Main_Client.close()
 			self.label_status.setText("Connection refused.")
 
 

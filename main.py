@@ -52,7 +52,12 @@ class EventLoop(QThread):
  
 class PyRobot(QMainWindow, Ui_MainWindow):
 
-	PyRobot_Client = None
+	Main_Client = None
+	Event_Client = None
+	Sensors_Client = None
+	Engine_Client = None
+	Camera_Client = None
+
 	EventLoop = None
 
 	def __init__(self):
@@ -94,92 +99,102 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		# Threads
 
 	def updateStatus(self):
-		if self.PyRobot_Client != None:
-			if self.PyRobot_Client.connected == False:
+		if self.Main_Client != None:
 
-				if self.EventLoop.stopped == False: 
-					self.EventLoop.stop()
-					self.EventLoop = None
+			self.label_ip.setText(self.Main_Client.hote)
+			self.printToMonitor("Connected to PyRobot at {}:{}".format(self.Main_Client.hote, self.Main_Client.port))
 
-				self.PyRobot_Client.close()
-				self.PyRobot_Client = None
+			self.pushButton_disconnect.setEnabled(True)
+			self.pushButton_send_monitor.setEnabled(True)
+			self.pushButton_sensors.setEnabled(True)
+			self.pushButton_enabled_keyboard.setEnabled(True)
+			self.pushButton_lights.setEnabled(True)
+			self.pushButton_video.setEnabled(True)
+			self.lineEdit_commandline.setEnabled(True)
+			self.verticalSlider_lightsMode.setEnabled(True)
 
-				self.label_ip.setText("No connection")
-				self.pushButton_disconnect.setEnabled(False)
-				self.pushButton_send_monitor.setEnabled(False)
-				self.pushButton_sensors.setEnabled(False)
-				self.pushButton_enabled_keyboard.setEnabled(False)
-				self.pushButton_lights.setEnabled(False)
-				self.pushButton_video.setEnabled(False)
-				self.lineEdit_commandline.setEnabled(False)
-				self.verticalSlider_lightsMode.setEnabled(False)
+			self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonOk-01.png")))
 
-
-				self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
-				self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))
-				self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonRSS-01.png")))
-
-
-			else:
-				self.label_ip.setText(self.PyRobot_Client.hote)
-				self.printToMonitor("Connected to PyRobot at {}:{}".format(self.PyRobot_Client.hote, self.PyRobot_Client.port))
-	
-				self.pushButton_disconnect.setEnabled(True)
-				self.pushButton_send_monitor.setEnabled(True)
-				self.pushButton_sensors.setEnabled(True)
-				self.pushButton_enabled_keyboard.setEnabled(True)
-				self.pushButton_lights.setEnabled(True)
-				self.pushButton_video.setEnabled(True)
-				self.lineEdit_commandline.setEnabled(True)
-				self.verticalSlider_lightsMode.setEnabled(True)
-
-				self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonOk-01.png")))
-
-				self.EventLoop = EventLoop(self, self.PyRobot_Client)
-				self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
-				self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
-				#self.EventLoop.start()
+			self.EventLoop = EventLoop(self, self.Event_Client)
+			self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
+			self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
+			#self.EventLoop.start()
 
 	def closeEvent(self, event):
 		self.disconnect()
 
 	def keyPressEvent(self, event):
-		if self.PyRobot_Client != None and self.key_pressed == False:
+		if self.Engine_Client != None and self.key_pressed == False:
 			self.key_pressed = True
 
 			if event.key() == Qt.Key_Up:
-				self.PyRobot_Client.tcp_send("eng forward")
+				self.Engine_Client.tcp_send("eng forward")
 			elif event.key() == Qt.Key_Down:
-				self.PyRobot_Client.tcp_send("eng backward")
+				self.Engine_Client.tcp_send("eng backward")
 			elif event.key() == Qt.Key_Left:
-				self.PyRobot_Client.tcp_send("eng left")
+				self.Engine_Client.tcp_send("eng left")
 			elif event.key() == Qt.Key_Right:
-				self.PyRobot_Client.tcp_send("eng right")
+				self.Engine_Client.tcp_send("eng right")
 
 	def keyReleaseEvent(self, event):
-		if self.PyRobot_Client != None:
+		if self.Engine_Client != None:
 			self.key_pressed = False
 
 			if event.key() == Qt.Key_Up:
-				self.PyRobot_Client.tcp_send("eng stop")
+				self.Engine_Client.tcp_send("eng stop")
 			elif event.key() == Qt.Key_Down:
-				self.PyRobot_Client.tcp_send("eng stop")
+				self.Engine_Client.tcp_send("eng stop")
 			elif event.key() == Qt.Key_Left:
-				self.PyRobot_Client.tcp_send("eng stop")
+				self.Engine_Client.tcp_send("eng stop")
 			elif event.key() == Qt.Key_Right:
-				self.PyRobot_Client.tcp_send("eng stop")
+				self.Engine_Client.tcp_send("eng stop")
 
 
 	def disconnect(self):
-		self.PyRobot_Client.connected = False
-		self.updateStatus()
+		if self.EventLoop != None:
+			self.EventLoop.stop()
+			self.EventLoop = None
+
+		if self.Main_Client != None:
+			self.Main_Client.close()
+			self.Event_Client.close()
+			self.Sensors_Client.close()
+			self.Engine_Client.close()
+			self.Camera_Client.close()
+
+			self.Main_Client = None
+			self.Event_Client = None
+			self.Sensors_Client = None
+			self.Engine_Client = None
+			self.Camera_Client = None
+
+		self.label_ip.setText("No connection")
+		self.pushButton_disconnect.setEnabled(False)
+		self.pushButton_send_monitor.setEnabled(False)
+		self.pushButton_sensors.setEnabled(False)
+		self.pushButton_enabled_keyboard.setEnabled(False)
+		self.pushButton_lights.setEnabled(False)
+		self.pushButton_video.setEnabled(False)
+		self.lineEdit_commandline.setEnabled(False)
+		self.verticalSlider_lightsMode.setEnabled(False)
+
+
+		self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
+		self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))
+		self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonRSS-01.png")))
+
 		self.printToMonitor("> Connection closed.")
 
 	def newConnection(self):
 		new_connection = Dialog_NewConnection()
 
 		if new_connection.exec_():
-			self.PyRobot_Client = new_connection.PyRobot_Client
+			self.Main_Client = new_connection.Main_Client
+			self.Event_Client = new_connection.Event_Client
+			self.Sensors_Client = new_connection.Sensors_Client
+			self.Engine_Client = new_connection.Engine_Client
+			self.Camera_Client = new_connection.Camera_Client
+
 			self.updateStatus()
 
 	def openHelp(self):
@@ -187,13 +202,13 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		dialog_help.show()
 
 	def openWindowSensors(self):
-		sensors = Dialog_Sensors(self, self.PyRobot_Client)
+		sensors = Dialog_Sensors(self, self.Sensors_Client)
 		sensors.show()
 		sensors.Sensors_Capture.start()
 		#sensors.exec_()
 
 	def openWindowVideo(self):
-		video = Dialog_Video(self, self.PyRobot_Client)
+		video = Dialog_Video(self, self.Camera_Client)
 		video.show()
 
 	def changeLightMode(self):
@@ -204,8 +219,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
 				print("Light WHITE")
-				self.PyRobot_Client.tcp_send("fl ir off")
-				self.PyRobot_Client.tcp_send("fl w on")
+				self.Main_Client.tcp_send("fl ir off")
+				self.Main_Client.tcp_send("fl w on")
 
 		else:
 			self.lightMode = 1
@@ -214,8 +229,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
 				print("Light IR")
-				self.PyRobot_Client.tcp_send("fl w off")
-				self.PyRobot_Client.tcp_send("fl ir on")
+				self.Main_Client.tcp_send("fl w off")
+				self.Main_Client.tcp_send("fl ir on")
 
 
 	def changeLightState(self):
@@ -226,15 +241,15 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
 				print("Light WHITE")
-				self.PyRobot_Client.tcp_send("fl ir off")
-				self.PyRobot_Client.tcp_send("fl w on")
+				self.Main_Client.tcp_send("fl ir off")
+				self.Main_Client.tcp_send("fl w on")
 			
 			elif self.lightMode == 1:
 				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/light-ir.png"))
 				self.pushButton_lights.setIcon(buttonIcon)
 				print("Light IR")
-				self.PyRobot_Client.tcp_send("fl w off")
-				self.PyRobot_Client.tcp_send("fl ir on")
+				self.Main_Client.tcp_send("fl w off")
+				self.Main_Client.tcp_send("fl ir on")
 
 		elif self.lightOn == True:
 			self.lightOn = False
@@ -244,9 +259,9 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			print("Light OFF")
 
 			if self.lightMode == 0:
-				self.PyRobot_Client.tcp_send("fl w off")
+				self.Main_Client.tcp_send("fl w off")
 			if self.lightMode == 1:		
-				self.PyRobot_Client.tcp_send("fl ir off")
+				self.Main_Client.tcp_send("fl ir off")
 				
 
 	@pyqtSlot(int)
@@ -310,14 +325,14 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.showModulesList()
 
 		elif tokens[0] == "sled":
-			self.PyRobot_Client.tcp_send(cmd)
+			self.Main_Client.tcp_send(cmd)
 
 		elif tokens[0] == "fl":
 			if len(tokens) > 1:
 
 				if tokens[1] == "status":
-					self.PyRobot_Client.tcp_send(cmd)
-					msg_recu = self.PyRobot_Client.tcp_read()
+					self.Main_Client.tcp_send(cmd)
+					msg_recu = self.Main_Client.tcp_read()
 
 					if msg_recu != None:
 						print(msg_recu)
@@ -328,17 +343,17 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 							self.printToMonitor("FrontLights : OFF".format(args[3]))
 
 				else:
-					self.PyRobot_Client.tcp_send(cmd)
+					self.Main_Client.tcp_send(cmd)
 
 		elif tokens[0] == "sns":
-			self.PyRobot_Client.tcp_send(cmd)
+			self.Sensors_Client.tcp_send(cmd)
 
 		elif tokens[0] == "eng":
-			self.PyRobot_Client.tcp_send(cmd)
+			self.Engine_Client.tcp_send(cmd)
 
 		elif tokens[0] == "wifi":
-			self.PyRobot_Client.tcp_send(cmd)
-			msg_recu = self.PyRobot_Client.tcp_read()
+			self.Event_Client.tcp_send(cmd)
+			msg_recu = self.Event_Client.tcp_read()
 
 			if msg_recu != None:
 				args = msg_recu.split(" ")
@@ -350,9 +365,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		else:
 			self.printToMonitor("Command not found.")
 
-
-	def sendMsg(self):
-		self.PyRobot_Client.tcp_send(self.lineEdit_commandline.text())
 		
 	def printToMonitor(self, msg):
 		self.plainTextEdit_monitor.moveCursor(QTextCursor.End);
@@ -367,9 +379,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 												+" + Status LED - sled \n" \
 												+" + Engine - eng \n")
 
-	def closeEvent(self, event):
-		if self.PyRobot_Client != None:
-			self.PyRobot_Client.close()
 		
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
