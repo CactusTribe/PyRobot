@@ -1,4 +1,4 @@
-import socket, sys, subprocess, time, threading, re
+import socket, sys, subprocess, time, threading, re, codecs, base64, struct, io
 import RPi.GPIO as GPIO
 import Adafruit_DHT as dht
 
@@ -8,9 +8,13 @@ from LED_RGB import LED_RGB
 from Motor_DC import Motor_DC
 from MQ_XX import *
 from HC_SR04 import HC_SR04
+from picamera import PiCamera
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
+
+camera = PiCamera()
+camera.resolution = (640,480)
 
 temperature = 0
 humidity = 0
@@ -83,6 +87,9 @@ class ThreadClient(threading.Thread):
 		elif cmd == "eng":
 			self.Engine_Module(args)
 
+		elif cmd == "cam":
+			self.Camera_Module(args)
+
 		elif cmd == "wifi":
 			#stdoutdata = subprocess.getoutput("python3 WifiQuality.py")
 			stdoutdata = subprocess.getoutput("iwconfig")
@@ -94,6 +101,44 @@ class ThreadClient(threading.Thread):
 				percent = int( (current/maximum)*100 )
 
 				self.tcp_send("wifi {}".format(percent))
+
+
+	# --------------------------------------------
+	# MODULE CAMERA
+	# --------------------------------------------
+	def Camera_Module(self, args):
+		try:
+
+			if args[1] == "start":
+
+				connection = self.connection.makefile('wb')
+
+				start = time.time()
+				stream = io.BytesIO()
+
+				for foo in camera.capture_continuous(stream, 'jpeg'):
+					# Write the length of the capture to the stream and flush to
+					# ensure it actually gets sent
+					connection.write(struct.pack('<L', stream.tell()))
+					connection.flush()
+					# Rewind the stream and send the image data over the wire
+					stream.seek(0)
+					connection.write(stream.read())
+					# If we've been capturing for more than 30 seconds, quit
+					if time.time() - start > 20:
+						break
+					# Reset the stream for the next capture
+					stream.seek(0)
+					stream.truncate()
+
+				# Write a length of zero to the stream to signal we're done
+				connection.write(struct.pack('<L', 0))
+
+			elif args[1] == "stop":
+				pass
+
+		except Exception as e:
+			print(e) 
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS
@@ -128,7 +173,6 @@ class ThreadClient(threading.Thread):
 					
 				elif args[2] == "status":
 					self.tcp_send("fl status {}".format(FrontLight_IR.isOn()))	
-
 
 		except: pass
 
@@ -185,7 +229,7 @@ class ThreadClient(threading.Thread):
 				luminosity_L = values[1]
 				sound 			 = values[2]
 				inclinaison  = values[3]
-				channel_4    = values[4]
+				dist_IR	     = values[4]
 				channel_5 	 = values[5]
 				channel_6 	 = values[6]
 				channel_7 	 = values[7]
@@ -203,7 +247,7 @@ class ThreadClient(threading.Thread):
 				dist_R 	 = int(distance_R)
 
 				self.tcp_send("sns {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
-					luminosity_L, luminosity_R, sound, inclinaison, channel_4, channel_5, channel_6, channel_7, 
+					luminosity_L, luminosity_R, sound, inclinaison, dist_IR, channel_5, channel_6, channel_7, 
 					gas_1, gas_2, gas_3, gas_4, gas_5, gas_6, gas_7, gas_8,
 					dist_L, dist_R, temperature, humidity ))
 					
@@ -275,8 +319,14 @@ class ThreadClient(threading.Thread):
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
 
-			elif args[1] == "forward":
-				if (int(MCP3008_1.getValue(2)*100/1024)) < 55:
+			elif args[1] == "forward": 
+
+				if MCP3008_1.getValue(4) >= 15:
+					dist_IR = (2076 / (MCP3008_1.getValue(4) - 11) )
+				else:
+					dist_IR = 100
+
+				if (dist_IR) < 30:
 					Motor_L.setDirection("fw")
 					Motor_R.setDirection("fw")
 					Motor_L.setSpeed(100)
@@ -333,6 +383,9 @@ class PyRobot_Serveur:
 		MQ_135.MQCalibration()
 		print("Calibration done.")
 
+
+		print("Server listening at {}".format(self.port))
+
 	# Starting server
 	def start(self):
 		global closed
@@ -343,11 +396,9 @@ class PyRobot_Serveur:
 		self.serveur_socket.listen(5)
 
 		self.clients = {} # Dictionnaire des clients
-
-		self.setup()
+		#self.setup()
 		
 		while True:
-			print("Server listening at {}".format(self.port))
 
 			self.client_socket, self.infos_connexion = self.serveur_socket.accept()
 			closed = False
@@ -380,6 +431,7 @@ class PyRobot_Serveur:
 		closed = True
 		FrontLight_W.off()
 		FrontLight_IR.off()
+		camera.close()
 		GPIO.cleanup()
 
 	def eventLoop(self):
@@ -387,7 +439,12 @@ class PyRobot_Serveur:
 
 		while closed != True:
 
-			if ((int(MCP3008_1.getValue(2)*100/1024)) > 55 and
+			if MCP3008_1.getValue(4) >= 15:
+				dist_IR = (2076 / (MCP3008_1.getValue(4) - 11) )
+			else:
+				dist_IR = 100
+				
+			if ((dist_IR) > 30 and
 				Motor_L.getSpeed() > 0 and 
 				Motor_R.getSpeed() > 0 and 
 				Motor_L.getDirection() == "fw" and

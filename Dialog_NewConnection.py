@@ -41,16 +41,17 @@ class Dialog_NewConnection(QDialog):
 			self.Sensors_Client.start()
 			self.Engine_Client.start()
 			self.Camera_Client.start()
-			
+
 			if self.Main_Client.connected == True:
 				self.label_status.setText("Connected at {}:{}".format(self.Main_Client.hote, self.Main_Client.port))
 			else:
 				self.label_status.setText("Connection error.")
-				Main_Client = None
-				Event_Client = None
-				Sensors_Client = None
-				Engine_Client = None
-				Camera_Client = None
+
+				self.Main_Client = None
+				self.Event_Client = None
+				self.Sensors_Client = None
+				self.Engine_Client = None
+				self.Camera_Client = None
 
 		except ConnectionRefusedError:
 			self.Main_Client.close()

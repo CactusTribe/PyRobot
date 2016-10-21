@@ -337,7 +337,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Distance L</string>
+     <string>Distance IR</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -383,7 +383,7 @@
      </sizepolicy>
     </property>
     <property name="maximum">
-     <number>450</number>
+     <number>35</number>
     </property>
     <property name="value">
      <number>0</number>
@@ -470,7 +470,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Distance R</string>
+     <string>Distance US</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

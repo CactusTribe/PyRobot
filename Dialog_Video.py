@@ -2,16 +2,55 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
+import codecs, base64
 
 import resources_rc
 import socket
+import struct
+import io
+
 from PyRobot_Client import PyRobot_Client
+from PIL import Image
+from PIL.ImageQt import ImageQt
+
+class Camera_Capture(QThread):
+	update_capture = pyqtSignal(io.BytesIO)
+
+	def __init__(self, parent, client):
+		super(Camera_Capture, self).__init__(parent)
+		self.PyRobot_Client = client
+
+	def run(self):
+		self.PyRobot_Client.tcp_send("cam start")
+		connection = self.PyRobot_Client.socket.makefile('rb')
+
+		# Read the length of the image as a 32-bit unsigned int. If the
+		# length is zero, quit the loop
+		while True:
+			image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
+			if not image_len:
+			  break
+			# Construct a stream to hold the image data and read the image
+			# data from the connection
+			image_stream = io.BytesIO()
+			image_stream.write(connection.read(image_len))
+			# Rewind the stream, open it as an image with PIL and do some
+			# processing on it
+			image_stream.seek(0)
+			self.update_capture.emit(image_stream)
+
+
 
 class Dialog_Video(QDialog):
+	Camera_Thread = None
 
 	def __init__(self, parent, client):
 		QDialog.__init__(self, parent)
 		uic.loadUi('Dialog_Video.ui', self)
+		self.PyRobot_Client = client
+
+		self.Camera_Thread = Camera_Capture(self, self.PyRobot_Client)
+		self.Camera_Thread.update_capture.connect(self.update_view)
 
 		self.capture = False
 
@@ -35,14 +74,32 @@ class Dialog_Video(QDialog):
 			buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Pause-icon.png"))
 			self.pushButton_capture.setIcon(buttonIcon)
 
+			self.Camera_Thread.start()
+
 		else:
 			self.capture = False
 			buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Play-icon.png"))
 			self.pushButton_capture.setIcon(buttonIcon)
 
+			self.PyRobot_Client.tcp_send("cam stop")
+
+	def pil2qpixmap(self, pil_image):
+		imageq = ImageQt(pil_image)
+		qimage = QImage(imageq)
+		pix = QPixmap.fromImage(qimage)
+		return pix
+
 	def takePicture(self):
-		print("Take capture")
-		self.exportAsPng("screen0.png")
+		print("Take picture")
+
+
+	@pyqtSlot(io.BytesIO)
+	def update_view(self, img):
+		image = Image.open(img)
+		print('Image is %dx%d' % image.size)
+
+		self.pix = self.pil2qpixmap(image)
+		self.label_camera.setPixmap(self.pix)
 
 
 	def closeEvent(self, event):

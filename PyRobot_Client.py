@@ -9,11 +9,11 @@ class PyRobot_Client:
 
 	def start(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.socket.settimeout(0.5)
+		self.socket.settimeout(2)
 
 		try:
 			self.socket.connect((self.hote, self.port))
-			print("Connected at {}:{}".format(self.hote, self.port))
+			#print("Connected at {}:{}".format(self.hote, self.port))
 			self.connected = True
 		except:
 			self.close()

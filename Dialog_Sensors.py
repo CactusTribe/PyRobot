@@ -134,7 +134,7 @@ class Dialog_Sensors(QDialog):
 			luminosity_R = int(values[1])
 			sound 			 = (int(values[2])-25)*2 if int(values[2]) >= 25 else 0
 			inclinaison  = int(values[3])
-			channel_4    = int(values[4])
+			distance_IR  = int(values[4])
 			channel_5 	 = int(values[5])
 			channel_6 	 = int(values[6])
 			channel_7 	 = int(values[7])
@@ -194,24 +194,24 @@ class Dialog_Sensors(QDialog):
 				self.progressBar_ch7.setValue(0)
 				self.label_ch7.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
 
-			# DISTANCE L --------------------------------------------------------------------
-			if distance_L > 450 or distance_L <= 0:
+			# DISTANCE IR --------------------------------------------------------------------
+			if distance_IR > 35 or distance_IR <= 0:
 				self.label_ch3.setText("∞")
 				self.label_ch3.setStyleSheet("QLabel { font-size:16px; color: rgb(0, 0, 0); }")
 				self.progressBar_ch3.setValue(0)
 			else:
 				self.label_ch3.setStyleSheet("QLabel { font-size:12px; }")
-				self.label_ch3.setText("{} cm".format(distance_L))
-				self.progressBar_ch3.setValue(distance_L)
+				self.label_ch3.setText("{} cm".format(distance_IR))
+				self.progressBar_ch3.setValue(distance_IR)
 
-				if distance_L < 7:
+				if distance_IR < 7:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
-				elif distance_L < 15:
+				elif distance_IR < 15:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
 				else:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
 
-			# DISTANCE R --------------------------------------------------------------------
+			# DISTANCE US --------------------------------------------------------------------
 			if distance_R > 450 or distance_R <= 0:
 				self.label_ch4.setText("∞")
 				self.label_ch4.setStyleSheet("QLabel { font-size:16px; color: rgb(0, 0, 0); }")

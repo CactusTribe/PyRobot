@@ -96,7 +96,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.verticalSlider_lightsMode.setEnabled(False)
 		self.printToMonitor("> Welcome to PyRobot !")
 
-		# Threads
 
 	def updateStatus(self):
 		if self.Main_Client != None:
@@ -118,7 +117,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.EventLoop = EventLoop(self, self.Event_Client)
 			self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
 			self.EventLoop.updateStatusBattery.connect(self.changeBatteryLevel)
-			#self.EventLoop.start()
+			self.EventLoop.start()
+
+		else:
+			self.disconnect()
 
 	def closeEvent(self, event):
 		self.disconnect()
