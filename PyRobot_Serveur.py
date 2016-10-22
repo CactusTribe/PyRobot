@@ -137,7 +137,10 @@ class ThreadClient(threading.Thread):
 				connection.write(struct.pack('<L', 0))
 
 		except Exception as e:
+			connection.close()
 			print(e) 
+		finally:
+			connection.close()
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS
@@ -395,7 +398,7 @@ class PyRobot_Serveur:
 		self.serveur_socket.listen(5)
 
 		self.clients = {} # Dictionnaire des clients
-		#self.setup()
+		self.setup()
 		
 		while True:
 
@@ -415,7 +418,7 @@ class PyRobot_Serveur:
 			DistanceThread = threading.Thread(target = self.Distance_Module, args = [])
 			ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
 
-			#ThreadEvent.start()
+			ThreadEvent.start()
 			#DistanceThread.start()
 			#ClimatThread.start()
 
@@ -506,13 +509,13 @@ class PyRobot_Serveur:
 			time.sleep(2)
 
 
-
-
 if __name__ == "__main__":
 
 	PyRobot_Serveur = PyRobot_Serveur(12800)
 	try:
 		PyRobot_Serveur.start()
+	except KeyboardInterrupt:
+		PyRobot_Serveur.close()
 	except Exception as e:
 		print(str(e))
 		PyRobot_Serveur.close()

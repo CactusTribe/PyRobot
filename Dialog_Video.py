@@ -43,6 +43,7 @@ class Camera_Capture(QThread):
 			image_stream.seek(0)
 			self.update_capture.emit(image_stream)
 
+		connection.close()
 
 
 class Dialog_Video(QDialog):
@@ -90,6 +91,7 @@ class Dialog_Video(QDialog):
 	def pil2qpixmap(self, pil_image):
 		imageq = ImageQt(pil_image)
 		qimage = QImage(imageq)
+		qimage = qimage.scaled(self.label_camera.width(),self.label_camera.height());
 		pix = QPixmap.fromImage(qimage)
 		return pix
 
@@ -101,8 +103,6 @@ class Dialog_Video(QDialog):
 	def update_view(self, img):
 		try:
 			image = Image.open(img)
-			#print('Image is %dx%d' % image.size)
-
 			self.pix = self.pil2qpixmap(image)
 			self.label_camera.setPixmap(self.pix)
 		except Exception as e:
