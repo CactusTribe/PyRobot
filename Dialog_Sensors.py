@@ -39,7 +39,7 @@ class Sensors_Capture(QThread):
 							# MCP3008 1
 							luminosity_L = int(int(tokens[1])*100/1024)
 							luminosity_R = int(int(tokens[2])*100/1024)
-							sound 			 = int(int(tokens[3])*100/1024)
+							sound 			 = int(int(tokens[3])*100/768)
 							inclinaison  = int(int(tokens[4])*100/1024)
 							channel_4    = (2076 / (int(tokens[5]) - 11)) if (int(tokens[5]) > 12) else 0
 							channel_5 	 = int(tokens[6])
@@ -132,7 +132,7 @@ class Dialog_Sensors(QDialog):
 
 			luminosity_L = int(values[0])
 			luminosity_R = int(values[1])
-			sound 			 = (int(values[2])-25)*2 if int(values[2]) >= 25 else 0
+			sound 			 = int(values[2])
 			inclinaison  = int(values[3])
 			distance_IR  = int(values[4])
 			channel_5 	 = int(values[5])

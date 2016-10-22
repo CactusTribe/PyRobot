@@ -16,6 +16,7 @@ GPIO.setwarnings(False)
 camera = PiCamera()
 camera.resolution = (640,480)
 
+engine_speed = 100
 temperature = 0
 humidity = 0
 distance_L = 0
@@ -131,7 +132,7 @@ class ThreadClient(threading.Thread):
 					stream.seek(0)
 					stream.truncate()
 
-					time.sleep(0.05)
+					time.sleep(0.03)
 
 				# Write a length of zero to the stream to signal we're done
 				connection.write(struct.pack('<L', 0))
@@ -206,6 +207,8 @@ class ThreadClient(threading.Thread):
 	# MODULE SENSORS
 	# --------------------------------------------
 	def Sensors_Module(self, args):
+		global humidity, temperature
+
 		try:
 
 			if len(args) > 1:
@@ -229,7 +232,7 @@ class ThreadClient(threading.Thread):
 
 				luminosity_R = values[0]
 				luminosity_L = values[1]
-				sound 			 = values[2]
+				sound 			 = int(values[2]*1.5)
 				inclinaison  = values[3]
 				dist_IR	     = values[4]
 				channel_5 	 = values[5]
@@ -261,6 +264,8 @@ class ThreadClient(threading.Thread):
 	# MODULE ENGINE
 	# --------------------------------------------
 	def Engine_Module(self, args):
+		global engine_speed
+
 		try:
 			if args[1] == "fw":
 				timer = float(args[2])
@@ -268,8 +273,8 @@ class ThreadClient(threading.Thread):
 				Motor_L.setDirection("fw")
 				Motor_R.setDirection("fw")
 
-				Motor_L.setSpeed(100)
-				Motor_R.setSpeed(100)
+				Motor_L.setSpeed(engine_speed)
+				Motor_R.setSpeed(engine_speed)
 
 				t1 = time.time()
 
@@ -291,8 +296,8 @@ class ThreadClient(threading.Thread):
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("bw")
 
-				Motor_L.setSpeed(100)
-				Motor_R.setSpeed(100)
+				Motor_L.setSpeed(engine_speed)
+				Motor_R.setSpeed(engine_speed)
 				time.sleep(timer)
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
@@ -303,8 +308,8 @@ class ThreadClient(threading.Thread):
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("fw")
 
-				Motor_L.setSpeed(100)
-				Motor_R.setSpeed(100)
+				Motor_L.setSpeed(engine_speed)
+				Motor_R.setSpeed(engine_speed)
 				time.sleep(timer)
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
@@ -315,8 +320,8 @@ class ThreadClient(threading.Thread):
 				Motor_L.setDirection("fw")
 				Motor_R.setDirection("bw")
 
-				Motor_L.setSpeed(100)
-				Motor_R.setSpeed(100)
+				Motor_L.setSpeed(engine_speed)
+				Motor_R.setSpeed(engine_speed)
 				time.sleep(timer)
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
@@ -328,35 +333,41 @@ class ThreadClient(threading.Thread):
 				else:
 					dist_IR = 100
 
-				if (dist_IR) < 30:
+				inclinaison = (MCP3008_1.getValue(3)*100)/1024
+
+				if (inclinaison < 50) or (inclinaison > 50 and dist_IR < 10):
 					Motor_L.setDirection("fw")
 					Motor_R.setDirection("fw")
-					Motor_L.setSpeed(100)
-					Motor_R.setSpeed(100)
+					Motor_L.setSpeed(engine_speed)
+					Motor_R.setSpeed(engine_speed)
 
 			elif args[1] == "backward":
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("bw")
-				Motor_L.setSpeed(100)
-				Motor_R.setSpeed(100)
+				Motor_L.setSpeed(engine_speed)
+				Motor_R.setSpeed(engine_speed)
 
 			elif args[1] == "left":
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("fw")
-				Motor_L.setSpeed(100)
-				Motor_R.setSpeed(100)
+				Motor_L.setSpeed(engine_speed)
+				Motor_R.setSpeed(engine_speed)
 
 			elif args[1] == "right":
 				Motor_L.setDirection("fw")
 				Motor_R.setDirection("bw")
-				Motor_L.setSpeed(100)
-				Motor_R.setSpeed(100)
+				Motor_L.setSpeed(engine_speed)
+				Motor_R.setSpeed(engine_speed)
 
 			elif args[1] == "stop":
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
 
-		except: pass
+			elif args[1] == "speed":
+				engine_speed = int(args[2])
+
+		except Exception as e:
+			print(e) 
 
 
 
@@ -419,8 +430,8 @@ class PyRobot_Serveur:
 			ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
 
 			ThreadEvent.start()
-			#DistanceThread.start()
 			#ClimatThread.start()
+			#DistanceThread.start()
 
 		self.close()
 		print("Serveur closed.")
@@ -445,18 +456,21 @@ class PyRobot_Serveur:
 				dist_IR = (2076 / (MCP3008_1.getValue(4) - 11) )
 			else:
 				dist_IR = 100
-				
-			if ((dist_IR) > 30 and
-				Motor_L.getSpeed() > 0 and 
-				Motor_R.getSpeed() > 0 and 
-				Motor_L.getDirection() == "fw" and
-				Motor_R.getDirection() == "fw"):
 
-				StatusLED.setColor_RGB(100, 0, 255)
-				StatusLED.blink(0.1)
+			inclinaison = (MCP3008_1.getValue(3)*100)/1024
+			
+			if inclinaison > 50:
+				if ((dist_IR) > 10 and
+					Motor_L.getSpeed() > 0 and 
+					Motor_R.getSpeed() > 0 and 
+					Motor_L.getDirection() == "fw" and
+					Motor_R.getDirection() == "fw"):
 
-				Motor_L.setSpeed(0)
-				Motor_R.setSpeed(0)
+					StatusLED.setColor_RGB(100, 0, 255)
+					StatusLED.blink(0.1)
+
+					Motor_L.setSpeed(0)
+					Motor_R.setSpeed(0)
 
 			time.sleep(0.02)
 

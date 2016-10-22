@@ -83,6 +83,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		# Diverses actions
 		self.lineEdit_commandline.returnPressed.connect(self.execute_cmd)
 		self.verticalSlider_lightsMode.valueChanged.connect(self.changeLightMode)
+		self.verticalSlider_enginePower.valueChanged.connect(self.changeEnginePower)
 
 		# Setup
 		#self.updateStatus()
@@ -94,13 +95,13 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_video.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
 		self.verticalSlider_lightsMode.setEnabled(False)
+		self.verticalSlider_enginePower.setEnabled(False)
 		self.printToMonitor("> Welcome to PyRobot !")
 
 
 	def updateStatus(self):
 		if self.Main_Client != None:
 
-			self.label_ip.setText(self.Main_Client.hote)
 			self.printToMonitor("Connected to PyRobot at {}:{}".format(self.Main_Client.hote, self.Main_Client.port))
 
 			self.pushButton_disconnect.setEnabled(True)
@@ -111,6 +112,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.pushButton_video.setEnabled(True)
 			self.lineEdit_commandline.setEnabled(True)
 			self.verticalSlider_lightsMode.setEnabled(True)
+			self.verticalSlider_enginePower.setEnabled(True)
 
 			self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonOk-01.png")))
 
@@ -170,7 +172,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.Engine_Client = None
 			self.Camera_Client = None
 
-		self.label_ip.setText("No connection")
 		self.pushButton_disconnect.setEnabled(False)
 		self.pushButton_send_monitor.setEnabled(False)
 		self.pushButton_sensors.setEnabled(False)
@@ -212,6 +213,11 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 	def openWindowVideo(self):
 		video = Dialog_Video(self, self.Camera_Client)
 		video.show()
+
+	def changeEnginePower(self):
+		power = self.verticalSlider_enginePower.value()*10
+		self.label_enginePower.setText(str(power)+" %")
+		self.Engine_Client.tcp_send("eng speed {}".format(power))
 
 	def changeLightMode(self):
 		if self.verticalSlider_lightsMode.value() == 0:
