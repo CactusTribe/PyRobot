@@ -9,6 +9,7 @@ import socket
 import struct
 import io
 import time
+from datetime import datetime
 
 from PyRobot_Client import PyRobot_Client
 from PIL import Image
@@ -47,7 +48,6 @@ class Camera_Capture(QThread):
 
 class Dialog_Video(QDialog):
 	Camera_Thread = None
-	no_screen = 1
 	last_image = None
 
 	def __init__(self, parent, client):
@@ -95,8 +95,16 @@ class Dialog_Video(QDialog):
 
 	def takePicture(self):
 		print("Take picture")
-		self.last_image.save("camera_pictures/screen_{}.jpg".format(self.no_screen))
-		self.no_screen += 1
+		
+		self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_orange.png"))
+
+		if self.last_image != None:
+			self.last_image.save("camera_pictures/screen_{}.jpg".format(datetime.now().strftime("%H-%M-%S_%d:%m:%y")))
+
+			if self.capture == True:
+				self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_blue.png"))
+			else:
+				self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_off.png"))
 
 
 	@pyqtSlot(io.BytesIO)
@@ -115,12 +123,16 @@ class Dialog_Video(QDialog):
 		self.Camera_Thread = Camera_Capture(self.threadParent, self.PyRobot_Client)
 		self.Camera_Thread.update_capture.connect(self.update_view)
 		self.Camera_Thread.start()
+
 		print("Capture started !")
+		self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_blue.png"))
 
 	def stopCapture(self):
 		if self.Camera_Thread != None:
 			self.Camera_Thread.capture = False
+
 		print("Capture stoped !")
+		self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_off.png"))
 
 	def closeEvent(self, event):
 		self.stopCapture()
