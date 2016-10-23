@@ -49,12 +49,14 @@ MQ_135 = MQ_135(MCP3008_2, 7, 3.6) 			# MCP, CHANNEL, CLEAN_AIR_FACTOR
 closed = True
 
 class ThreadClient(threading.Thread):
-	def __init__(self, conn, clients):
+	def __init__(self, name, conn, clients):
 		threading.Thread.__init__(self)
 		self.connection = conn
 		self.clients = clients
+		self.name = name
 
 	def run(self):
+		self.setName(self.name)
 		nom = self.getName()
 
 		while True:
@@ -63,9 +65,12 @@ class ThreadClient(threading.Thread):
 				self.execute_cmd(msg_recu)
 			else: break
 
-		self.connection.close()
 		del self.clients[nom]
-		print("Client {} déconnecté.".format(nom))
+
+		print(" x {} at {} disconnected.".format(self.name, self.connection.getsockname()))
+
+		self.connection.close()
+
 
 	# Send message to client
 	def tcp_send(self, msg):
@@ -109,9 +114,9 @@ class ThreadClient(threading.Thread):
 	# --------------------------------------------
 	def Camera_Module(self, args):
 		try:
+			connection = None
 
 			if args[1] == "start":
-
 				connection = self.connection.makefile('wb')
 
 				start = time.time()
@@ -138,10 +143,11 @@ class ThreadClient(threading.Thread):
 				connection.write(struct.pack('<L', 0))
 
 		except Exception as e:
-			connection.close()
-			print(e) 
+			if connection != None:
+				connection.close()
 		finally:
-			connection.close()
+			if connection != None:
+				connection.close()
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS
@@ -410,28 +416,37 @@ class PyRobot_Serveur:
 
 		self.clients = {} # Dictionnaire des clients
 		self.setup()
-		
+
+		#Threads généraux
+		ThreadEvent = threading.Thread(target = self.eventLoop, args = [] )
+		DistanceThread = threading.Thread(target = self.Distance_Module, args = [])
+		ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
+
+		ThreadEvent.start()
+		#ClimatThread.start()
+		#DistanceThread.start()
+
+		threadNames = ["Main_Client", "Event_Client", "Sensors_Client", "Engine_Client", "Camera_Client"]
+		i = 0
+	
 		while True:
 
 			self.client_socket, self.infos_connexion = self.serveur_socket.accept()
 			closed = False
 
 			#Threads clients
-			th = ThreadClient(self.client_socket, self.clients)
+			th = ThreadClient(threadNames[i], self.client_socket, self.clients)
 			th.start()
+			th.setName(threadNames[i])
 			it = th.getName()
 			self.clients[it] = self.client_socket
-			print("Client connected with IP {} PORT {}".format(self.infos_connexion[0], self.infos_connexion[1]))
 
+			i+=1
 
-			#Threads généraux
-			ThreadEvent = threading.Thread(target = self.eventLoop, args = [] )
-			DistanceThread = threading.Thread(target = self.Distance_Module, args = [])
-			ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
+			if i == len(threadNames):
+				print(" -> {} is connected.".format(self.client_socket.getsockname()))
+			
 
-			ThreadEvent.start()
-			#ClimatThread.start()
-			#DistanceThread.start()
 
 		self.close()
 		print("Serveur closed.")
@@ -528,6 +543,7 @@ if __name__ == "__main__":
 	PyRobot_Serveur = PyRobot_Serveur(12800)
 	try:
 		PyRobot_Serveur.start()
+
 	except KeyboardInterrupt:
 		PyRobot_Serveur.close()
 	except Exception as e:
