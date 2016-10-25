@@ -1,4 +1,4 @@
-import socket, sys, subprocess, time, threading, re, codecs, base64, struct, io
+import socket, sys, subprocess, time, threading, re, io, copy 
 import RPi.GPIO as GPIO
 import Adafruit_DHT as dht
 
@@ -14,7 +14,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
 
 camera = PiCamera()
-camera.resolution = (640,480)
+camera.resolution = (720,480)
 
 engine_speed = 100
 temperature = 0
@@ -119,7 +119,6 @@ class ThreadClient(threading.Thread):
 			if args[1] == "start":
 				connection = self.connection.makefile('wb')
 
-				start = time.time()
 				stream = io.BytesIO()
 
 				for foo in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
@@ -130,9 +129,6 @@ class ThreadClient(threading.Thread):
 					# Rewind the stream and send the image data over the wire
 					stream.seek(0)
 					connection.write(stream.read())
-					# If we've been capturing for more than 30 seconds, quit
-					#if time.time() - start > 20:
-						#break
 					# Reset the stream for the next capture
 					stream.seek(0)
 					stream.truncate()
@@ -143,11 +139,7 @@ class ThreadClient(threading.Thread):
 				connection.write(struct.pack('<L', 0))
 
 		except Exception as e:
-			if connection != None:
-				connection.close()
-		finally:
-			if connection != None:
-				connection.close()
+			print(e)
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS
@@ -182,6 +174,15 @@ class ThreadClient(threading.Thread):
 					
 				elif args[2] == "status":
 					self.tcp_send("fl status {}".format(FrontLight_IR.isOn()))	
+
+			elif args[1] == "lum":
+				FrontLight_W.setLuminosity(int(args[2]))
+				FrontLight_IR.setLuminosity(int(args[2]))
+
+				if FrontLight_W.poweron == True:
+					FrontLight_W.on()
+				if FrontLight_IR.poweron == True:
+					FrontLight_IR.on()
 
 		except: pass
 
@@ -402,7 +403,6 @@ class PyRobot_Serveur:
 		MQ_135.MQCalibration()
 		print("Calibration done.")
 
-
 		print("Server listening at {}".format(self.port))
 
 	# Starting server
@@ -422,17 +422,18 @@ class PyRobot_Serveur:
 		DistanceThread = threading.Thread(target = self.Distance_Module, args = [])
 		ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
 
+		closed = False
 		ThreadEvent.start()
-		#ClimatThread.start()
+		ClimatThread.start()
 		#DistanceThread.start()
 
-		threadNames = ["Main_Client", "Event_Client", "Sensors_Client", "Engine_Client", "Camera_Client"]
+		threadNames = ["Main_Client", "Event_Client", "Sensors_Client", "Engine_Client", "Camera_Client", "IA_Client"]
 		i = 0
 	
 		while True:
 
 			self.client_socket, self.infos_connexion = self.serveur_socket.accept()
-			closed = False
+			
 
 			#Threads clients
 			th = ThreadClient(threadNames[i], self.client_socket, self.clients)
@@ -445,6 +446,7 @@ class PyRobot_Serveur:
 
 			if i == len(threadNames):
 				print(" -> {} is connected.".format(self.client_socket.getsockname()))
+				i = 0
 			
 
 
@@ -527,13 +529,16 @@ class PyRobot_Serveur:
 	# MODULE CLIMAT
 	# --------------------------------------------
 	def Climat_Module(self):
-		global closed
+		global closed, humidity, temperature
 
 		while closed != True:
-			humidity, temperature = dht.read_retry(dht.DHT22, DHT22)
+			h, t = dht.read_retry(dht.DHT22, DHT22)
 
-			if humidity == None: humidity = 0
-			if temperature == None: temperature = 0
+			if h == None: h = 0
+			if t == None: t = 0
+
+			humidity = copy.copy(h)
+			temperature = copy.copy(t)
 
 			time.sleep(2)
 
@@ -547,7 +552,7 @@ if __name__ == "__main__":
 	except KeyboardInterrupt:
 		PyRobot_Serveur.close()
 	except Exception as e:
-		print(str(e))
+		print(e)
 		PyRobot_Serveur.close()
 
 	GPIO.cleanup()

@@ -49,6 +49,34 @@ class EventLoop(QThread):
 			except Exception as e:
 				print(e)
 
+class IALoop(QThread):
+
+	def __init__(self, parent, client):
+		super(IALoop, self).__init__(parent)
+		self.PyRobot_Client = client
+		self.stopped = False
+
+	def stop(self):
+		if self.PyRobot_Client != None:
+			self.PyRobot_Client.tcp_send("fl w off")
+		self.PyRobot_Client = None
+		self.stopped = True
+		print("IALoop stopped")
+
+	def run(self):
+		print("IALoop started")
+
+		while self.stopped == False:
+			try:
+				if self.PyRobot_Client != None:
+					self.PyRobot_Client.tcp_send("fl w on")
+					time.sleep(1)
+					self.PyRobot_Client.tcp_send("fl w off")
+					time.sleep(1)
+				
+			except Exception as e:
+				print(e)
+
  
 class PyRobot(QMainWindow, Ui_MainWindow):
 
@@ -57,8 +85,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 	Sensors_Client = None
 	Engine_Client = None
 	Camera_Client = None
+	IA_Client = None
 
 	EventLoop = None
+	IALoop = None
 
 	def __init__(self):
 		QMainWindow.__init__(self)
@@ -69,6 +99,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.key_pressed = False
 		self.lightOn = False
 		self.lightMode = 0
+		self.autoMode = False
 
 		# Boutons de gestion des entrées
 		self.pushButton_new_connection.clicked.connect(self.newConnection)
@@ -79,11 +110,13 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_enabled_keyboard.clicked.connect(self.setFocus)
 		self.pushButton_lights.clicked.connect(self.changeLightState)
 		self.pushButton_send_monitor.clicked.connect(self.execute_cmd)
+		self.pushButton_automatic.clicked.connect(self.AutomaticMode)
 
 		# Diverses actions
 		self.lineEdit_commandline.returnPressed.connect(self.execute_cmd)
 		self.verticalSlider_lightsMode.valueChanged.connect(self.changeLightMode)
 		self.verticalSlider_enginePower.valueChanged.connect(self.changeEnginePower)
+		self.verticalSlider_luminosity.valueChanged.connect(self.changeLuminosity)
 
 		# Setup
 		#self.updateStatus()
@@ -93,9 +126,12 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_enabled_keyboard.setEnabled(False)
 		self.pushButton_lights.setEnabled(False)
 		self.pushButton_video.setEnabled(False)
+		self.pushButton_automatic.setEnabled(False)
+		self.pushButton_script.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
 		self.verticalSlider_lightsMode.setEnabled(False)
 		self.verticalSlider_enginePower.setEnabled(False)
+		self.verticalSlider_luminosity.setEnabled(False)
 		self.printToMonitor("> Welcome to PyRobot !")
 
 
@@ -110,9 +146,12 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.pushButton_enabled_keyboard.setEnabled(True)
 			self.pushButton_lights.setEnabled(True)
 			self.pushButton_video.setEnabled(True)
+			self.pushButton_automatic.setEnabled(True)
+			self.pushButton_script.setEnabled(True)
 			self.lineEdit_commandline.setEnabled(True)
 			self.verticalSlider_lightsMode.setEnabled(True)
 			self.verticalSlider_enginePower.setEnabled(True)
+			self.verticalSlider_luminosity.setEnabled(True)
 
 			self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonOk-01.png")))
 
@@ -159,18 +198,34 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.EventLoop.stop()
 			self.EventLoop = None
 
+		if self.IALoop != None:
+			self.IALoop.stop()
+			self.IALoop = None
+
 		if self.Main_Client != None:
+			if self.lightOn == True:
+				self.changeLightState()
+
+			self.verticalSlider_luminosity.setValue(100)
+			self.verticalSlider_enginePower.setValue(100)
+
+			self.Main_Client.tcp_send("fl lum 100")
+			self.Main_Client.tcp_send("fl w off")
+			self.Main_Client.tcp_send("fl ir off")
+
 			self.Main_Client.close()
 			self.Event_Client.close()
 			self.Sensors_Client.close()
 			self.Engine_Client.close()
 			self.Camera_Client.close()
+			self.IA_Client.close()
 
 			self.Main_Client = None
 			self.Event_Client = None
 			self.Sensors_Client = None
 			self.Engine_Client = None
 			self.Camera_Client = None
+			self.IA_Client = None
 
 		self.pushButton_disconnect.setEnabled(False)
 		self.pushButton_send_monitor.setEnabled(False)
@@ -178,8 +233,13 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_enabled_keyboard.setEnabled(False)
 		self.pushButton_lights.setEnabled(False)
 		self.pushButton_video.setEnabled(False)
+		self.pushButton_automatic.setEnabled(False)
+		self.pushButton_script.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
 		self.verticalSlider_lightsMode.setEnabled(False)
+		self.verticalSlider_enginePower.setEnabled(False)
+		self.verticalSlider_luminosity.setEnabled(False)
+		
 
 
 		self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
@@ -197,6 +257,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.Sensors_Client = new_connection.Sensors_Client
 			self.Engine_Client = new_connection.Engine_Client
 			self.Camera_Client = new_connection.Camera_Client
+			self.IA_Client = new_connection.IA_Client
 
 			self.updateStatus()
 
@@ -213,11 +274,17 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 	def openWindowVideo(self):
 		video = Dialog_Video(self, self.Camera_Client)
 		video.show()
+		video.startCapture()
 
 	def changeEnginePower(self):
 		power = self.verticalSlider_enginePower.value()*10
 		self.label_enginePower.setText(str(power)+" %")
 		self.Engine_Client.tcp_send("eng speed {}".format(power))
+
+	def changeLuminosity(self):
+		luminosity = self.verticalSlider_luminosity.value()*10
+		self.label_luminosity.setText(str(luminosity)+" %")
+		self.Main_Client.tcp_send("fl lum {}".format(luminosity))
 
 	def changeLightMode(self):
 		if self.verticalSlider_lightsMode.value() == 0:
@@ -239,6 +306,25 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				print("Light IR")
 				self.Main_Client.tcp_send("fl w off")
 				self.Main_Client.tcp_send("fl ir on")
+
+	def AutomaticMode(self):
+		if self.autoMode == True:
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Compass-iPhone-2-icon_OFF.png"))
+				self.pushButton_automatic.setIcon(buttonIcon)
+				
+				self.autoMode = False
+				self.IALoop.stop()
+				print("AutoMode disabled.")
+
+		else:
+				buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Compass-iPhone-2-icon.png"))
+				self.pushButton_automatic.setIcon(buttonIcon)
+			
+				self.autoMode = True
+				self.IALoop = IALoop(self, self.IA_Client)
+				self.IALoop.start()
+				print("AutoMode enabled.")
+
 
 
 	def changeLightState(self):
