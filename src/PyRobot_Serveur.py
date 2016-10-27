@@ -1,4 +1,4 @@
-import socket, sys, subprocess, time, threading, re, io, copy 
+import socket, sys, subprocess, time, threading, re, io, copy , struct
 import RPi.GPIO as GPIO
 import Adafruit_DHT as dht
 
@@ -52,6 +52,7 @@ class ThreadClient(threading.Thread):
 	def __init__(self, name, conn, clients):
 		threading.Thread.__init__(self)
 		self.connection = conn
+		self.pipe = self.connection.makefile('wb')
 		self.clients = clients
 		self.name = name
 
@@ -114,21 +115,17 @@ class ThreadClient(threading.Thread):
 	# --------------------------------------------
 	def Camera_Module(self, args):
 		try:
-			connection = None
-
 			if args[1] == "start":
-				connection = self.connection.makefile('wb')
-
 				stream = io.BytesIO()
 
 				for foo in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
 					# Write the length of the capture to the stream and flush to
 					# ensure it actually gets sent
-					connection.write(struct.pack('<L', stream.tell()))
-					connection.flush()
+					self.pipe.write(struct.pack('<L', stream.tell()))
+					self.pipe.flush()
 					# Rewind the stream and send the image data over the wire
 					stream.seek(0)
-					connection.write(stream.read())
+					self.pipe.write(stream.read())
 					# Reset the stream for the next capture
 					stream.seek(0)
 					stream.truncate()
@@ -136,9 +133,10 @@ class ThreadClient(threading.Thread):
 					time.sleep(0.03)
 
 				# Write a length of zero to the stream to signal we're done
-				connection.write(struct.pack('<L', 0))
+				self.pipe.write(struct.pack('<L', 0))
 
 		except Exception as e:
+			stream.close()
 			print(e)
 
 	# --------------------------------------------

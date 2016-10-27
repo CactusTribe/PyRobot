@@ -2,7 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-import sys, threading, time
+import sys, threading, time, copy
+from random import randint
 
 # Import windows
 from Dialog_NewConnection import Dialog_NewConnection
@@ -12,6 +13,13 @@ from Dialog_Help import Dialog_Help
 
 qtCreatorFile = "interfaces/pyRobot.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
+
+from enum import Enum
+class Direction(Enum):
+	FORWARD = 1
+	BACKWARD = 2
+	LEFT = 3
+	RIGHT = 4
 
 
 class EventLoop(QThread):
@@ -58,21 +66,88 @@ class IALoop(QThread):
 
 	def stop(self):
 		if self.PyRobot_Client != None:
+			self.PyRobot_Client.tcp_send("eng stop")
 			self.PyRobot_Client.tcp_send("fl w off")
+			self.PyRobot_Client.tcp_send("fl ir off")
 		self.PyRobot_Client = None
 		self.stopped = True
 		print("IALoop stopped")
 
 	def run(self):
 		print("IALoop started")
+		last_channel_4 = 0
+		direction = Direction.FORWARD
 
 		while self.stopped == False:
 			try:
 				if self.PyRobot_Client != None:
-					self.PyRobot_Client.tcp_send("fl w on")
-					time.sleep(1)
-					self.PyRobot_Client.tcp_send("fl w off")
-					time.sleep(1)
+					self.PyRobot_Client.tcp_send("sns")
+					msg_recu = self.PyRobot_Client.tcp_read()
+								
+					if msg_recu != None: 
+						tokens = msg_recu.split(" ")
+						if tokens[0] == "sns":
+							# MCP3008 1
+							luminosity_L = int(int(tokens[1])*100/1024)
+							luminosity_R = int(int(tokens[2])*100/1024)
+							sound 			 = int(int(tokens[3])*100/768)
+							inclinaison  = int(int(tokens[4])*100/1024)
+							channel_4    = (2076 / (int(tokens[5]) - 11)) if (int(tokens[5]) > 12) else 100
+							channel_5 	 = int(tokens[6])
+							channel_6 	 = int(tokens[7])
+							channel_7 	 = int(tokens[8])
+
+							if channel_4 < 8 and channel_4 >= 6:
+								self.PyRobot_Client.tcp_send("eng forward")
+								direction = Direction.FORWARD
+
+							elif channel_4 < 6:
+								self.PyRobot_Client.tcp_send("eng stop")
+								self.PyRobot_Client.tcp_send("eng backward")
+								direction = Direction.BACKWARD
+								time.sleep(1)
+
+								if luminosity_L > luminosity_R:
+									self.PyRobot_Client.tcp_send("eng left")
+									direction = Direction.LEFT
+								elif luminosity_L < luminosity_R:
+									self.PyRobot_Client.tcp_send("eng right")
+									direction = Direction.RIGHT
+
+								time.sleep(1)
+
+							elif channel_4 >= 8:
+								if channel_4 > last_channel_4:
+									self.PyRobot_Client.tcp_send("eng stop")
+									self.PyRobot_Client.tcp_send("eng backward")
+									direction = Direction.BACKWARD
+									time.sleep(1)
+									self.PyRobot_Client.tcp_send("eng left")
+									direction = Direction.LEFT
+									time.sleep(1)
+									"""
+									if direction == Direction.RIGHT:
+										self.PyRobot_Client.tcp_send("eng left")
+										direction = Direction.LEFT
+										time.sleep(1)
+										self.PyRobot_Client.tcp_send("eng stop")
+									elif direction == Direction.LEFT:
+										self.PyRobot_Client.tcp_send("eng right")
+										direction = Direction.RIGHT
+										time.sleep(1)
+										self.PyRobot_Client.tcp_send("eng stop")
+									"""
+
+								
+							last_channel_4 = copy.copy(channel_4)
+
+
+					#self.Engine_Client.tcp_send("eng backward")
+					#self.Engine_Client.tcp_send("eng left")
+					#self.Engine_Client.tcp_send("eng right")
+
+					
+					time.sleep(0.02)
 				
 			except Exception as e:
 				print(e)
@@ -313,6 +388,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.pushButton_automatic.setIcon(buttonIcon)
 				
 				self.autoMode = False
+				self.Engine_Client.tcp_send("eng stop")
 				self.IALoop.stop()
 				print("AutoMode disabled.")
 

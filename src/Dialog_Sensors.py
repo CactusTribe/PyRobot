@@ -204,9 +204,9 @@ class Dialog_Sensors(QDialog):
 				self.label_ch3.setText("{} cm".format(distance_IR))
 				self.progressBar_ch3.setValue(distance_IR)
 
-				if distance_IR < 7:
+				if distance_IR > 18:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 0, 0) }")
-				elif distance_IR < 15:
+				elif distance_IR > 8:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(255, 150, 0) }")
 				else:
 					self.label_ch3.setStyleSheet("QLabel { color: rgb(0, 180, 0) }")
