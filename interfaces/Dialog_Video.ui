@@ -71,7 +71,42 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/resources/img/resources/img/Play-icon.png</normaloff>:/resources/img/resources/img/Play-icon.png</iconset>
+         <normaloff>:/resources/img/resources/img/Actions-media-playback-start-icon.png</normaloff>:/resources/img/resources/img/Actions-media-playback-start-icon.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_recording">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/resources/img/resources/img/Actions-media-record-icon.png</normaloff>:/resources/img/resources/img/Actions-media-record-icon.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -142,8 +177,8 @@
       <widget class="QLabel" name="label_captureStatut">
        <property name="maximumSize">
         <size>
-         <width>20</width>
-         <height>20</height>
+         <width>30</width>
+         <height>30</height>
         </size>
        </property>
        <property name="text">

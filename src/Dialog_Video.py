@@ -10,14 +10,17 @@ import struct
 import io
 import time
 from datetime import datetime
+import subprocess as sp
 
 from PyRobot_Client import PyRobot_Client
 from PIL import Image
 from PIL.ImageQt import ImageQt
 import cv2
 import numpy
+import copy
 
 capture = True
+recording = False
 
 class Camera_Capture(QThread):
 	update_capture = pyqtSignal(io.BytesIO)
@@ -25,10 +28,26 @@ class Camera_Capture(QThread):
 	def __init__(self, parent, client):
 		super(Camera_Capture, self).__init__(parent)
 		self.PyRobot_Client = client
-		
 
 	def run(self):
 		pipe = self.PyRobot_Client.socket.makefile('rb')
+		out = None
+
+		if recording == True:
+			print("Create video file")
+			command = [ "ffmpeg",
+				'-y', # (optional) overwrite output file if it exists
+				'-f', 'rawvideo',
+				'-vcodec','rawvideo',
+				'-s', '640x480', # size of one frame
+				'-pix_fmt', 'rgb24',
+				'-r', '24', # frames per second
+				'-i', '-', # The imput comes from a pipe
+				'-an', # Tells FFMPEG not to expect any audio
+				'-vcodec', 'mpeg4',
+				'camera_videos/video_{}.mp4'.format(datetime.now().strftime("%H-%M-%S_%d-%m-%y"))]
+
+			out = sp.Popen(command, stdin=sp.PIPE, stderr=sp.PIPE)
 
 		try:
 			while True:
@@ -47,9 +66,21 @@ class Camera_Capture(QThread):
 				image_stream.seek(0)
 				self.update_capture.emit(image_stream)
 
+				if out != None:
+					image = Image.open(copy.copy(image_stream))
+					array = numpy.array(image)
+					out.stdin.write(array.tostring())
+
 			pipe.close()
 
+			if out != None:
+				out.stdin.close()
+				out.stderr.close()
+				del out
+
 		except Exception as e:
+			if out != None:
+				print(out.stderr.read())
 			print(e)
 			pipe.close()
 
@@ -64,6 +95,7 @@ class Dialog_Video(QDialog):
 		self.PyRobot_Client = client
 
 		self.pushButton_capture.clicked.connect(self.captureState)
+		self.pushButton_recording.clicked.connect(self.recordingState)
 		self.pushButton_photo.clicked.connect(self.takePicture)
 
 		self.beer_cascade = cv2.CascadeClassifier("beer_cascade_1.xml")
@@ -73,6 +105,15 @@ class Dialog_Video(QDialog):
 		if capture == False:
 			self.startCapture()
 		else:
+			self.stopCapture()
+
+	def recordingState(self):
+		global recording
+		if recording == False:
+			recording = True
+			self.startCapture()
+		else:
+			recording = False
 			self.stopCapture()
 
 	def pil2qpixmap(self, pil_image):
@@ -90,7 +131,7 @@ class Dialog_Video(QDialog):
 		self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_orange.png"))
 
 		if self.last_image != None:
-			self.last_image.save("camera_pictures/screen_{}.jpg".format(datetime.now().strftime("%H-%M-%S_%d:%m:%y")))
+			self.last_image.save("camera_pictures/screen_{}.jpg".format(datetime.now().strftime("%H-%M-%S_%d-%m-%y")))
 
 			global capture
 			if capture == True:
@@ -110,14 +151,14 @@ class Dialog_Video(QDialog):
 			# TEST OBJECT RECOGNITION
 			opencvImage = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
 			gray = cv2.cvtColor(opencvImage, cv2.COLOR_BGR2GRAY)
-			objects = self.beer_cascade.detectMultiScale(gray, 20, 20)
+			objects = self.beer_cascade.detectMultiScale(gray, 50, 50)
 
 			for (x,y,w,h) in objects:
 				cv2.rectangle(opencvImage,(x,y),(x+w,y+h),(255,255,0),2)
 
 			image_modif = QImage(opencvImage, opencvImage.shape[1], opencvImage.shape[0], opencvImage.shape[1] * 3, QImage.Format_RGB888)
 			pix_modif = QPixmap(image_modif)
-			#self.label_camera.setPixmap(pix_modif)
+			self.label_camera.setPixmap(pix_modif)
 			# ------------------------------
 			"""
 
@@ -128,7 +169,7 @@ class Dialog_Video(QDialog):
 
 
 	def startCapture(self):
-		global capture
+		global capture, recording
 		capture = True
 		self.PyRobot_Client.tcp_send("cam start")
 
@@ -136,13 +177,23 @@ class Dialog_Video(QDialog):
 		self.Camera_Thread.update_capture.connect(self.update_view)
 		self.Camera_Thread.start()
 
-		print("Capture started !")
-		buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Pause-icon.png"))
-		self.pushButton_capture.setIcon(buttonIcon)
-		self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_blue.png"))
+		if recording == False:
+			print("Capture started !")
+			buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Actions-media-playback-pause-icon.png"))
+			self.pushButton_capture.setIcon(buttonIcon)
+			self.pushButton_capture.setEnabled(True)
+			self.pushButton_recording.setEnabled(False)
+			self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_blue.png"))
+		else:
+			print("Recording started !")
+			buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Actions-media-playback-stop-icon.png"))
+			self.pushButton_recording.setIcon(buttonIcon)
+			self.pushButton_capture.setEnabled(False)
+			self.pushButton_recording.setEnabled(True)
+			self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_red.png"))
 
 	def stopCapture(self):
-		global capture
+		global capture, recording
 		capture = False
 		self.PyRobot_Client.tcp_send("cam stop")
 
@@ -151,9 +202,14 @@ class Dialog_Video(QDialog):
 			self.Camera_Thread = None
 
 		print("Capture stoped !")
-		buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Play-icon.png"))
+		buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Actions-media-playback-start-icon.png"))
 		self.pushButton_capture.setIcon(buttonIcon)
+		buttonIcon = QIcon(QPixmap(":/resources/img/resources/img/Actions-media-record-icon.png"))
+		self.pushButton_recording.setIcon(buttonIcon)
 		self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_off.png"))
+
+		self.pushButton_capture.setEnabled(True)
+		self.pushButton_recording.setEnabled(True)
 
 
 	def closeEvent(self, event):

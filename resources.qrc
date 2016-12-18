@@ -1,5 +1,9 @@
 <RCC>
 	<qresource prefix="/resources/img">
+		<file>resources/img/Actions-media-playback-pause-icon.png</file>
+		<file>resources/img/Actions-media-playback-start-icon.png</file>
+		<file>resources/img/Actions-media-playback-stop-icon.png</file>
+		<file>resources/img/Actions-media-record-icon.png</file>
 		<file>resources/img/Apps-konsole-icon.png</file>
 		<file>resources/img/Apps-utilities-terminal-icon.png</file>
 		<file>resources/img/ButtonDelete-01.png</file>
@@ -55,6 +59,7 @@
 		<file>resources/img/round_button_blue.png</file>
 		<file>resources/img/round_button_off.png</file>
 		<file>resources/img/round_button_orange.png</file>
+		<file>resources/img/round_button_red.png</file>
 		<file>resources/img/Ruler-icon.png</file>
 		<file>resources/img/Search-icon-1.png</file>
 		<file>resources/img/Search-icon.png</file>
