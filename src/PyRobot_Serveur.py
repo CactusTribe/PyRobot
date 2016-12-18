@@ -14,7 +14,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
 
 camera = PiCamera()
-camera.resolution = (720,480)
+camera.resolution = (640,480)
 
 engine_speed = 100
 temperature = 0
@@ -51,10 +51,10 @@ closed = True
 class ThreadClient(threading.Thread):
 	def __init__(self, name, conn, clients):
 		threading.Thread.__init__(self)
-		self.connection = conn
-		self.pipe = self.connection.makefile('wb')
 		self.clients = clients
 		self.name = name
+		self.connection = conn
+		self.camera_capture = False
 
 	def run(self):
 		self.setName(self.name)
@@ -116,28 +116,47 @@ class ThreadClient(threading.Thread):
 	def Camera_Module(self, args):
 		try:
 			if args[1] == "start":
-				stream = io.BytesIO()
+				print(" -> Start camera capture")
+				self.camera_capture = True
+				ThreadCapture = threading.Thread(target = self.Camera_capture, args = [] )
+				ThreadCapture.start()
 
-				for foo in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
-					# Write the length of the capture to the stream and flush to
-					# ensure it actually gets sent
-					self.pipe.write(struct.pack('<L', stream.tell()))
-					self.pipe.flush()
-					# Rewind the stream and send the image data over the wire
-					stream.seek(0)
-					self.pipe.write(stream.read())
-					# Reset the stream for the next capture
-					stream.seek(0)
-					stream.truncate()
-
-					time.sleep(0.03)
-
-				# Write a length of zero to the stream to signal we're done
-				self.pipe.write(struct.pack('<L', 0))
+			elif args[1] == "stop":
+				self.camera_capture = False
+				print(" -> Stop camera capture")
 
 		except Exception as e:
 			stream.close()
 			print(e)
+
+	def Camera_capture(self):
+		pipe = self.connection.makefile('wb')
+
+		try:
+			stream = io.BytesIO()
+			for foo in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
+				# Write the length of the capture to the stream and flush to
+				# ensure it actually gets sent
+				pipe.write(struct.pack('<L', stream.tell()))
+				pipe.flush()
+				# Rewind the stream and send the image data over the wire
+				stream.seek(0)
+				pipe.write(stream.read())
+				
+				if self.camera_capture == False:
+					break
+
+				# Reset the stream for the next capture
+				stream.seek(0)
+				stream.truncate()
+				time.sleep(0.02)
+
+			# Write a length of zero to the stream to signal we're done
+			pipe.write(struct.pack('<L', 0))
+
+		finally:
+			pipe.close()
+
 
 	# --------------------------------------------
 	# MODULE FRONT-LIGHTS

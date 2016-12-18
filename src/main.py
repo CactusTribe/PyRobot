@@ -105,7 +105,7 @@ class IALoop(QThread):
 								self.PyRobot_Client.tcp_send("eng stop")
 								self.PyRobot_Client.tcp_send("eng backward")
 								direction = Direction.BACKWARD
-								time.sleep(1)
+								time.sleep(1.5)
 
 								if luminosity_L > luminosity_R:
 									self.PyRobot_Client.tcp_send("eng left")
@@ -121,7 +121,7 @@ class IALoop(QThread):
 									self.PyRobot_Client.tcp_send("eng stop")
 									self.PyRobot_Client.tcp_send("eng backward")
 									direction = Direction.BACKWARD
-									time.sleep(1)
+									time.sleep(1.5)
 									self.PyRobot_Client.tcp_send("eng left")
 									direction = Direction.LEFT
 									time.sleep(1)
@@ -140,12 +140,6 @@ class IALoop(QThread):
 
 								
 							last_channel_4 = copy.copy(channel_4)
-
-
-					#self.Engine_Client.tcp_send("eng backward")
-					#self.Engine_Client.tcp_send("eng left")
-					#self.Engine_Client.tcp_send("eng right")
-
 					
 					time.sleep(0.02)
 				

@@ -14,6 +14,8 @@ from datetime import datetime
 from PyRobot_Client import PyRobot_Client
 from PIL import Image
 from PIL.ImageQt import ImageQt
+import cv2
+import numpy
 
 capture = True
 
@@ -23,42 +25,33 @@ class Camera_Capture(QThread):
 	def __init__(self, parent, client):
 		super(Camera_Capture, self).__init__(parent)
 		self.PyRobot_Client = client
-		self.connection = self.PyRobot_Client.socket.makefile('rb')
-		#self.capture = True
-
-	def stop(self):
-		global capture
-		capture = False
+		
 
 	def run(self):
-		self.PyRobot_Client.tcp_send("cam start")
+		pipe = self.PyRobot_Client.socket.makefile('rb')
 
 		try:
-			global capture
-
-			while capture != False:
+			while True:
 				# Read the length of the image as a 32-bit unsigned int. If the
 				# length is zero, quit the loop
-				image_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
+				image_len = struct.unpack('<L', pipe.read(struct.calcsize('<L')))[0]
 				if not image_len:
 				  break
 
 				# Construct a stream to hold the image data and read the image
 				# data from the connection
 				image_stream = io.BytesIO()
-				image_stream.write(self.connection.read(image_len))
+				image_stream.write(pipe.read(image_len))
 				# Rewind the stream, open it as an image with PIL and do some
 				# processing on it
 				image_stream.seek(0)
 				self.update_capture.emit(image_stream)
 
+			pipe.close()
+
 		except Exception as e:
 			print(e)
-			capture = False
-			self.connection.close()
-		finally:
-			capture = False
-			self.connection.close()
+			pipe.close()
 
 
 class Dialog_Video(QDialog):
@@ -70,28 +63,27 @@ class Dialog_Video(QDialog):
 		uic.loadUi('interfaces/Dialog_Video.ui', self)
 		self.PyRobot_Client = client
 
-		global capture
-		capture = True
-
-		self.Camera_Thread = Camera_Capture(self, self.PyRobot_Client)
-		self.Camera_Thread.update_capture.connect(self.update_view)
-
 		self.pushButton_capture.clicked.connect(self.captureState)
 		self.pushButton_photo.clicked.connect(self.takePicture)
 
+		self.beer_cascade = cv2.CascadeClassifier("beer_cascade_1.xml")
 
 	def captureState(self):
-		if self.Camera_Thread == None:
+		global capture
+		if capture == False:
 			self.startCapture()
 		else:
 			self.stopCapture()
 
 	def pil2qpixmap(self, pil_image):
-		imageq = ImageQt(pil_image)
-		qimage = QImage(imageq)
-		qimage = qimage.scaled(self.label_camera.width(),self.label_camera.height());
-		pix = QPixmap.fromImage(qimage)
-		return pix
+		try:
+			imageq = ImageQt(pil_image)
+			qimage = QImage(imageq)
+			qimage = qimage.scaled(self.label_camera.width(),self.label_camera.height());
+			pix = QPixmap.fromImage(qimage)
+			return pix
+		except Exception as e:
+			print(e)
 
 	def takePicture(self):
 		print("Take picture")
@@ -113,12 +105,33 @@ class Dialog_Video(QDialog):
 			image = Image.open(img)
 			self.last_image = image
 			self.pix = self.pil2qpixmap(image)
+			
+			"""
+			# TEST OBJECT RECOGNITION
+			opencvImage = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
+			gray = cv2.cvtColor(opencvImage, cv2.COLOR_BGR2GRAY)
+			objects = self.beer_cascade.detectMultiScale(gray, 20, 20)
+
+			for (x,y,w,h) in objects:
+				cv2.rectangle(opencvImage,(x,y),(x+w,y+h),(255,255,0),2)
+
+			image_modif = QImage(opencvImage, opencvImage.shape[1], opencvImage.shape[0], opencvImage.shape[1] * 3, QImage.Format_RGB888)
+			pix_modif = QPixmap(image_modif)
+			#self.label_camera.setPixmap(pix_modif)
+			# ------------------------------
+			"""
+
 			self.label_camera.setPixmap(self.pix)
+
 		except Exception as e:
 			print(e)
 
 
 	def startCapture(self):
+		global capture
+		capture = True
+		self.PyRobot_Client.tcp_send("cam start")
+
 		self.Camera_Thread = Camera_Capture(self, self.PyRobot_Client)
 		self.Camera_Thread.update_capture.connect(self.update_view)
 		self.Camera_Thread.start()
@@ -131,9 +144,9 @@ class Dialog_Video(QDialog):
 	def stopCapture(self):
 		global capture
 		capture = False
+		self.PyRobot_Client.tcp_send("cam stop")
 
 		if self.Camera_Thread != None:
-			self.Camera_Thread.stop()
 			self.Camera_Thread.wait()
 			self.Camera_Thread = None
 
@@ -142,6 +155,9 @@ class Dialog_Video(QDialog):
 		self.pushButton_capture.setIcon(buttonIcon)
 		self.label_captureStatut.setPixmap(QPixmap(":/resources/img/resources/img/round_button_off.png"))
 
+
 	def closeEvent(self, event):
-		self.stopCapture()
+		global capture
+		if capture == True:
+			self.stopCapture()
 
