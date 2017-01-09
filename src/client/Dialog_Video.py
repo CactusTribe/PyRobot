@@ -159,7 +159,7 @@ class Dialog_Video(QDialog):
 			# TEST OBJECT RECOGNITION
 			opencvImage = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
 			gray = cv2.cvtColor(opencvImage, cv2.COLOR_BGR2GRAY)
-			objects = self.beer_cascade.detectMultiScale(gray, 50, 50)
+			objects = self.beer_cascade.detectMultiScale(gray, 200, 200)
 
 			for (x,y,w,h) in objects:
 				cv2.rectangle(opencvImage,(x,y),(x+w,y+h),(255,255,0),2)

@@ -10,4 +10,6 @@ run:
 
 send:
 	scp -P 2238 -r src/server/devices/ $(PI)
+	scp -P 2238 -r src/server/modules/ $(PI)
 	scp -P 2238 src/server/PyRobot_Serveur.py $(PI)
+	scp -P 2238 src/server/ThreadClient.py $(PI)
