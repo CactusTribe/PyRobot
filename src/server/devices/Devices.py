@@ -18,8 +18,8 @@ FrontLight_W = FrontLight(18)        		# PIN : WHITE
 FrontLight_IR = FrontLight(23)					# PIN : IR
 StatusLED = LED_RGB(17, 27, 22)				  # PIN : R, G, B
 
-HC_SR04_L = HC_SR04(19, 26) 						# PIN : TRIGGER, ECHO
-HC_SR04_R = HC_SR04(6, 13) 							# PIN : TRIGGER, ECHO
+HC_SR04_R = HC_SR04(19, 26) 						# PIN : TRIGGER, ECHO
+HC_SR04_L = HC_SR04(6, 13) 							# PIN : TRIGGER, ECHO
 DHT22 = 5																# PIN : AOUT
 
 Motor_L = Motor_DC(21, 20, 16) 					# PIN : SPEED, FW, BW

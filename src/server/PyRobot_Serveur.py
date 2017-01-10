@@ -4,6 +4,7 @@ import Adafruit_DHT as dht
 import traceback
 
 from devices.Devices import *
+import SharedParams
 
 from modules.MainModule import MainModule
 from modules.EventModule import EventModule
@@ -11,12 +12,6 @@ from modules.SensorsModule import SensorsModule
 from modules.EngineModule import EngineModule
 from modules.CameraModule import CameraModule, camera
 from modules.IAModule import IAModule
-
-engine_speed = 100
-temperature = 0
-humidity = 0
-distance_L = 0
-distance_R = 0
 
 closed = True
 
@@ -67,7 +62,7 @@ class PyRobot_Serveur:
 		closed = False
 		ThreadEvent.start()
 		ClimatThread.start()
-		#SonnarThread.start()
+		SonnarThread.start()
 
 
 		#Threads dédiés
@@ -148,8 +143,8 @@ class PyRobot_Serveur:
 		global closed
 
 		while closed != True:
-			distance_L = HC_SR04_L.getDistance()
-			distance_R = HC_SR04_R.getDistance()
+			#SharedParams.distance_L = HC_SR04_L.getDistance()
+			SharedParams.distance_R = HC_SR04_R.getDistance()
 			time.sleep(0.02)
 
 		"""
@@ -178,7 +173,7 @@ class PyRobot_Serveur:
 	# MODULE CLIMAT
 	# --------------------------------------------
 	def Climat_Module(self):
-		global closed, humidity, temperature
+		global closed
 
 		while closed != True:
 			h, t = dht.read_retry(dht.DHT22, DHT22)
@@ -186,8 +181,8 @@ class PyRobot_Serveur:
 			if h == None: h = 0
 			if t == None: t = 0
 
-			humidity = copy.copy(h)
-			temperature = copy.copy(t)
+			SharedParams.humidity = copy.copy(h)
+			SharedParams.temperature = copy.copy(t)
 
 			time.sleep(2)
 

@@ -1,5 +1,6 @@
 from ThreadClient import ThreadClient
 from devices.Devices import *
+import SharedParams
 
 class SensorsModule(ThreadClient):
 	def __init__(self, name):
@@ -17,7 +18,6 @@ class SensorsModule(ThreadClient):
 	# MODULE SENSORS
 	# --------------------------------------------
 	def Sensors_commands(self, args):
-		global humidity, temperature
 
 		try:
 
@@ -58,13 +58,13 @@ class SensorsModule(ThreadClient):
 				gas_7 			 = int(MQ_7.MQGetGasPercentage("GAS_CO"))
 				gas_8 			 = int(MQ_8.MQGetGasPercentage("GAS_H2"))
 
-				dist_L 	 = int(distance_L)
-				dist_R 	 = int(distance_R)
+				dist_L 	 = int(SharedParams.distance_L)
+				dist_R 	 = int(SharedParams.distance_R)
 
 				self.tcp_send("sns {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
 					luminosity_L, luminosity_R, sound, inclinaison, dist_IR, channel_5, channel_6, channel_7, 
 					gas_1, gas_2, gas_3, gas_4, gas_5, gas_6, gas_7, gas_8,
-					dist_L, dist_R, temperature, humidity ))
+					dist_L, dist_R, SharedParams.temperature, SharedParams.humidity ))
 					
 		except Exception as e:
 			print(e)
