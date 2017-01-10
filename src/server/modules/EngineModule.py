@@ -1,5 +1,6 @@
 from ThreadClient import ThreadClient
 from devices.Devices import *
+import SharedParams
 
 class EngineModule(ThreadClient):
 	def __init__(self, name):
@@ -17,8 +18,6 @@ class EngineModule(ThreadClient):
 	# MODULE ENGINE
 	# --------------------------------------------
 	def Engine_commands(self, args):
-		global engine_speed
-
 		try:
 			if args[1] == "fw":
 				timer = float(args[2])
@@ -26,8 +25,8 @@ class EngineModule(ThreadClient):
 				Motor_L.setDirection("fw")
 				Motor_R.setDirection("fw")
 
-				Motor_L.setSpeed(engine_speed)
-				Motor_R.setSpeed(engine_speed)
+				Motor_L.setSpeed(SharedParams.engine_speed)
+				Motor_R.setSpeed(SharedParams.engine_speed)
 
 				t1 = time.time()
 
@@ -49,8 +48,8 @@ class EngineModule(ThreadClient):
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("bw")
 
-				Motor_L.setSpeed(engine_speed)
-				Motor_R.setSpeed(engine_speed)
+				Motor_L.setSpeed(SharedParams.engine_speed)
+				Motor_R.setSpeed(SharedParams.engine_speed)
 				time.sleep(timer)
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
@@ -61,8 +60,8 @@ class EngineModule(ThreadClient):
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("fw")
 
-				Motor_L.setSpeed(engine_speed)
-				Motor_R.setSpeed(engine_speed)
+				Motor_L.setSpeed(SharedParams.engine_speed)
+				Motor_R.setSpeed(SharedParams.engine_speed)
 				time.sleep(timer)
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
@@ -73,8 +72,8 @@ class EngineModule(ThreadClient):
 				Motor_L.setDirection("fw")
 				Motor_R.setDirection("bw")
 
-				Motor_L.setSpeed(engine_speed)
-				Motor_R.setSpeed(engine_speed)
+				Motor_L.setSpeed(SharedParams.engine_speed)
+				Motor_R.setSpeed(SharedParams.engine_speed)
 				time.sleep(timer)
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
@@ -91,33 +90,33 @@ class EngineModule(ThreadClient):
 				if (inclinaison < 50) or (inclinaison > 50 and dist_IR < 10):
 					Motor_L.setDirection("fw")
 					Motor_R.setDirection("fw")
-					Motor_L.setSpeed(engine_speed)
-					Motor_R.setSpeed(engine_speed)
+					Motor_L.setSpeed(SharedParams.engine_speed)
+					Motor_R.setSpeed(SharedParams.engine_speed)
 
 			elif args[1] == "backward":
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("bw")
-				Motor_L.setSpeed(engine_speed)
-				Motor_R.setSpeed(engine_speed)
+				Motor_L.setSpeed(SharedParams.engine_speed)
+				Motor_R.setSpeed(SharedParams.engine_speed)
 
 			elif args[1] == "left":
 				Motor_L.setDirection("bw")
 				Motor_R.setDirection("fw")
-				Motor_L.setSpeed(engine_speed)
-				Motor_R.setSpeed(engine_speed)
+				Motor_L.setSpeed(SharedParams.engine_speed)
+				Motor_R.setSpeed(SharedParams.engine_speed)
 
 			elif args[1] == "right":
 				Motor_L.setDirection("fw")
 				Motor_R.setDirection("bw")
-				Motor_L.setSpeed(engine_speed)
-				Motor_R.setSpeed(engine_speed)
+				Motor_L.setSpeed(SharedParams.engine_speed)
+				Motor_R.setSpeed(SharedParams.engine_speed)
 
 			elif args[1] == "stop":
 				Motor_L.setSpeed(0)
 				Motor_R.setSpeed(0)
 
 			elif args[1] == "speed":
-				engine_speed = int(args[2])
+				SharedParams.engine_speed = int(args[2])
 
 		except Exception as e:
 			print(e) 

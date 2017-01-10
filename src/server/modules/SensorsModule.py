@@ -18,7 +18,6 @@ class SensorsModule(ThreadClient):
 	# MODULE SENSORS
 	# --------------------------------------------
 	def Sensors_commands(self, args):
-
 		try:
 
 			if len(args) > 1:

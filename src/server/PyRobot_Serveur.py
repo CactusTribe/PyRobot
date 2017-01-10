@@ -60,7 +60,7 @@ class PyRobot_Serveur:
 		ClimatThread = threading.Thread(target = self.Climat_Module, args = [])
 
 		closed = False
-		ThreadEvent.start()
+		#ThreadEvent.start()
 		ClimatThread.start()
 		SonnarThread.start()
 
@@ -144,8 +144,9 @@ class PyRobot_Serveur:
 
 		while closed != True:
 			#SharedParams.distance_L = HC_SR04_L.getDistance()
-			SharedParams.distance_R = HC_SR04_R.getDistance()
 			time.sleep(0.02)
+			SharedParams.distance_R = HC_SR04_R.getDistance()
+			
 
 		"""
 			NB_LOOP = 4
