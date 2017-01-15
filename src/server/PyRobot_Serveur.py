@@ -142,10 +142,12 @@ class PyRobot_Serveur:
 	def Sonnar_Module(self):
 		global closed
 
-		while closed != True:
-			#SharedParams.distance_L = HC_SR04_L.getDistance()
-			time.sleep(0.02)
-			SharedParams.distance_R = HC_SR04_R.getDistance()
+		try:	
+			while closed != True:
+				#SharedParams.distance_L = HC_SR04_L.getDistance()
+				time.sleep(0.02)
+				SharedParams.distance_R = HC_SR04_R.getDistance()
+		except: pass
 			
 
 		"""

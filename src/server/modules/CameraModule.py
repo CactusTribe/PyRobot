@@ -1,4 +1,4 @@
-import threading, io, struct
+import threading, io, struct, time
 from ThreadClient import ThreadClient
 from devices.Devices import *
 
@@ -50,15 +50,15 @@ class CameraModule(ThreadClient):
 				stream.seek(0)
 				pipe.write(stream.read())
 
-				i += 1
-				print(" > Frame " + str(i))
-
 				if self.camera_capture == False:
 					break
 
 				# Reset the stream for the next capture
 				stream.seek(0)
 				stream.truncate()
+
+				i += 1
+				#print(" > Frame " + str(i) + " time " + str(elapsed)[0:6] + " ms")
 
 			# Write a length of zero to the stream to signal we're done
 			pipe.write(struct.pack('<L', 0))

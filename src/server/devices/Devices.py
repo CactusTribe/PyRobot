@@ -10,8 +10,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)	
 
 camera = PiCamera()
-camera.resolution = (320,240)
-camera.framerate = 20
+camera.resolution = (480,320)
+#camera.framerate = 20
 
 # Devices (Capteurs , éclairage, etc)
 FrontLight_W = FrontLight(18)        		# PIN : WHITE

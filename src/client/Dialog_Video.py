@@ -154,7 +154,7 @@ class Dialog_Video(QDialog):
 			image = Image.open(img)
 			self.last_image = image
 			self.pix = self.pil2qpixmap(image)
-			
+
 			"""
 			# TEST OBJECT RECOGNITION
 			opencvImage = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)
