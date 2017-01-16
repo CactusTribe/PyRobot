@@ -10,6 +10,7 @@ from Dialog_NewConnection import Dialog_NewConnection
 from Dialog_Sensors import Dialog_Sensors
 from Dialog_Video import Dialog_Video
 from Dialog_Help import Dialog_Help
+from Frame_Camera import Frame_Camera
 
 qtCreatorFile = "interfaces/pyRobot.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
@@ -76,7 +77,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_disconnect.clicked.connect(self.disconnect)
 		self.pushButton_help.clicked.connect(self.openHelp)
 		self.pushButton_sensors.clicked.connect(self.openWindowSensors)
-		self.pushButton_video.clicked.connect(self.openWindowVideo)
 		self.pushButton_enabled_keyboard.clicked.connect(self.setFocus)
 		self.pushButton_lights.clicked.connect(self.changeLightState)
 		self.pushButton_send_monitor.clicked.connect(self.execute_cmd)
@@ -95,7 +95,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_sensors.setEnabled(False)
 		self.pushButton_enabled_keyboard.setEnabled(False)
 		self.pushButton_lights.setEnabled(False)
-		self.pushButton_video.setEnabled(False)
 		self.pushButton_automatic.setEnabled(False)
 		self.pushButton_script.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
@@ -115,7 +114,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.pushButton_sensors.setEnabled(True)
 			self.pushButton_enabled_keyboard.setEnabled(True)
 			self.pushButton_lights.setEnabled(True)
-			self.pushButton_video.setEnabled(True)
 			self.pushButton_automatic.setEnabled(True)
 			self.pushButton_script.setEnabled(True)
 			self.lineEdit_commandline.setEnabled(True)
@@ -124,6 +122,9 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.verticalSlider_luminosity.setEnabled(True)
 
 			self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonOk-01.png")))
+
+			frame_camera = Frame_Camera(self, self.Camera_Client)
+			self.layout_camera.addWidget(frame_camera)
 
 			self.EventLoop = EventLoop(self, self.Event_Client)
 			self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
@@ -199,7 +200,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.pushButton_sensors.setEnabled(False)
 		self.pushButton_enabled_keyboard.setEnabled(False)
 		self.pushButton_lights.setEnabled(False)
-		self.pushButton_video.setEnabled(False)
 		self.pushButton_automatic.setEnabled(False)
 		self.pushButton_script.setEnabled(False)
 		self.lineEdit_commandline.setEnabled(False)
@@ -237,11 +237,6 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		sensors.show()
 		sensors.Sensors_Capture.start()
 		#sensors.exec_()
-
-	def openWindowVideo(self):
-		video = Dialog_Video(self, self.Camera_Client)
-		video.show()
-		video.startCapture()
 
 	def changeEnginePower(self):
 		power = self.verticalSlider_enginePower.value()*10
