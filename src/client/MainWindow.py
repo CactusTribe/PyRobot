@@ -103,6 +103,11 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.verticalSlider_luminosity.setEnabled(False)
 		self.printToMonitor("> Welcome to PyRobot !")
 
+		self.frame_camera = Frame_Camera(self, self.Camera_Client)
+		self.frame_camera.setEnabled(False)
+		self.layout_camera.addWidget(self.frame_camera)
+
+
 
 	def updateStatus(self):
 		if self.Main_Client != None:
@@ -123,8 +128,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 			self.pushButton_new_connection.setIcon(QIcon(QPixmap(":/resources/img/resources/img/ButtonOk-01.png")))
 
-			frame_camera = Frame_Camera(self, self.Camera_Client)
-			self.layout_camera.addWidget(frame_camera)
+			self.frame_camera.setClient(self.Camera_Client)
+			self.frame_camera.setEnabled(True)
 
 			self.EventLoop = EventLoop(self, self.Event_Client)
 			self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
@@ -138,7 +143,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.disconnect()
 
 	def keyPressEvent(self, event):
-		if self.Engine_Client != None and self.key_pressed == False:
+		if self.Main_Client != None and self.key_pressed == False:
 			self.key_pressed = True
 
 			if event.key() == Qt.Key_Up:
@@ -149,6 +154,9 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 				self.Engine_Client.tcp_send("eng left")
 			elif event.key() == Qt.Key_Right:
 				self.Engine_Client.tcp_send("eng right")
+
+			elif event.key() == Qt.Key_Space:
+				self.changeLightState()
 
 	def keyReleaseEvent(self, event):
 		if self.Engine_Client != None:
@@ -207,7 +215,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.verticalSlider_enginePower.setEnabled(False)
 		self.verticalSlider_luminosity.setEnabled(False)
 		
-
+		self.frame_camera.setEnabled(False)
 
 		self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
 		self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))

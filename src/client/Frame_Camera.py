@@ -108,6 +108,9 @@ class Frame_Camera(QFrame):
 
 		self.beer_cascade = cv2.CascadeClassifier("beer_cascade_1.xml")
 
+	def setClient(self, client):
+		self.PyRobot_Client = client
+
 	def captureState(self):
 		global capture
 		if capture == False:
