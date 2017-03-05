@@ -11,6 +11,7 @@ from Dialog_Sensors import Dialog_Sensors
 from Dialog_Video import Dialog_Video
 from Dialog_Help import Dialog_Help
 from Frame_Camera import Frame_Camera
+from Frame_SensorsCurves import Frame_SensorsCurves
 
 qtCreatorFile = "interfaces/pyRobot.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
@@ -105,8 +106,16 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 		self.frame_camera = Frame_Camera(self, self.Camera_Client)
 		self.frame_camera.setEnabled(False)
-		self.layout_camera.addWidget(self.frame_camera)
 
+		self.frame_sensorsCurves = Frame_SensorsCurves(self, self.Sensors_Client)
+		self.spacer = QSpacerItem(1,10, QSizePolicy.Preferred, QSizePolicy.Preferred)
+
+		self.frame_sensorsCurves.setEnabled(False)
+
+		self.right_panel.addWidget(self.frame_camera)
+		self.right_panel.addSpacerItem(self.spacer)
+		self.right_panel.addWidget(self.frame_sensorsCurves)
+		self.right_panel.addSpacerItem(self.spacer)
 
 
 	def updateStatus(self):
@@ -130,6 +139,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 			self.frame_camera.setClient(self.Camera_Client)
 			self.frame_camera.setEnabled(True)
+
+			self.frame_sensorsCurves.setClient(self.Sensors_Client)
+			self.frame_sensorsCurves.setEnabled(True)
+			self.frame_sensorsCurves.start_capture()
 
 			self.EventLoop = EventLoop(self, self.Event_Client)
 			self.EventLoop.updateStatusWifi.connect(self.changeWifiQuality)
@@ -189,6 +202,8 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 			self.Main_Client.tcp_send("fl ir off")
 			self.IA_Client.tcp_send("ia stop")
 
+			self.frame_sensorsCurves.stop_capture()
+
 			self.Main_Client.close()
 			self.Event_Client.close()
 			self.Sensors_Client.close()
@@ -216,6 +231,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.verticalSlider_luminosity.setEnabled(False)
 		
 		self.frame_camera.setEnabled(False)
+		self.frame_sensorsCurves.setEnabled(False)
 
 		self.icon_wifi.setPixmap(QPixmap(":/resources/img/resources/img/wifi_off.png"))
 		self.icon_battery.setPixmap(QPixmap(":/resources/img/resources/img/Battery/battery-missing.png"))

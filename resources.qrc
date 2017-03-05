@@ -32,6 +32,7 @@
 		<file>resources/img/Hydrogen.png</file>
 		<file>resources/img/Isobutane.png</file>
 		<file>resources/img/keyboard.png</file>
+		<file>resources/img/laser1.png</file>
 		<file>resources/img/light-ir.png</file>
 		<file>resources/img/light-off.png</file>
 		<file>resources/img/light.png</file>
@@ -51,6 +52,8 @@
 		<file>resources/img/Propane.png</file>
 		<file>resources/img/python.png</file>
 		<file>resources/img/qt_logo.png</file>
+		<file>resources/img/radar1.png</file>
+		<file>resources/img/radar2.png</file>
 		<file>resources/img/rasp.png</file>
 		<file>resources/img/rasp.psd</file>
 		<file>resources/img/rasp_connected.png</file>

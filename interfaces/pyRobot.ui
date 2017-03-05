@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>630</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -130,7 +130,11 @@ color: rgb(255,255,255);</string>
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="layout_camera" stretch=""/>
+       <layout class="QVBoxLayout" name="right_panel">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+       </layout>
       </item>
      </layout>
     </item>

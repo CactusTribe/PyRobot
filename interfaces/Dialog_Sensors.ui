@@ -154,7 +154,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Moon-icon.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Moon-icon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -284,7 +284,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Moon-icon.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Moon-icon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -417,7 +417,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Ruler-icon.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Ruler-icon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -553,7 +553,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Ruler-icon.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Ruler-icon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -689,7 +689,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Sound.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Sound.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -831,7 +831,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Triangle-ruler-icon.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Triangle-ruler-icon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -961,7 +961,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/humidity.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/humidity.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1097,7 +1097,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Thermometer_Snowflake.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Thermometer_Snowflake.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1250,7 +1250,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/petroleum_gas.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/petroleum_gas.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1403,7 +1403,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/flame.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/flame.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1555,7 +1555,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/gas_mask.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/gas_mask.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1707,7 +1707,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/natural_gas.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/natural_gas.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1859,7 +1859,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Ethanol.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Ethanol.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -2007,7 +2007,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Methane.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Methane.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -2155,7 +2155,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Hydrogen.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Hydrogen.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -2303,7 +2303,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/resources/img/resources/img/Carbon-monoxide.png</pixmap>
+     <pixmap resource="../resources.qrc">:/resources/img/resources/img/Carbon-monoxide.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -2312,7 +2312,8 @@
   </widget>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>
