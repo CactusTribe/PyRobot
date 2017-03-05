@@ -62,6 +62,8 @@ class Frame_SensorsCurves(QFrame):
 		global capture
 		capture = True
 
+		self.showCurveId = 0
+
 		self.Sensors_Capture = Sensors_Capture(self, self.PyRobot_Client)
 		self.Sensors_Capture.message_received.connect(self.setValues)
 
@@ -168,7 +170,7 @@ class Frame_SensorsCurves(QFrame):
 		self.distance_sn_curve.setPasX(2)
 		self.distance_sn_curve.addColorSet(distance_sn_colors)
 		self.distance_sn_curve.setMinimum(0)
-		self.distance_sn_curve.setMaximum(450)
+		self.distance_sn_curve.setMaximum(200)
 		self.distance_sn_curve.hide()
 
 		self.right_panel_bottom = QHBoxLayout()
@@ -188,24 +190,28 @@ class Frame_SensorsCurves(QFrame):
 		self.humidity_curve.hide()
 		self.distance_ir_curve.hide()
 		self.distance_sn_curve.hide()
+		self.showCurveId = 0
 
 	def showHumidityCurve(self):
 		self.temp_curve.hide()
 		self.humidity_curve.show()
 		self.distance_ir_curve.hide()
 		self.distance_sn_curve.hide()
+		self.showCurveId = 1
 
 	def showIRCurve(self):
 		self.temp_curve.hide()
 		self.humidity_curve.hide()
 		self.distance_ir_curve.show()
 		self.distance_sn_curve.hide()
+		self.showCurveId = 2
 
 	def showSNCurve(self):
 		self.temp_curve.hide()
 		self.humidity_curve.hide()
 		self.distance_ir_curve.hide()
 		self.distance_sn_curve.show()
+		self.showCurveId = 3
 
 	@pyqtSlot(list)
 	def setValues(self, values):
@@ -251,7 +257,7 @@ class Frame_SensorsCurves(QFrame):
 				self.w_distance_IR.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
 
 		# DISTANCE SONAR --------------------------------------------------------------------
-		if distance_SN > 450 or distance_SN <= 0:
+		if distance_SN > 200 or distance_SN <= 0:
 			self.w_distance_SN.setText("∞")
 			self.w_distance_SN.setStyleSheet("QPushButton { font-size:16px; color: rgb(0, 0, 0); }")
 			
@@ -266,11 +272,14 @@ class Frame_SensorsCurves(QFrame):
 			else:
 				self.w_distance_SN.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
 
-		
-		self.temp_curve.addValue(values[0])
-		self.humidity_curve.addValue(values[1])
-		self.distance_ir_curve.addValue(values[2])
-		self.distance_sn_curve.addValue(values[3])
+		if self.showCurveId == 0:
+			self.temp_curve.addValue(values[0])
+		elif self.showCurveId == 1:
+			self.humidity_curve.addValue(values[1])
+		elif self.showCurveId == 2:
+			self.distance_ir_curve.addValue(values[2])
+		elif self.showCurveId == 3:
+			self.distance_sn_curve.addValue(values[3])
 
 	def setClient(self, client):
 		self.PyRobot_Client = client

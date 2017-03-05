@@ -96,6 +96,8 @@ class CurvePaintWidget(QWidget):
                 if current_value != 0 and current_value >= key[0] and current_value <= key[1]:
                     pen = QPen(value, self.dx, Qt.SolidLine, Qt.FlatCap, Qt.RoundJoin)
                     qp.setPen(pen)
+                    #qp.setBrush(value)
+                    #qp.drawEllipse(e*self.dx, pos_Y, 1, 1)
                     qp.drawLine(e*self.dx, pos_Y, e*self.dx, self.height())
 
         qp.end()
