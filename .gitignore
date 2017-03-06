@@ -1,3 +1,5 @@
 camera_pictures/*
 camera_videos/*
 client/__pyCache__/*
+build/*
+dist/*
