@@ -92,8 +92,11 @@ pip install opencv-python
 ### Files description
 
 ```interfaces/*``` : .ui files (Qt Designer)
+
 ```resources/*``` : resources files (images, sounds, etc)
+
 ```src/*``` : .py files
+
 ```resources.qrc``` : list of resources
 
 ##License:
