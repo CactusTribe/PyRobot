@@ -14,6 +14,9 @@ all:
 	mv dist/$(APP_NAME).app dist/$(APP_NAME)/
 
 run:
+	python3 src/client/MainWindow.py
+
+runa:
 	open dist/$(APP_NAME)/$(APP_NAME).app
 
 send:
@@ -25,6 +28,7 @@ send:
 
 deploy:
 	python3 setup.py py2app
+	rm -rf dist/$(APP_NAME)/$(APP_NAME).app
 	mv dist/$(APP_NAME).app dist/$(APP_NAME)/
 
 dmg:
