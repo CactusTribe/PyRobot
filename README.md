@@ -5,10 +5,10 @@ Build and control your own robot with an friendly user-interface.
 Requires:
 ------------------------------
  - Python 3.4+
- - Pillow
- - PyQt5
- - py2app
- - numpy
+ - Pillow 3.4.2
+ - PyQt5 5.7
+ - py2app 0.9
+ - numpy 1.11.2
 
 Install:
 ------------------------------
