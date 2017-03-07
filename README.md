@@ -19,7 +19,7 @@ pip install --user virtualenv
 pip install --user virtualenvwrapper
 ```
 
-After the installation it's time to add theses lines in ~/.profile (maybe ~/.bashrc or ~/.bash_profile)
+After the installation it's time to add theses lines in ```~/.profile``` (maybe ```~/.bashrc``` or ```~/.bash_profile```)
 
 ```sh
 export WORKON_HOME=~/.virtualenvs
@@ -77,6 +77,8 @@ pip install opencv-python
 
 ##Development:
 
+### Makefile rules
+
 ```make``` : Build the resource file and create app link in dist folder
 
 ```make run``` :  Run the file src/client/MainWindow.py
@@ -86,6 +88,13 @@ pip install opencv-python
 ```make send``` : Send the src/server directory to the server
 
 ```make deploy``` : Build a standalone app running on macOS 10.9+ (OSX)
+
+### Files description
+
+```interfaces/*``` : .ui files (Qt Designer)
+```resources/*``` : resources files (images, sounds, etc)
+```src/*``` : .py files
+```resources.qrc``` : list of resources
 
 ##License:
 
