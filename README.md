@@ -1,29 +1,93 @@
-PyRobot ©
+#PyRobot ©
 Build and control your own robot with an friendly user-interface.
 
+##Requires:
 
-Requires:
-------------------------------
- - Python 3.4+
- - Pillow 3.4.2
- - PyQt5 5.7
+ - Python 3.5+
+ - Pillow 
+ - PyQt5 
+ - opencv-python
  - py2app 0.9
  - numpy 1.11.2
 
-Install:
-------------------------------
+##Install:
 
+### Virtualenv and VirtualenvWrapper
 
-Development:
-------------------------------
-Makefile rules:
- * make : build the resource file and create app link in dist/
- * make run : run the app in the dist/ dir
- * make send : send the code to the server
- * make deploy : make a standalone app running on macOS 10.9+
+```sh
+pip install --user virtualenv
+pip install --user virtualenvwrapper
+```
 
-License:
-------------------------------
+After the installation it's time to add theses lines in ~/.profile (maybe ~/.bashrc or ~/.bash_profile)
+
+```sh
+export WORKON_HOME=~/.virtualenvs
+mkdir -p $WORKON_HOME
+export PROJECT_HOME=~/pyprojects
+mkdir -p $PROJECT_HOME
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.x
+export VIRTUALENVWRAPPER_VIRTUALENV=~/.local/bin/virtualenv
+source .local/bin/virtualenvwrapper.sh
+```
+
+And finally reload this file :
+
+```source ~/.profile```
+
+### Install Python 3.6.0
+
+```sh
+wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz
+tar -xvzf Python-3.6.0
+cd Python-3.6.0
+sudo ./configure
+sudo make install
+cd ..
+rm Python-3.6.0.tgz
+rm -rf Python-3.6.0
+```
+
+### Clone this repository
+
+Go into the pyprojects directory :
+
+```cd ~/pyprojects/```
+
+Clone the git :
+
+```git clone https://github.com/CactusTribe/PyRobot.git```
+
+### Create new virtualenv with Python 3.6.0
+
+```sh
+mkvirtualenv pyrobot -p /usr/local/bin/python3.6         
+deactivate
+setvirtualenvproject ~/.virtualenvs/pyrobot ~/pyprojects/PyRobot
+```
+
+### Use the environment and install pip packages
+
+```
+workon pyrobot
+pip install PyQt5
+pip install Pillow
+pip install opencv-python
+```
+
+##Development:
+
+```make``` : Build the resource file and create app link in dist folder
+
+```make run``` :  Run the file src/client/MainWindow.py
+
+```make runa``` : Run the standalone application (OS X)
+
+```make send``` : Send the src/server directory to the server
+
+```make deploy``` : Build a standalone app running on macOS 10.9+ (OSX)
+
+##License:
 
 PyRobot
 Copyright © 2017 Joaquim Lefranc
