@@ -1,4 +1,4 @@
-#PyRobot ©
+#PyRobot © Version 0.1
 Build and control your own robot with an friendly user-interface.
 
 ##Requires:
@@ -10,7 +10,7 @@ Build and control your own robot with an friendly user-interface.
  - py2app 0.9
  - numpy 1.11.2
 
-##Install:
+##Installation:
 
 ### Virtualenv and VirtualenvWrapper
 
