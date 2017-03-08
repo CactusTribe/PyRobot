@@ -1,5 +1,6 @@
 camera_pictures/*
 camera_videos/*
-client/__pyCache__/*
+src/client/__pycache__/*
 build/*
 dist/*
+data/favorites.txt

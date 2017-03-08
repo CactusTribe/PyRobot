@@ -21,6 +21,10 @@ class Dialog_NewConnection(QDialog):
 		uic.loadUi('interfaces/Dialog_NewConnection.ui', self)
 
 		self.pushButton_sync.clicked.connect(self.startConnection)
+		self.pushButton_addFav.clicked.connect(self.addFavorite)
+		self.refreshFavorites()
+
+		self.comboBox_fav.activated.connect(self.selectFav)
 
 	def startConnection(self):
 		if self.Main_Client != None:
@@ -62,5 +66,20 @@ class Dialog_NewConnection(QDialog):
 			self.Main_Client.close()
 			self.label_status.setText("Connection refused.")
 
+	def addFavorite(self):
+		if self.lineEdit_ip.text() != "":
+			with open("data/favorites.txt", 'a') as favs:
+				favs.write(self.lineEdit_ip.text()+"\n")
+			self.refreshFavorites()
 
+	def refreshFavorites(self):
+		self.comboBox_fav.clear()
+		with open("data/favorites.txt") as favs:
+				for line in favs:
+					self.comboBox_fav.addItem(line[0:len(line)-1])
+
+		self.comboBox_fav.setCurrentIndex(self.comboBox_fav.count()-1)
+
+	def selectFav(self):
+		self.lineEdit_ip.setText(self.comboBox_fav.currentText())
 
