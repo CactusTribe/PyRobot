@@ -74,11 +74,14 @@ class Dialog_NewConnection(QDialog):
 
 	def refreshFavorites(self):
 		self.comboBox_fav.clear()
-		with open("data/favorites.txt") as favs:
-				for line in favs:
-					self.comboBox_fav.addItem(line[0:len(line)-1])
+		try:
+			with open("data/favorites.txt", 'r') as favs:
+					for line in favs:
+						self.comboBox_fav.addItem(line[0:len(line)-1])
 
-		self.comboBox_fav.setCurrentIndex(self.comboBox_fav.count()-1)
+			self.comboBox_fav.setCurrentIndex(self.comboBox_fav.count()-1)
+		except Exception as e:
+			print(e)
 
 	def selectFav(self):
 		self.lineEdit_ip.setText(self.comboBox_fav.currentText())
