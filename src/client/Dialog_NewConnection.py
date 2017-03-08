@@ -22,9 +22,9 @@ class Dialog_NewConnection(QDialog):
 
 		self.pushButton_sync.clicked.connect(self.startConnection)
 		self.pushButton_addFav.clicked.connect(self.addFavorite)
-		self.refreshFavorites()
-
 		self.comboBox_fav.activated.connect(self.selectFav)
+		self.refreshFavorites()
+		self.selectFav()
 
 	def startConnection(self):
 		if self.Main_Client != None:

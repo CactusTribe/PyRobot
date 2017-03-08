@@ -215,71 +215,71 @@ class Frame_SensorsCurves(QFrame):
 
 	@pyqtSlot(list)
 	def setValues(self, values):
+		if len(values) >= 4:
+			temperature = values[0]
+			humidity = values[1]
+			distance_IR = values[2]
+			distance_SN = values[3]
 
-		temperature = values[0]
-		humidity = values[1]
-		distance_IR = values[2]
-		distance_SN = values[3]
-
-		self.w_temperature.setText("{:.1f} °C".format(temperature))
-		self.w_humidity.setText("{:.1f} %".format(humidity))
-		self.w_distance_IR.setText("{:.1f} cm".format(distance_IR))
-
-		# Temperature  --------------------------------------------------------------------
-		if temperature >= 0 and temperature <= 30:
-			self.w_temperature.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
-		elif temperature >= -20 and temperature <= 60:
-			self.w_temperature.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
-		else:
-			self.w_temperature.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
-
-		# HUMIDITY  --------------------------------------------------------------------
-		if humidity < 20:
-			self.w_humidity.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
-		elif humidity < 40:
-			self.w_humidity.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
-		else:
-			self.w_humidity.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
-		
-		# DISTANCE IR --------------------------------------------------------------------
-		if distance_IR > 35 or distance_IR <= 0:
-			self.w_distance_IR.setText("∞")
-			self.w_distance_IR.setStyleSheet("QPushButton { font-size:16px; color: rgb(0, 0, 0); }")
-		else:
-			self.w_distance_IR.setStyleSheet("QPushButton { font-size:13px; }")
+			self.w_temperature.setText("{:.1f} °C".format(temperature))
+			self.w_humidity.setText("{:.1f} %".format(humidity))
 			self.w_distance_IR.setText("{:.1f} cm".format(distance_IR))
 
-			if distance_IR > 18:
-				self.w_distance_IR.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
-			elif distance_IR > 8:
-				self.w_distance_IR.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
+			# Temperature  --------------------------------------------------------------------
+			if temperature >= 0 and temperature <= 30:
+				self.w_temperature.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
+			elif temperature >= -20 and temperature <= 60:
+				self.w_temperature.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
 			else:
-				self.w_distance_IR.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
+				self.w_temperature.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
 
-		# DISTANCE SONAR --------------------------------------------------------------------
-		if distance_SN > 200 or distance_SN <= 0:
-			self.w_distance_SN.setText("∞")
-			self.w_distance_SN.setStyleSheet("QPushButton { font-size:16px; color: rgb(0, 0, 0); }")
+			# HUMIDITY  --------------------------------------------------------------------
+			if humidity < 20:
+				self.w_humidity.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
+			elif humidity < 40:
+				self.w_humidity.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
+			else:
+				self.w_humidity.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
 			
-		else:
-			self.w_distance_SN.setStyleSheet("QPushButton { font-size:13px; }")
-			self.w_distance_SN.setText("{:.1f} cm".format(distance_SN))
-
-			if distance_SN < 7:
-				self.w_distance_SN.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
-			elif distance_SN < 15:
-				self.w_distance_SN.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
+			# DISTANCE IR --------------------------------------------------------------------
+			if distance_IR > 35 or distance_IR <= 0:
+				self.w_distance_IR.setText("∞")
+				self.w_distance_IR.setStyleSheet("QPushButton { font-size:16px; color: rgb(0, 0, 0); }")
 			else:
-				self.w_distance_SN.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
+				self.w_distance_IR.setStyleSheet("QPushButton { font-size:13px; }")
+				self.w_distance_IR.setText("{:.1f} cm".format(distance_IR))
 
-		if self.showCurveId == 0:
-			self.temp_curve.addValue(values[0])
-		elif self.showCurveId == 1:
-			self.humidity_curve.addValue(values[1])
-		elif self.showCurveId == 2:
-			self.distance_ir_curve.addValue(values[2])
-		elif self.showCurveId == 3:
-			self.distance_sn_curve.addValue(values[3])
+				if distance_IR > 18:
+					self.w_distance_IR.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
+				elif distance_IR > 8:
+					self.w_distance_IR.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
+				else:
+					self.w_distance_IR.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
+
+			# DISTANCE SONAR --------------------------------------------------------------------
+			if distance_SN > 200 or distance_SN <= 0:
+				self.w_distance_SN.setText("∞")
+				self.w_distance_SN.setStyleSheet("QPushButton { font-size:16px; color: rgb(0, 0, 0); }")
+				
+			else:
+				self.w_distance_SN.setStyleSheet("QPushButton { font-size:13px; }")
+				self.w_distance_SN.setText("{:.1f} cm".format(distance_SN))
+
+				if distance_SN < 7:
+					self.w_distance_SN.setStyleSheet("QPushButton { color: rgb(255, 0, 0) }")
+				elif distance_SN < 15:
+					self.w_distance_SN.setStyleSheet("QPushButton { color: rgb(255, 150, 0) }")
+				else:
+					self.w_distance_SN.setStyleSheet("QPushButton { color: rgb(0, 180, 0) }")
+
+			if self.showCurveId == 0:
+				self.temp_curve.addValue(values[0])
+			elif self.showCurveId == 1:
+				self.humidity_curve.addValue(values[1])
+			elif self.showCurveId == 2:
+				self.distance_ir_curve.addValue(values[2])
+			elif self.showCurveId == 3:
+				self.distance_sn_curve.addValue(values[3])
 
 	def setClient(self, client):
 		self.PyRobot_Client = client

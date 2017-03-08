@@ -9,7 +9,7 @@ from setuptools import setup
 
 APP = ['src/client/MainWindow.py']
 APP_NAME = "PyRobot"
-DATA_FILES = ['qt.conf','resources','interfaces']
+DATA_FILES = ['qt.conf','resources','interfaces', 'data']
 
 OPTIONS = {
     'argv_emulation': True,

@@ -143,6 +143,7 @@ class Frame_Camera(QFrame):
 
 		if self.last_image != None:
 			self.last_image.save("camera_pictures/screen_{}.jpg".format(datetime.now().strftime("%H-%M-%S_%d-%m-%y")))
+			#self.last_image.save("{}/camera_pictures/screen_{}.jpg".format("../../..",datetime.now().strftime("%H-%M-%S_%d-%m-%y")))
 
 			global capture
 			if capture == True:
