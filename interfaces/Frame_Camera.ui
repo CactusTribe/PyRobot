@@ -7,13 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>444</height>
+    <height>345</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>345</height>
+   </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>480</width>
-    <height>16777215</height>
+    <height>345</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -23,12 +29,15 @@
    <enum>QFrame::NoFrame</enum>
   </property>
   <property name="frameShadow">
-   <enum>QFrame::Plain</enum>
+   <enum>QFrame::Sunken</enum>
   </property>
   <property name="lineWidth">
    <number>0</number>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -41,10 +50,7 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <property name="verticalSpacing">
-    <number>0</number>
-   </property>
-   <item row="0" column="0">
+   <item>
     <widget class="QLabel" name="label_camera">
      <property name="minimumSize">
       <size>
@@ -55,14 +61,14 @@
      <property name="maximumSize">
       <size>
        <width>480</width>
-       <height>300</height>
+       <height>320</height>
       </size>
      </property>
      <property name="frameShape">
-      <enum>QFrame::Box</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
+      <enum>QFrame::Plain</enum>
      </property>
      <property name="text">
       <string/>
@@ -72,10 +78,10 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
-      <number>10</number>
+      <number>15</number>
      </property>
      <property name="leftMargin">
       <number>0</number>
@@ -87,14 +93,14 @@
       <widget class="QPushButton" name="pushButton_capture">
        <property name="minimumSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>35</width>
+         <height>35</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>35</width>
+         <height>35</height>
         </size>
        </property>
        <property name="text">
@@ -106,8 +112,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>30</width>
-         <height>30</height>
+         <width>25</width>
+         <height>25</height>
         </size>
        </property>
        <property name="default">
@@ -122,14 +128,14 @@
       <widget class="QPushButton" name="pushButton_recording">
        <property name="minimumSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>35</width>
+         <height>35</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>35</width>
+         <height>35</height>
         </size>
        </property>
        <property name="text">
@@ -141,8 +147,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>30</width>
-         <height>30</height>
+         <width>25</width>
+         <height>25</height>
         </size>
        </property>
        <property name="default">
@@ -157,14 +163,14 @@
       <widget class="QPushButton" name="pushButton_photo">
        <property name="minimumSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>35</width>
+         <height>35</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
-         <height>50</height>
+         <width>35</width>
+         <height>35</height>
         </size>
        </property>
        <property name="text">
@@ -176,8 +182,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>30</width>
-         <height>30</height>
+         <width>25</width>
+         <height>25</height>
         </size>
        </property>
        <property name="default">
@@ -189,27 +195,11 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
       <widget class="QLabel" name="label_captureStatut">
        <property name="maximumSize">
         <size>
-         <width>30</width>
-         <height>30</height>
+         <width>25</width>
+         <height>25</height>
         </size>
        </property>
        <property name="text">

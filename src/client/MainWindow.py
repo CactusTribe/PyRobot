@@ -108,14 +108,15 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.frame_camera.setEnabled(False)
 
 		self.frame_sensorsCurves = Frame_SensorsCurves(self, self.Sensors_Client)
-		self.spacer = QSpacerItem(1,10, QSizePolicy.Preferred, QSizePolicy.Preferred)
+		self.spacer = QSpacerItem(1,10, QSizePolicy.Preferred, QSizePolicy.Expanding)
 
 		self.frame_sensorsCurves.setEnabled(False)
 
 		self.right_panel.addWidget(self.frame_camera)
-		self.right_panel.addSpacerItem(self.spacer)
+		#self.right_panel.addSpacerItem(self.spacer)
 		self.right_panel.addWidget(self.frame_sensorsCurves)
 		self.right_panel.addSpacerItem(self.spacer)
+		self.right_panel.setSpacing(10)
 
 
 	def updateStatus(self):
