@@ -2,19 +2,15 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-import sys, threading, time, copy
+import sys, threading, time, copy, os
 from random import randint
 
 # Import windows
 from Dialog_NewConnection import Dialog_NewConnection
 from Dialog_Sensors import Dialog_Sensors
-from Dialog_Video import Dialog_Video
 from Dialog_Help import Dialog_Help
 from Frame_Camera import Frame_Camera
 from Frame_SensorsCurves import Frame_SensorsCurves
-
-qtCreatorFile = "interfaces/pyRobot.ui" 
-Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 class EventLoop(QThread):
 
@@ -51,7 +47,7 @@ class EventLoop(QThread):
 			except Exception as e:
 				print(e)
 
-class PyRobot(QMainWindow, Ui_MainWindow):
+class PyRobot(QMainWindow):
 
 	Main_Client = None
 	Event_Client = None
@@ -64,8 +60,10 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 
 	def __init__(self):
 		QMainWindow.__init__(self)
-		Ui_MainWindow.__init__(self)
-		self.setupUi(self)
+		if(os.uname()[0] == "Darwin"):
+			uic.loadUi('interfaces_osx/pyRobot.ui', self)
+		else:
+			uic.loadUi('interfaces_linux/pyRobot.ui', self)
 		self.setFocus()
 
 		self.key_pressed = False
@@ -115,7 +113,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		self.right_panel.addWidget(self.frame_camera)
 		#self.right_panel.addSpacerItem(self.spacer)
 		self.right_panel.addWidget(self.frame_sensorsCurves)
-		self.right_panel.addSpacerItem(self.spacer)
+		#self.right_panel.addSpacerItem(self.spacer)
 		self.right_panel.setSpacing(10)
 
 
@@ -461,6 +459,7 @@ class PyRobot(QMainWindow, Ui_MainWindow):
 		
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
+	#app.setStyle(QStyleFactory.create("Fusion"))
 	window = PyRobot()
 	window.show()
 	sys.exit(app.exec_())

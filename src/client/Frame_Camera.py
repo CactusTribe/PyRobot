@@ -10,6 +10,7 @@ import socket
 import struct
 import io
 import time
+import os
 from datetime import datetime
 import subprocess as sp
 
@@ -99,7 +100,11 @@ class Frame_Camera(QFrame):
 
 	def __init__(self, parent, client):
 		QDialog.__init__(self, parent)
-		uic.loadUi('interfaces/Frame_Camera.ui', self)
+		if(os.uname()[0] == "Darwin"):
+			uic.loadUi('interfaces_osx/Frame_Camera.ui', self)
+		else:
+			uic.loadUi('interfaces_linux/Frame_Camera.ui', self)
+
 		self.PyRobot_Client = client
 
 		self.pushButton_capture.clicked.connect(self.captureState)

@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 
+import os
 import resources_rc
 import socket
 from PyRobot_Client import PyRobot_Client
@@ -18,7 +19,11 @@ class Dialog_NewConnection(QDialog):
 
 	def __init__(self):
 		QDialog.__init__(self)
-		uic.loadUi('interfaces/Dialog_NewConnection.ui', self)
+		if(os.uname()[0] == "Darwin"):
+			uic.loadUi('interfaces_osx/Dialog_NewConnection.ui', self)
+		else:
+			uic.loadUi('interfaces_linux/Dialog_NewConnection.ui', self)
+
 
 		self.pushButton_sync.clicked.connect(self.startConnection)
 		self.pushButton_addFav.clicked.connect(self.addFavorite)

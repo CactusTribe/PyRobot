@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-import resources_rc, threading, time
+import resources_rc, threading, time, os
 
 capture = True
 
@@ -110,7 +110,10 @@ class Dialog_Sensors(QDialog):
 
 	def __init__(self, parent, client):
 		QDialog.__init__(self, parent)
-		uic.loadUi('interfaces/Dialog_Sensors.ui', self)
+		if(os.uname()[0] == "Darwin"):
+			uic.loadUi('interfaces_osx/Dialog_Sensors.ui', self)
+		else:
+			uic.loadUi('interfaces_linux/Dialog_Sensors.ui', self)
 
 		#self.buttonBox.accepted.connect(self.stop_capture)
 
