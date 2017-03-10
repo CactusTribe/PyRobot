@@ -113,7 +113,7 @@ class PyRobot(QMainWindow):
 		self.right_panel.addWidget(self.frame_camera)
 		#self.right_panel.addSpacerItem(self.spacer)
 		self.right_panel.addWidget(self.frame_sensorsCurves)
-		#self.right_panel.addSpacerItem(self.spacer)
+		self.right_panel.addSpacerItem(self.spacer)
 		self.right_panel.setSpacing(10)
 
 

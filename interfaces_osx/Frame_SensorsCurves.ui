@@ -36,23 +36,26 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>0</number>
+    <number>10</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>10</number>
    </property>
    <property name="rightMargin">
-    <number>0</number>
+    <number>10</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>10</number>
    </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
-        <number>0</number>
+        <number>2</number>
        </property>
        <item>
         <widget class="QPushButton" name="pushButton_temperature">
@@ -199,9 +202,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>pushButton_humidity</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
-  <zorder>pushButton_humidity</zorder>
  </widget>
  <resources>
   <include location="../resources.qrc"/>

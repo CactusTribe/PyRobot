@@ -180,6 +180,7 @@ class Frame_Camera(QFrame):
 			"""
 
 			self.label_camera.setPixmap(self.pix)
+			self.label_camera.setScaledContents(True);
 
 		except Exception as e:
 			print(e)
