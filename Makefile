@@ -31,7 +31,7 @@ send:
 	scp -P 2238 src/server/ThreadClient.py $(PI)
 	scp -P 2238 src/server/SharedParams.py $(PI)
 
-macos:
+osx:
 	python3 setup.py py2app -A
 	rm -rf dist/$(APP_NAME)/
 	mkdir dist/$(APP_NAME)/
@@ -39,7 +39,7 @@ macos:
 	mkdir dist/$(APP_NAME)/camera_videos
 	mv dist/$(APP_NAME).app dist/$(APP_NAME)/
 
-deploy_macos:
+deploy_osx:
 	python3 setup.py py2app
 	rm -rf dist/$(APP_NAME)/$(APP_NAME).app
 	mv dist/$(APP_NAME).app dist/$(APP_NAME)/
