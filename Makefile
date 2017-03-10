@@ -12,7 +12,7 @@ endif
 
 all:
 	python3 make_qrc.py
-	python3 pyrcc5.py
+	pyrcc5 resources.qrc -o resources_rc.py
 	mv resources_rc.py src/client/resources_rc.py
 
 run:
