@@ -79,7 +79,7 @@ pip install opencv-python
 
 ### Makefile rules
 
-```make``` : Build the resource file and create app link in dist folder
+```make``` : Build the resource file
 
 ```make run``` :  Run the file src/client/MainWindow.py
 
@@ -87,17 +87,19 @@ pip install opencv-python
 
 ```make send``` : Send the src/server directory to the server
 
-```make deploy``` : Build a standalone app running on macOS 10.9+ (OSX)
+```make osx``` : Build the standalone alias app (OSX)
+
+```make deploy_osx``` : Build a standalone app running on macOS 10.9+ (OSX)
 
 ### Files description
 
-```interfaces/*``` : .ui files (Qt Designer)
+```interfaces_osx/*``` : .ui files for OSX (Qt Designer)
+
+```interfaces_linux/*``` : .ui files for Linux (Qt Designer)
 
 ```resources/*``` : resources files (images, sounds, etc)
 
 ```src/*``` : .py files
-
-```resources.qrc``` : list of resources
 
 ##License:
 
