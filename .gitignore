@@ -4,3 +4,7 @@ src/client/__pycache__/*
 build/*
 dist/*
 data/favorites.txt
+
+src/client/resources_rc.py
+pyrcc5
+resources.qrc
