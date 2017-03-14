@@ -65,10 +65,10 @@ class CurvePaintWidget(QWidget):
         qp.drawLine(0, self.height()/2, self.width(), self.height()/2)
 
         # LEGENDE
-        qp.setFont(QFont('Decorative', 10, -1, True))
-        qp.drawText(5,5,50,10, Qt.AlignLeft, "{} {}".format(self.maximum, self.unit))
-        qp.drawText(5,(self.height()/2)-15,20,10, Qt.AlignLeft, "{}".format(self.medium))  
-        qp.drawText(5,self.height()-15,20,10, Qt.AlignLeft, "{}".format(self.minimum))  
+        qp.setFont(QFont('Decorative', 9, -1, True))
+        qp.drawText(5,5,50,20, Qt.AlignLeft, "{} {}".format(self.maximum, self.unit))
+        qp.drawText(5,(self.height()/2)-15,20,20, Qt.AlignLeft, "{}".format(self.medium))  
+        qp.drawText(5,self.height()-15,20,20, Qt.AlignLeft, "{}".format(self.minimum))  
 
 
         # CURVE

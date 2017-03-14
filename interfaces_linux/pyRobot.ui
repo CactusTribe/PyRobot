@@ -45,8 +45,20 @@
     <property name="leftMargin">
      <number>12</number>
     </property>
-    <property name="spacing">
+    <property name="topMargin">
+     <number>12</number>
+    </property>
+    <property name="rightMargin">
+     <number>12</number>
+    </property>
+    <property name="bottomMargin">
+     <number>12</number>
+    </property>
+    <property name="horizontalSpacing">
      <number>1</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>5</number>
     </property>
     <item row="1" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -646,7 +658,7 @@ color: rgb(255,255,255);</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>541</width>
-    <height>200</height>
+    <height>180</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -52,24 +52,25 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
-        <number>0</number>
+        <number>5</number>
        </property>
        <item>
         <widget class="QPushButton" name="pushButton_temperature">
          <property name="minimumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="font">
           <font>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -87,6 +88,9 @@
            <height>30</height>
           </size>
          </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -94,17 +98,18 @@
          <property name="minimumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="font">
           <font>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -129,17 +134,18 @@
          <property name="minimumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="font">
           <font>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -164,17 +170,18 @@
          <property name="minimumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>130</width>
-           <height>50</height>
+           <height>40</height>
           </size>
          </property>
          <property name="font">
           <font>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -199,9 +206,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>pushButton_humidity</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
-  <zorder>pushButton_humidity</zorder>
  </widget>
  <resources>
   <include location="../resources.qrc"/>
