@@ -1,7 +1,7 @@
-#PyRobot © Version 0.1
+# PyRobot © Version 0.1
 Build and control your own robot with an friendly user-interface.
 
-##Requires:
+## Requires:
 
  - Python 3.5+
  - Pillow 
@@ -10,7 +10,7 @@ Build and control your own robot with an friendly user-interface.
  - py2app 0.9
  - numpy 1.11.2
 
-##Installation:
+## Installation:
 
 ### Virtualenv and VirtualenvWrapper
 
@@ -75,7 +75,7 @@ pip install Pillow
 pip install opencv-python
 ```
 
-##Development:
+## Development:
 
 ### Makefile rules
 
@@ -101,7 +101,7 @@ pip install opencv-python
 
 ```src/*``` : .py files
 
-##License:
+## License:
 
 PyRobot
 Copyright © 2017 Joaquim Lefranc
